@@ -58,7 +58,7 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 - `/eval`: evaluation results derived from `/sim` and/or `/meas`
 - `/log`: log files or other unstructured data
 
-## Usage
+## Basic Usage
 
 Our simple application example just generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
 ```
