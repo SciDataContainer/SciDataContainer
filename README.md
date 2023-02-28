@@ -2,7 +2,7 @@
 
 This is a Python 3 implementation of a lean container class for the storage of scientific data, in a way compliant to the [FAIR princples](https://en.wikipedia.org/wiki/FAIR_data) of modern research data management. In a standardized container file it provides maximum flexibility and minimal restrictions. Data containers may be stored as local files and uploaded to a data storage server. The class is operating system independent.
 
-The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which was usually be recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained. Large amounts of parameter data may be stored in their own container, referenced by its identifier. This is especially useful for static data.
+The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained. Large amounts of parameter data may be stored in their own container, referenced by its identifier. This is especially useful for static data.
 
 ## Structure and Terms
 
@@ -18,34 +18,34 @@ The parameters describing the container are stored in the required root item `co
 
 - `uuid`: automatic UUID
 - `replaces`: optional UUID of the predecessor of this dataset
-- `containerType`: required mapping
-    + `name`: required
-    + `id`: optional
-    + `version`: required only if id is given
+- `containerType`: required container type mapping
+    + `name`: required container name (no white space)
+    + `id`: optional identifier for standardized containers
+    + `version`: required standard version, if `id` is given
 - `created`: automatic creation timestamp
 - `modified`: automatic last modification timestamp
-- `static`: required booleanflag (static datasets)
-- `complete`: required booleanflag (multi-step datasets)
+- `static`: required boolean flag (static datasets)
+- `complete`: required boolean flag (multi-step datasets)
 - `hash`: optional hex digest of SHA256 hash, required for static datasets
-- `usedSoftware`: optional list of mappings
-    + `name`: required
-    + `version`: required
-    + `id`: optional
-    + `idType`: required if id is given
+- `usedSoftware`: optional list of software mappings
+    + `name`: required software name
+    + `version`: required software version
+    + `id`: optional software identifier (e.g. UUID of URL)
+    + `idType`: required type of identifier, if `id` is given
 - `modelVersion`: automatic data model version
 
 ## Description of Data
 
 The meta data describing the data payload of the container is stored in the required root item `meta.json`. The following set of attributes is currently defined for this item:
 
-- `author`: required
-- `email`: required
-- `comment`: optional
-- `title`: required
-- `keywords`: optional
-- `description`: optional
+- `author`: required name of the author
+- `email`: required e-mail address of the author
+- `comment`: optional comments on the dataset
+- `title`: required title of the dataset
+- `keywords`: optional list of keywords
+- `description`: optional description of the dataset (abstract)
 
-In order to simplify the generation of meta data, the data container class will insert default values for the author name and email address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or fron a configuration file. This configuraton file is `%HOMEDRIVE%%HOMEPATH\scidata.cfg%` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
+In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or fron a configuration file. This configuraton file is `%HOMEDRIVE%%HOMEPATH\scidata.cfg%` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
 
 ## Suggested Parts
 
@@ -59,3 +59,29 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 - `/log`: log files or other unstructured data
 
 ## Usage
+
+Our simple application sample is that we generate a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
+```
+import random
+from scidatacontainer import Container
+```
+
+Then we generate a parameter dictionary and the actual test data:
+```
+p = {"quantity": 8, "minValue": 1, "maxValue": 6}
+data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
+```
+
+If a default author name and e-mail address is available, there are just two aditional attributes which you must provide. One is the the type of the container and a title of the dataset. Together with the raw data and the dictionary of parameters we build the dictionary of container items:
+```
+items = {
+    "content.json": {
+        "containerType": {"name": "myRandInt"},
+        },
+    "meta.json": {
+        "title": "My first set of random numbers",
+        },
+    "meas/dice.json": data,
+    "data/parameter.json": p,
+    }
+```
