@@ -62,30 +62,41 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 
 Our simple application sample is that we generate a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
 ```
-> import random
-> from scidatacontainer import Container
+>>> import random
+>>> from scidatacontainer import Container
 ```
 
 Then we generate a parameter dictionary and the actual test data:
 ```
-> p = {"quantity": 8, "minValue": 1, "maxValue": 6}
-> data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
-> print(data)
+>>> p = {"quantity": 8, "minValue": 1, "maxValue": 6}
+>>> data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
+>>> print(data)
 [4, 4, 2, 2, 5, 5, 2, 5]
 ```
 
-If a default author name and e-mail address is available, there are just two aditional attributes which you must provide. One is the the type of the container and a title of the dataset. Together with the raw data and the dictionary of parameters we build the dictionary of container items:
+If a default author name and e-mail address is available, there are just two aditional attributes which you must provide. One is the the type of the container and the other a title of the dataset. Together with the raw data and the dictionary of parameters we can now build the dictionary of container items:
 ```
-> items = {
+>>> items = {
     "content.json": {
         "containerType": {"name": "myRandInt"},
         },
     "meta.json": {
         "title": "My first set of random numbers",
         },
-    "meas/dice.json": data,
+    "sim/dice.json": data,
     "data/parameter.json": p,
     }
 ```
 
-aaa
+Now we are ready to build the container, store it in a local file and get a short description of its content:
+```
+>>> dc = Container(items=items)
+>>> dc.write("random.zdc")
+>>> print(dc)
+Single-Step Container
+  type:     myRandInt
+  uuid:     306e2c2d-a9f6-4306-8851-1ee0fceeb852
+  created:  2023-02-28 10:03:44 UTC
+  author:   Reinhard Caspary
+```
+
