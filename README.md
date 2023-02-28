@@ -62,19 +62,21 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 
 Our simple application sample is that we generate a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
 ```
-import random
-from scidatacontainer import Container
+> import random
+> from scidatacontainer import Container
 ```
 
 Then we generate a parameter dictionary and the actual test data:
 ```
-p = {"quantity": 8, "minValue": 1, "maxValue": 6}
-data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
+> p = {"quantity": 8, "minValue": 1, "maxValue": 6}
+> data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
+> print(data)
+[4, 4, 2, 2, 5, 5, 2, 5]
 ```
 
 If a default author name and e-mail address is available, there are just two aditional attributes which you must provide. One is the the type of the container and a title of the dataset. Together with the raw data and the dictionary of parameters we build the dictionary of container items:
 ```
-items = {
+> items = {
     "content.json": {
         "containerType": {"name": "myRandInt"},
         },
