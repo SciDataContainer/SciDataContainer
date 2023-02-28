@@ -60,7 +60,7 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 
 ## Usage
 
-Our simple application sample is that we generate a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
+Our simple application example just generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
 ```
 >>> import random
 >>> from scidatacontainer import Container
@@ -71,10 +71,10 @@ Then we generate a parameter dictionary and the actual test data:
 >>> p = {"quantity": 8, "minValue": 1, "maxValue": 6}
 >>> data = [random.randint(p["minValue"], p["maxValue"]) for i in range(p["quantity"])]
 >>> print(data)
-[4, 4, 2, 2, 5, 5, 2, 5]
+[2, 5, 1, 3, 1, 4, 4, 4]
 ```
 
-If a default author name and e-mail address is available, there are just two aditional attributes which you must provide. One is the the type of the container and the other a title of the dataset. Together with the raw data and the dictionary of parameters we can now build the dictionary of container items:
+If a default author name and e-mail address is available as explained above, there are just two aditional attributes which you must provide. One is the the type of the container and the other a title of the dataset. Together with the raw data and the dictionary of parameters we can now build the dictionary of container items:
 ```
 >>> items = {
     "content.json": {
@@ -100,3 +100,13 @@ Single-Step Container
   author:   Reinhard Caspary
 ```
 
+Feel free to check the content of the file `random.zdc` now by opening it on the operating system level. Be reminded that the Windows Explorer requires the file extension `.zdc` to be registered first as explained above. Recovering the dataset from the local file as a new container object works staight forward:
+```
+>>> dc = Container(file="random.zdc")
+>>> print(dc["sim/dice.json"])
+[2, 5, 1, 3, 1, 4, 4, 4]
+```
+
+## Server Storage
+
+Three different types of containers are currently supported, which differ mainly in the way they are handled by the storage server. The standard one is the single-step container.
