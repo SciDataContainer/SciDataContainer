@@ -32,7 +32,7 @@ config = load_config()
 
 
 # Version of the implemented data model
-MODELVERSION = "0.3c"
+MODELVERSION = "0.3.3"
 
 
 ##########################################################################
