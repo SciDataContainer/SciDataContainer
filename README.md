@@ -124,7 +124,7 @@ Container files can also easily be stored on and retrieved from a specific data 
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 ```
 
-In order to be able to use the server, you need an account. This enables you to get an API key. It is most convenient to store the server URL and the API key in the configuration file mentioned above (keywords `server` and `key`) or in the environment variables `DC_SERVER` and `DC_KEY`. Both values can also be specified as method parameters:
+In order to be able to use the server, you need an account. This enables you to get an API key. It is most convenient to store the server name or IP address and the API key in the configuration file mentioned above (keywords `server` and `key`) or in the environment variables `DC_SERVER` and `DC_KEY`. Both values can also be specified as method parameters:
 ```
 >>> dc.upload(server="xxx.xxx.xx", key="...")
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852", server="xxx.xxx.xx", key="...")
