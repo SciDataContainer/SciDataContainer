@@ -126,13 +126,13 @@ Container files can also easily be stored on and retrieved from a specific data 
 
 In order to be able to use the server, you need an account. This enables you to get an API key. It is most convenient to store the server name or IP address and the API key in the configuration file mentioned above (keywords `server` and `key`) or in the environment variables `DC_SERVER` and `DC_KEY`. Both values can also be specified as method parameters:
 ```
->>> dc.upload(server="xxx.xxx.xx", key="...")
->>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852", server="xxx.xxx.xx", key="...")
+>>> dc.upload(server="...", key="...")
+>>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852", server="...", key="...")
 ```
 
 The server makes sure that UUIDs are unique. Once uploaded, a dataset can never be modified on a server. The only exemption are multi-step containers, see below. In the rare case that a certain dataset needs to be replaced, the attribute `replaces` may be used in `content.json`. Once uploaded, the server will always deliver the new dataset, even if the dataset with the old UUID is requested. Replacing is only allowed for the owner of a dataset.
 
-Three different types of containers are currently supported, which differ mainly in the way they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID;
+Three different types of containers are currently supported, which differ mainly in the way they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID:
 ```
 >>> items["content.json"]["complete"] = False
 >>> dc = Container(items=items)
@@ -141,7 +141,7 @@ Three different types of containers are currently supported, which differ mainly
 306e2c2d-a9f6-4306-8851-1ee0fceeb852
 ```
 
-The server will accept only containers with increasing modification timestamps. Since the resolution of the internal timestamps is a second, you must wait at least one second before the next step:
+The server will only accept containers with increasing modification timestamps. Since the resolution of the internal timestamps is a second, you must wait at least one second before the next step:
 ```
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/newdata.json"] = newdata
@@ -156,7 +156,7 @@ For the final step, the upload must be marked as beeing complete. This makes thi
 >>> dc.upload()
 ```
 
-The third container type is a **static container**. Static containers are intended for static parameters in contrast to measurement or simulation data. An example would be a detailed description of a measurement setup, which is used for many measurements. Instead of storing the large setup data with each single measurement dataset, the whole setup may be stored as a single static dataset and referenced by its UUID in the measurement datasets.
+The third container type is a **static container**. Static containers are intended for static parameters in contrast to measurement or simulation data. An example would be a detailed description of a measurement setup, which is used for many measurements. Instead of including the large setup data with each single measurement dataset, the whole setup may be stored as a single static dataset and referenced by its UUID in the measurement datasets.
 
 ## Convenience Methods
 
