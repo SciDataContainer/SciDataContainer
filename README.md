@@ -1,6 +1,6 @@
 # scidatacontainer
 
-This is a Python 3 implementation of a lean container class for the storage of scientific data, in a way compliant to the [FAIR princples](https://en.wikipedia.org/wiki/FAIR_data) of modern research data management. In a standardized container file it provides maximum flexibility and minimal restrictions. Data containers may be stored as local files and uploaded to a data storage server. The class is operating system independent.
+This is a Python 3 implementation of a lean container class for the storage of scientific data, in a way compliant to the [FAIR principles](https://en.wikipedia.org/wiki/FAIR_data) of modern research data management. In a standardized container file it provides maximum flexibility and minimal restrictions. Data containers may be stored as local files and uploaded to a data storage server. The class is operating system independent.
 
 The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained. Large amounts of parameter data may be stored in their own container, referenced by its identifier. This is especially useful for static data.
 
@@ -15,11 +15,11 @@ You find the source code together with test files some more on [GitHub](https://
 
 ## Structure and Terms
 
-Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (file in ZIP package), which are organized in *Parts* (folder in ZIP package). The standard file extension of the container files is `.zdc`. When you execute the file `zdc.reg` on Microsoft Windows, the operating sytem treats this extension in the same way as `.zip`. This allows to inspect the file with a double-click in the Windows Explorer.
+Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (file in ZIP package), which are organized in *Parts* (folder in ZIP package). The standard file extension of the container files is `.zdc`. When you execute the file `zdc.reg` on Microsoft Windows, the operating system treats this extension in the same way as `.zip`. This allows to inspect the file with a double-click in the Windows Explorer.
 
 There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as JSON files in the ZIP package, if possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. Data *Attributes* are keys of JSON mappings.
 
-Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the license text for the dataset in theis container. The data payload and parameter data should be stored in an optional set of suggested parts as explained below.
+Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the license text for the dataset in this container. The data payload and parameter data should be stored in an optional set of suggested parts as explained below.
 
 ## Container Parameters
 
@@ -58,7 +58,7 @@ The meta data describing the data payload of the container is stored in the requ
 - `doi`: optional digital object identifier of the dataset
 - `license`: optional data license name (e.g. ["CC-BY"](https://creativecommons.org/licenses/by/4.0/))
 
-In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or fron a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
+In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or from a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
 
 ## Suggested Parts
 
@@ -73,7 +73,7 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 
 ## Basic Usage
 
-Our simple application example just generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first we import the Python `random` module and our class `Container`:
+Our simple application example just generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first, we import the Python `random` module and our class `Container`:
 ```
 >>> import random
 >>> from scidatacontainer import Container
@@ -87,7 +87,7 @@ Then we generate a parameter dictionary and the actual test data:
 [2, 5, 1, 3, 1, 4, 4, 4]
 ```
 
-If a default author name and e-mail address is available as explained above, there are just two aditional attributes which you must provide. One is the the type of the container and the other a title of the dataset. Together with the raw data and the dictionary of parameters we can now build the dictionary of container items:
+If a default author name and e-mail address is available as explained above, there are just two additional attributes, which you must provide. One is the type of the container and the other a title of the dataset. Together with the raw data and the dictionary of parameters, we can now build the dictionary of container items:
 ```
 >>> items = {
     "content.json": {
@@ -113,7 +113,7 @@ Single-Step Container
   author:   Reinhard Caspary
 ```
 
-Feel free to check the content of the file `random.zdc` now by opening it on the operating system level. Be reminded that the Windows Explorer requires the file extension `.zdc` to be registered first as explained above. Recovering the dataset from the local file as a new container object works staight forward:
+Feel free to check the content of the file `random.zdc` now by opening it on the operating system level. Be reminded that the Windows Explorer requires the file extension `.zdc` to be registered first as explained above. Recovering the dataset from the local file as a new container object works straight forward:
 ```
 >>> dc = Container(file="random.zdc")
 >>> dc["sim/dice.json"]
@@ -152,7 +152,7 @@ The server will only accept containers with increasing modification timestamps. 
 >>> dc.upload()
 ```
 
-For the final step, the upload must be marked as beeing complete. This makes this dataset immutable:
+For the final step, the upload must be marked as being complete. This makes this dataset immutable:
 ```
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/finaldata.json"] = finaldata
@@ -175,7 +175,7 @@ Static Container
   author:   Reinhard Caspary
 ```
 
-Freezing a container sets the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates an SHA256 hash of the container content. When yo try to upload a static container and there is another static container with the same attributes `containerType.name` and `hash`, the content of the current container object is silently replaced by the original one from the server.
+Freezing a container sets the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates an SHA256 hash of the container content. When you try to upload a static container and there is another static container with the same attributes `containerType.name` and `hash`, the content of the current container object is silently replaced by the original one from the server.
 
 ## Convenience Methods
 
