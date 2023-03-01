@@ -67,13 +67,14 @@ print(dc)
 
 # Store container as local file
 dc.write("image_static.zdc")
+print("content.json" in dc)
 
-# Upload container to server
-dc.upload()
-print("Container uploaded.")
-
-# Download container from server
-uuid = dc["content.json"]["uuid"]
-dc = Container(uuid=uuid)
-print("Container downloaded.")
-print(dc)
+### Upload container to server
+##dc.upload()
+##print("Container uploaded.")
+##
+### Download container from server
+##uuid = dc["content.json"]["uuid"]
+##dc = Container(uuid=uuid)
+##print("Container downloaded.")
+##print(dc)

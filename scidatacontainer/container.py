@@ -388,7 +388,7 @@ class DataContainer(object):
                                  headers={"Authorization": "Token " + key})
 
         ### DEBUG ###
-        print("*** Debug file 'upload.zdc' ***"
+        print("*** Debug file 'upload.zdc' ***")
         with open("upload.zdc", "wb") as fp:
             fp.write(response.content)
 
@@ -427,7 +427,7 @@ class DataContainer(object):
         data = response.content
 
         ### DEBUG ###
-        print("*** Debug file '%s.zdc' ***" % uuid
+        print("*** Debug file '%s.zdc' ***" % uuid)
         with open(uuid+".zdc", "wb") as fp:
             fp.write(data)
             
