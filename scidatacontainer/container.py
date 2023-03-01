@@ -23,8 +23,6 @@ import requests
 import time
 import uuid
 from zipfile import ZipFile
-import cv2 as cv
-import numpy as np
 
 from .filebase import FileBase, JsonFile
 from .config import load_config

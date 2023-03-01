@@ -32,5 +32,6 @@ setup(name="SciDataContainer",
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering"],
+      install_requires=["requests"],
       )
 
