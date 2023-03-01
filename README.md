@@ -4,6 +4,15 @@ This is a Python 3 implementation of a lean container class for the storage of s
 
 The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained. Large amounts of parameter data may be stored in their own container, referenced by its identifier. This is especially useful for static data.
 
+## Install
+
+The easiest way to install the latest version of `scidatacontainer` is using PIP:
+```
+>>> pip install scidatacontainer
+```
+
+You find the source code together with test files some more on [GitHub](https://github.com/reincas/scidatacontainer).
+
 ## Structure and Terms
 
 Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (file in ZIP package), which are organized in *Parts* (folder in ZIP package). The standard file extension of the container files is `.zdc`. When you execute the file `zdc.reg` on Microsoft Windows, the operating sytem treats this extension in the same way as `.zip`. This allows to inspect the file with a double-click in the Windows Explorer.
