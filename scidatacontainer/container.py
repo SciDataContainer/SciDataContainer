@@ -245,7 +245,11 @@ class DataContainer(object):
         if "email" not in meta:
             meta["email"] = self._config["email"]
 
-        # Comment on dataset is required, but may be empty
+        # Author affiliation is optional
+        if "organization" not in meta:
+            meta["organization"] = ""
+
+        # Comment on dataset is optional
         if "comment" not in meta:
             meta["comment"] = ""
 
@@ -255,13 +259,25 @@ class DataContainer(object):
         if not meta["title"]:
             raise RuntimeError("Data title is missing!")
 
-        # List of keywords is required, but may be empty
+        # List of keywords is optional
         if "keywords" not in meta:
             meta["keywords"] = []
 
-        # Description of dataset is required, but may be empty
+        # Description of dataset is optional
         if "description" not in meta:
             meta["description"] = ""
+
+        # Data creation time is optional
+        if "created" not in meta:
+            meta["created"] = ""
+
+        # Data DOI is optional
+        if "doi" not in meta:
+            meta["doi"] = ""
+
+        # Data license name is optional
+        if "license" not in meta:
+            meta["license"] = ""
 
 
     def __delete__(self, path):
@@ -277,7 +293,7 @@ class DataContainer(object):
             del self._items[path]
             
 
-    def paths(self):
+    def items(self):
 
         """ Return all container item paths. """
 
@@ -297,7 +313,7 @@ class DataContainer(object):
         self["content.json"]["hash"] = None
 
         # Calculate and store hash of this container
-        hashes = [self._items[p].hash() for p in sorted(self.paths())]
+        hashes = [self._items[p].hash() for p in sorted(self.items())]
         myhash = hashlib.sha256(" ".join(hashes).encode("ascii")).hexdigest()
         self["content.json"]["hash"] = myhash
 
@@ -322,7 +338,7 @@ class DataContainer(object):
         """ Encode container as ZIP package. Return package as binary
         string. """
 
-        items = {p: self._items[p].encode() for p in self.paths()}
+        items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
             with ZipFile(f, "w") as fp:
                 for path, value in items.items():
@@ -387,18 +403,19 @@ class DataContainer(object):
                                  files={"uploadfile": data},
                                  headers={"Authorization": "Token " + key})
 
-        ### DEBUG ###
-        print("*** Debug file 'upload.zdc' ***")
-        with open("upload.zdc", "wb") as fp:
-            fp.write(response.content)
+##        print("*** Debug file 'upload.zdc' ***")
+##        with open("upload.zdc", "wb") as fp:
+##            fp.write(response.content)
 
         # HTTP status code 409 is returned when a static dataset with
         # the same content (hash) is already available on the server.
         # The server returns this original dataset and we replace the
         # current one by the original.
         if response.status_code == 409:
-            print("*** Warning: This static dataset exists already! ***")
-            #self.decode(response.content, strict)
+            try:
+                self.decode(response.content, strict)
+            else:
+                raise HTTPError("409: Existing static dataset (%s)" % uuid)
 
         # Standard exception handler for other HTTP status codes
         else:
@@ -426,16 +443,37 @@ class DataContainer(object):
                                 headers={"Authorization": "Token " + key})
         data = response.content
 
-        ### DEBUG ###
-        print("*** Debug file '%s.zdc' ***" % uuid)
-        with open(uuid+".zdc", "wb") as fp:
-            fp.write(data)
-            
-        # Standard exception handler for HTTP status codes
-        response.raise_for_status()
+##        print("*** Debug file '%s.zdc' ***" % uuid)
+##        with open(uuid+".zdc", "wb") as fp:
+##            fp.write(data)
 
-        # Store dataset in this container
-        self.decode(data, strict)
+        # Valid dataset: Store in this container
+        if response.status_code == 200:
+            self.decode(data, strict)
+            
+        # Deleted dataset: Raise exception
+        elif response.status_code == 204:
+            if data:
+                print(*** BEGIN ERROR MESSAGE ***)
+                print(data)
+                print(*** END ERROR MESSAGE ***)
+            raise HTTPError("204: Dataset deleted (%s)" % uuid)
+            
+        # Replaced dataset: Store in this container
+        elif response.status_code == 301:
+            self.decode(data, strict)
+            
+        # Unknown dataset: Raise exception
+        elif response.status_code == 404:
+            if data:
+                print(*** BEGIN ERROR MESSAGE ***)
+                print(data)
+                print(*** END ERROR MESSAGE ***)
+            raise HTTPError("404: Unknown dataset (%s)" % uuid)
+            
+        # Standard exception handler for other HTTP status codes
+        else:
+            response.raise_for_status()
 
 
     def __str__(self):

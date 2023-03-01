@@ -19,7 +19,7 @@ Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Univ
 
 There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as JSON files in the ZIP package, if possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. Data *Attributes* are keys of JSON mappings.
 
-Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. All data payload and parameter data should be stored in an optional set of suggested parts.
+Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the license text for the dataset in theis container. The data payload and parameter data should be stored in an optional set of suggested parts as explained below.
 
 ## Container Parameters
 
@@ -49,10 +49,14 @@ The meta data describing the data payload of the container is stored in the requ
 
 - `author`: required name of the author
 - `email`: required e-mail address of the author
+- `organization`: optional affiliation of the author
 - `comment`: optional comments on the dataset
 - `title`: required title of the dataset
 - `keywords`: optional list of keywords
-- `description`: optional description of the dataset (abstract)
+- `description`: optional abstract for the dataset
+- `created`: optional creation timestamp of the dataset
+- `doi`: optional digital object identifier of the dataset
+- `license`: optional data license name (e.g. [CC-BY](https://creativecommons.org/licenses/by/4.0/))
 
 In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or fron a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
 
@@ -171,7 +175,7 @@ Static Container
   author:   Reinhard Caspary
 ```
 
-Freezing a container sets the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates a hash value of the container content. When a second static container with the same hash value is uploaded to the server, it responds with an error code in order to avoid the storage of redundant data.
+Freezing a container sets the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates an SHA256 hash of the container content. When yo try to upload a static container and there is another static container with the same attributes `containerType.name` and `hash`, the content of the current container object is silently replaced by the original one from the server.
 
 ## Convenience Methods
 
@@ -187,3 +191,5 @@ True
 >>> "log/console.txt" in dc
 False
 ```
+
+Furthermore, the method `items()` returns a list of all full item names including the respective parts. The method `hash()` may be used to calculate an SHA256 hash of the container content. The hex digest of this value is stored in the attribute `hash` of the item `container.json`.
