@@ -48,7 +48,7 @@ parameter = {
         "offsetY": 0,
         "width": 2064,
     },
-    "dummy": 8,
+    "dummy": 9,
 }
 
 # Create the scientific data container
