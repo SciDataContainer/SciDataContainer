@@ -30,7 +30,7 @@ config = load_config()
 
 
 # Version of the implemented data model
-MODELVERSION = "0.3.3"
+MODELVERSION = "0.4.0"
 
 
 ##########################################################################
@@ -264,7 +264,7 @@ class DataContainer(object):
             meta["description"] = ""
 
 
-    def delpath(self, path):
+    def __delete__(self, path):
 
         """ Delete the given item. """
 
@@ -312,9 +312,9 @@ class DataContainer(object):
         static. The container cannot be modified any more when this
         method was called once. """
 
-        self.hash()
         self["content.json"]["static"] = True
         self["content.json"]["complete"] = True
+        self.hash()
 
 
     def encode(self):
@@ -364,44 +364,78 @@ class DataContainer(object):
         self.decode(data, strict)
 
 
-    def upload(self, data=None, server=None, key=None):
+    def upload(self, data=None, strict=True, server=None, key=None):
 
+        # Server name is required and must be provided either via config
+        # file, environment variable or method parameter
         if server is None:
             server = self._config["server"]
         if not server:
             raise RuntimeError("Server URL is missing!")
-        
+
+        # API key is required and must be provided either via config
+        # file, environment variable or method parameter
         if key is None:
             key = self._config["key"]
         if not key:
             raise RuntimeError("Server API key is missing!")
 
+        # Upload container as byte string
         if data is None:
             data = self.encode()
-        response = requests.post(server + "/api/upload/",
+        response = requests.post(server + "/api/datasets/",
                                  files={"uploadfile": data},
                                  headers={"Authorization": "Token " + key})
-        response.raise_for_status()
+
+        ### DEBUG ###
+        print("*** Debug file 'upload.zdc' ***"
+        with open("upload.zdc", "wb") as fp:
+            fp.write(response.content)
+
+        # HTTP status code 409 is returned when a static dataset with
+        # the same content (hash) is already available on the server.
+        # The server returns this original dataset and we replace the
+        # current one by the original.
+        if response.status_code == 409:
+            print("*** Warning: This static dataset exists already! ***")
+            #self.decode(response.content, strict)
+
+        # Standard exception handler for other HTTP status codes
+        else:
+            response.raise_for_status()
 
 
     def download(self, uuid, strict=True, server=None, key=None):
 
+        # Server name is required and must be provided either via config
+        # file, environment variable or method parameter
         if server is None:
             server = self._config["server"]
         if not server:
             raise RuntimeError("Server URL is missing!")
         
+        # API key is required and must be provided either via config
+        # file, environment variable or method parameter
         if key is None:
             key = self._config["key"]
         if not key:
             raise RuntimeError("Server API key is missing!")
 
-        response = requests.get(server + "/api/download/uuid=" + uuid,
+        # Download container as byte stream from the server
+        response = requests.get(server + "/api/datasets/" + uuid + "/download/",
                                 headers={"Authorization": "Token " + key})
-        response.raise_for_status()
-        assert response.ok, response.reason
+        data = response.content
 
-        self.decode(response.content, strict)
+        ### DEBUG ###
+        print("*** Debug file '%s.zdc' ***" % uuid
+        with open(uuid+".zdc", "wb") as fp:
+            fp.write(data)
+            
+        # Standard exception handler for HTTP status codes
+        response.raise_for_status()
+
+        # Store dataset in this container
+        self.decode(data, strict)
 
 
     def __str__(self):

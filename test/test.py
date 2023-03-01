@@ -72,16 +72,17 @@ dc.write("image.zdc")
 dc = Container(file="image.zdc")
 print(dc)
 
-### Upload container to server
-##dc.upload()
-##print("--- Container uploaded.")
-##
-### Download container from server
-##uuid = dc["content.json"]["uuid"]
-##dc = Container(uuid=uuid)
-##print("--- Container downloaded.")
-##print(dc)
-##
+# Upload container to server
+dc.upload()
+print("--- Container uploaded.")
+
+# Download container from server
+uuid = dc["content.json"]["uuid"]
+#uuid = "cb9e0243-401f-42d2-a59c-bda58d89f527"
+dc = Container(uuid=uuid)
+print("--- Container downloaded.")
+print(dc)
+
 ### Double upload test: This must fail!
 ##dc.upload()
 ##print("--- Container uploaded twice *** ERROR ***.")

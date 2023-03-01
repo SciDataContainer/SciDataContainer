@@ -69,9 +69,9 @@ dc = Container(items=items)
 dc.write("image_multi.zdc")
 print(dc)
 
-### Upload container to server
-##dc.upload()
-##print("--- Container uploaded.")
+# Upload container to server
+dc.upload()
+print("--- Container uploaded.")
 
 # Step 2: Load step 1 dataset, add a second image and store it
 time.sleep(3)
@@ -80,9 +80,9 @@ dc["meas/image_2.png"] = img
 dc.write("image_multi.zdc")
 print(dc)
 
-### Upload container to server
-##dc.upload()
-##print("--- Container uploaded.")
+# Upload container to server
+dc.upload()
+print("--- Container uploaded.")
 
 # Step 3: Load step 2 dataset, add a third image, close the dataset
 time.sleep(3)
@@ -93,12 +93,12 @@ dc.hash() # <- Add a SHA256 has (optional)
 dc.write("image_multi.zdc")
 print(dc)
 
-### Upload container to server
-##dc.upload()
-##print("--- Container uploaded.")
-##
-### Download container from server
-##uuid = dc["content.json"]["uuid"]
-##dc = Container(uuid=uuid)
-##print("--- Container downloaded.")
-##print(dc)
+# Upload container to server
+dc.upload()
+print("--- Container uploaded.")
+
+# Download container from server
+uuid = dc["content.json"]["uuid"]
+dc = Container(uuid=uuid)
+print("--- Container downloaded.")
+print(dc)

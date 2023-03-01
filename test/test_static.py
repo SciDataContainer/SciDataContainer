@@ -48,7 +48,7 @@ parameter = {
         "offsetY": 0,
         "width": 2064,
     },
-    "dummy": 1,
+    "dummy": 8,
 }
 
 # Create the scientific data container
@@ -68,12 +68,12 @@ print(dc)
 # Store container as local file
 dc.write("image_static.zdc")
 
-### Upload container to server
-##dc.upload()
-##print("Container uploaded.")
-##
-### Download container from server
-##uuid = dc["content.json"]["uuid"]
-##dc = Container(uuid=uuid)
-##print("Container downloaded.")
-##print(dc)
+# Upload container to server
+dc.upload()
+print("Container uploaded.")
+
+# Download container from server
+uuid = dc["content.json"]["uuid"]
+dc = Container(uuid=uuid)
+print("Container downloaded.")
+print(dc)
