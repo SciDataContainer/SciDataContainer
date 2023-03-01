@@ -134,14 +134,23 @@ The server makes sure that UUIDs are unique. Once uploaded, a dataset can never 
 
 Three different types of containers are currently supported, which differ mainly in the way they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID. The server will accept only containers with increasing modification time. In the last upload the attribute `complete` must have the value `True`, which makes this dataset immutable.
 ```
->>> import time
 >>> items["content.json"]["complete"] = False
 >>> dc = Container(items=items)
 >>> dc.upload()
->>> time.sleep(2) # <- new internal timestamp (based on seconds)
+>>> print(dc["content.json"]["uuid"])
+306e2c2d-a9f6-4306-8851-1ee0fceeb852
+```
+
+The resolution of the container timestamps is a second. Therefore, wait at least one second for the next step:
+```
+>>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/newdata.json"] = newdata
 >>> dc.upload()
->>> time.sleep(2) # <- new internal timestamp
+```
+
+The final upload must be marked as beeing complete:
+```
+>>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/finaldata.json"] = finaldata
 >>> dc["content.json"]["complete"] = True
 >>> dc.upload()
