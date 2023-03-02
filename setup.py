@@ -5,6 +5,7 @@ import setuptools  # required for command bdist_wheel
 from distutils.core import setup
 
 pkg = "scidatacontainer"
+version = None
 with open(pkg + "/container.py", "r") as fp:
     for line in fp.readlines():
         if line[:15] == "MODELVERSION = ":
@@ -13,6 +14,9 @@ with open(pkg + "/container.py", "r") as fp:
     else:
         raise RuntimeError("MODELVERSION missing in container.py!")
 
+with open("version.txt", "w") as fp:
+    fp.write(version)
+    
 with open("README.md", "r") as fp:
     readme = fp.read()
 
