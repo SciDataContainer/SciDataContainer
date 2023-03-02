@@ -14,7 +14,7 @@ with open(pkg + "/container.py", "r") as fp:
     else:
         raise RuntimeError("MODELVERSION missing in container.py!")
 
-with open("version.txt", "w") as fp:
+with open("VERSION", "w") as fp:
     fp.write(version)
     
 with open("README.md", "r") as fp:
