@@ -454,9 +454,9 @@ class DataContainer(object):
         # Deleted dataset: Raise exception
         elif response.status_code == 204:
             if data:
-                print(*** BEGIN ERROR MESSAGE ***)
+                print("*** BEGIN ERROR MESSAGE ***")
                 print(data)
-                print(*** END ERROR MESSAGE ***)
+                print("*** END ERROR MESSAGE ***")
             raise HTTPError("204: Dataset deleted (%s)" % uuid)
             
         # Replaced dataset: Store in this container
@@ -466,9 +466,9 @@ class DataContainer(object):
         # Unknown dataset: Raise exception
         elif response.status_code == 404:
             if data:
-                print(*** BEGIN ERROR MESSAGE ***)
+                print("*** BEGIN ERROR MESSAGE ***")
                 print(data)
-                print(*** END ERROR MESSAGE ***)
+                print("*** END ERROR MESSAGE ***")
             raise HTTPError("404: Unknown dataset (%s)" % uuid)
             
         # Standard exception handler for other HTTP status codes
