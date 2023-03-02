@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import setuptools  # required for command bdist_wheel
 from distutils.core import setup
 
@@ -7,7 +8,7 @@ pkg = "scidatacontainer"
 with open(pkg + "/container.py", "r") as fp:
     for line in fp.readlines():
         if line[:15] == "MODELVERSION = ":
-            version = line[15:].split()[0].strip()
+            version = eval(line[15:].split()[0].strip())
             break
     else:
         raise RuntimeError("MODELVERSION missing in container.py!")
