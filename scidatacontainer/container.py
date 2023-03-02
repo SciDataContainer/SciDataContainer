@@ -414,7 +414,7 @@ class DataContainer(object):
         if response.status_code == 409:
             try:
                 self.decode(response.content, strict)
-            else:
+            except:
                 raise HTTPError("409: Existing static dataset (%s)" % uuid)
 
         # Standard exception handler for other HTTP status codes

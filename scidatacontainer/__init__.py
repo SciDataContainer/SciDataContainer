@@ -27,12 +27,6 @@ from .filebase import FileBase, TextFile, JsonFile
 #from .fileimage import PngFile
 from .container import DataContainer
 
-
-__version__ = "0.9"
-__author__ = "Reinhard Caspary"
-__email__ = "reinhard.caspary@phoenixd.uni-hannover.de"
-
-
 suffixes = {
     "json": "application/json",
     "bin": "application/octet-stream",
