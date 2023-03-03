@@ -24,7 +24,6 @@
 ##########################################################################
 
 from .filebase import FileBase, TextFile, JsonFile
-#from .fileimage import PngFile
 from .container import DataContainer, timestamp
 
 suffixes = {
@@ -33,15 +32,14 @@ suffixes = {
     "txt": TextFile,
     "log": TextFile,
     "pgm": TextFile,
-    #"png": PngFile,
     }
 
-
-class Container(DataContainer):
-
-    """ Scientific data container. """
-
-    _suffixes = suffixes
+# Try to import image file formats requiring the Python module cv2
+try:
+    from .fileimage import PngFile
+    suffixes["png"] = PngFile
+except:
+    pass
 
 
 def register(suffix, fclass):
@@ -60,4 +58,13 @@ def register(suffix, fclass):
 
     # Register suffix
     suffixes[suffix] = fclass
+
+
+# Inject certain known file formats into the container class
+class Container(DataContainer):
+
+    """ Scientific data container. """
+
+    _suffixes = suffixes
+
 
