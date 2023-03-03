@@ -57,9 +57,11 @@ class DataContainer(object):
 
     def __init__(self, items=None, file=None, uuid=None, server=None, key=None):
 
+        # Container must be mutable initially
+        self.mutable = True
+
         # Store all items in the container
         if items is not None:
-            self.mutable = True
             self._store(items, True, False)
             self.mutable = not self["content.json"]["static"]
 
