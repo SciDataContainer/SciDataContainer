@@ -30,7 +30,7 @@ config = load_config()
 
 
 # Version of the implemented data model
-MODELVERSION = "0.4.0"
+MODELVERSION = "0.4.1"
 
 
 ##########################################################################
@@ -59,7 +59,8 @@ class DataContainer(object):
 
         # Store all items in the container
         if items is not None:
-            self.store(items)
+            self._store(items, True, False)
+            self.mutable = not self["content.json"]["static"]
 
         # Load local container file
         elif file is not None:
@@ -74,20 +75,26 @@ class DataContainer(object):
             raise RuntimeError("No data!")
 
 
-    def store(self, items, strict=True):
+    def _store(self, items, validate=True, strict=True):
 
         """ Store all items in the container. """
 
         # Add all items in the container
         self._items = {}
-        self.static = False
+        mutable = self.mutable
+        self.mutable = True
         for path, data in items.items():
             self[path] = data
 
         # Make sure that the items content.json and meta.json exist and
         # contain all required attributes
-        self.validate_content()
-        self.validate_meta()
+        if "content.json" not in self:
+            raise RuntimeError("Item 'content.json' is missing!")
+        if "meta.json" not in self:
+            raise RuntimeError("Item 'meta.json' is missing!")
+        if validate:
+            self.validate_content()
+            self.validate_meta()
 
         # Check validity of hash
         if strict and self["content.json"]["hash"]:
@@ -96,8 +103,8 @@ class DataContainer(object):
             if self["content.json"]["hash"] != oldhash:
                 raise RuntimeError("Wrong hash!")
 
-        # Set static flag
-        self.static = self["content.json"]["static"]
+        # Restore mutable flag
+        self.mutable = mutable
 
 
     def __contains__(self, path):
@@ -113,7 +120,7 @@ class DataContainer(object):
         """ Store data as a container item. """
 
         # Static container must not be modified
-        if self.static:
+        if not self.mutable:
             raise RuntimeError("Static container!")
         
         # Get file extension, default is FileBase
@@ -142,10 +149,8 @@ class DataContainer(object):
 
         """ Make sure that the item "content.json" exists and contains
         all required attributes. """
-        
-        # Item content.json is required
-        if "content.json" not in self:
-            raise RuntimeError("Item 'content.json' is missing!")
+
+        # Get item "content.json"
         content = self["content.json"]
 
         # Keep UUID of a multi-step container and create a new one otherwise
@@ -221,8 +226,7 @@ class DataContainer(object):
                 raise RuntimeError("Type of software reference id is missing!")
 
         # Version of the data model provided by this package
-        if "modelVersion" not in content:
-            content["modelVersion"] = MODELVERSION
+        content["modelVersion"] = MODELVERSION
         
 
     def validate_meta(self):
@@ -230,9 +234,7 @@ class DataContainer(object):
         """ Make sure that the item "meta.json" exists and contains
         all required attributes. """
 
-        # Item meta.json is required
-        if "meta.json" not in self:
-            raise RuntimeError("Item 'meta.json' is missing!")
+        # Get item "meta.json"
         meta = self["meta.json"]
 
         # Author name is required
@@ -285,7 +287,7 @@ class DataContainer(object):
         """ Delete the given item. """
 
         # Static container must not be modified
-        if self.static:
+        if not self.mutable:
             raise RuntimeError("Static container!")
 
         # Delete item        
@@ -321,6 +323,9 @@ class DataContainer(object):
         for key, value in save.items():
             self["content.json"][key] = value
 
+        # Make container immutable
+        self.mutable = False
+
 
     def freeze(self):
 
@@ -332,6 +337,28 @@ class DataContainer(object):
         self["content.json"]["complete"] = True
         self.hash()
 
+
+    def release(self):
+
+        """ Make this container mutable. If it was immutable, this
+        method will create a new UUID and initialize the attributes
+        replaces, created, modified and modelVersion in the item
+        "content.json". It will also delete an existing hash and make it
+        a single-step container. """
+
+        # Do nothing if the container is already mutable
+        if self.mutable:
+            return
+        self.mutable = True
+        
+        # Remove and initialize certain container attributes
+        content = self["content.json"]
+        content["static"] = False
+        content["complete"] = True
+        for key in ("uuid", "replaces", "created", "modified"):
+            content.pop(key, None)
+        self.validate_content()
+        
 
     def encode(self):
 
@@ -348,7 +375,7 @@ class DataContainer(object):
         return data
     
 
-    def decode(self, data, strict=True):
+    def decode(self, data, validate=True, strict=True):
 
         """ Take ZIP package as binary string. Read items from the
         package and store them in this object. """
@@ -357,7 +384,7 @@ class DataContainer(object):
             f.write(data)
             with ZipFile(f, "r") as fp:
                 items = {p: fp.read(p) for p in fp.namelist()}
-        self.store(items, strict)
+        self._store(items, validate, strict)
 
         
     def write(self, fn, data=None):
@@ -368,6 +395,7 @@ class DataContainer(object):
             data = self.encode()
         with open(fn, "wb") as fp:
             fp.write(data)
+        self.mutable = False
 
 
     def read(self, fn, strict=True):
@@ -377,7 +405,8 @@ class DataContainer(object):
 
         with open(fn, "rb") as fp:
             data = fp.read()
-        self.decode(data, strict)
+        self.decode(data, False, strict)
+        self.mutable = False
 
 
     def upload(self, data=None, strict=True, server=None, key=None):
@@ -413,13 +442,16 @@ class DataContainer(object):
         # current one by the original.
         if response.status_code == 409:
             try:
-                self.decode(response.content, strict)
+                self.decode(response.content, False, strict)
             except:
                 raise HTTPError("409: Existing static dataset (%s)" % uuid)
 
         # Standard exception handler for other HTTP status codes
         else:
             response.raise_for_status()
+
+        # Make container immutable
+        self.mutable = False
 
 
     def download(self, uuid, strict=True, server=None, key=None):
@@ -449,7 +481,7 @@ class DataContainer(object):
 
         # Valid dataset: Store in this container
         if response.status_code == 200:
-            self.decode(data, strict)
+            self.decode(data, False, strict)
             
         # Deleted dataset: Raise exception
         elif response.status_code == 204:
@@ -474,6 +506,9 @@ class DataContainer(object):
         # Standard exception handler for other HTTP status codes
         else:
             response.raise_for_status()
+
+        # Make container immutable
+        self.mutable = False
 
 
     def __str__(self):
