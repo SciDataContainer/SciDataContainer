@@ -28,20 +28,12 @@ from .filebase import FileBase, TextFile, JsonFile
 from .container import DataContainer
 
 suffixes = {
-    "json": "application/json",
-    "bin": "application/octet-stream",
-    "txt": "text/plain",
-    "log": "text/plain",
-    "pgm": "text/plain",
-    #"png": "image/png",
-    }
-
-
-mimetypes = {
-    "application/json": JsonFile,
-    "application/octet-stream": FileBase,
-    "text/plain": TextFile,
-    #"image/png": PngFile,
+    "json": JsonFile,
+    "bin": FileBase,
+    "txt": TextFile,
+    "log": TextFile,
+    "pgm": TextFile,
+    #"png": PngFile,
     }
 
 
@@ -50,40 +42,22 @@ class Container(DataContainer):
     """ Scientific data container. """
 
     _suffixes = suffixes
-    _mimetypes = mimetypes
 
 
-def register_mimetype(mimetype, fclass):
+def register(suffix, fclass):
 
-    """ Register a suffix to a mimetype. """
+    """ Register a suffix to a conversion class. """
 
-    # Mimetype application/json is immutable
-    if mimetype == suffixes["json"]:
-        raise RuntimeError("Json mimetype is immutable!")
+    # Suffix json is immutable
+    if suffix == "json":
+        raise RuntimeError("Suffix 'json' is immutable!")
     
     # Simple sanity check for the class interface
     for method in ("encode", "decode", "hash"):
         if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
-            raise RuntimeError("No method %s() in class for mimetype '%s'!" \
-                               % (method, mimetype))
-
-    # Register mimetype
-    mimetypes[mimetype] = fclass
-    
-
-def register_suffix(suffix, mimetype):
-
-    """ Register a suffix to a mimetype. The mimetype must be known. """
-
-    # Suffix 'json' is immutable
-    if suffix == "json":
-        raise RuntimeError("Suffix 'json' is immutable!")
-
-    # Mimetype must be registered first
-    if mimetype not in mimetypes:
-        raise RuntimeError("Unknown mimetype '%s'!" % mimetype)
+            raise RuntimeError("No method %s() in class for suffix '%s'!" \
+                               % (method, suffix))
 
     # Register suffix
-    suffixes[suffix] = mimetype
-
+    suffixes[suffix] = fclass
 
