@@ -13,12 +13,7 @@
 ##########################################################################
 
 import cv2 as cv
-from scidatacontainer import Container, register_mimetype, register_suffix
-from scidatacontainer.fileimage import PngFile
-
-# Register data conversion class for png files
-register_mimetype("image/png", PngFile)
-register_suffix("png", "image/png")
+from scidatacontainer import Container
 
 # Dummy data: an image
 img = cv.imread("image.png")
