@@ -285,7 +285,7 @@ class DataContainer(object):
             meta["license"] = ""
 
 
-    def __delete__(self, path):
+    def __delitem__(self, path):
 
         """ Delete the given item. """
 

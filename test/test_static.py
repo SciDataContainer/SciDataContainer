@@ -72,6 +72,7 @@ print(dc)
 # Store container as local file
 dc.write("image_static.zdc")
 print("content.json" in dc)
+del dc["sim/test.txt"]
 
 ### Upload container to server
 ##dc.upload()
