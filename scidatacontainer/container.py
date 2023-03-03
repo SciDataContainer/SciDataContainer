@@ -59,6 +59,7 @@ class DataContainer(object):
 
         # Store all items in the container
         if items is not None:
+            self.mutable = True
             self._store(items, True, False)
             self.mutable = not self["content.json"]["static"]
 
