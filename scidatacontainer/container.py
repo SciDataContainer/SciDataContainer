@@ -63,7 +63,7 @@ class DataContainer(object):
         # Store all items in the container
         if items is not None:
             self._store(items, True, False)
-            self.mutable = not self["content.json"]["static"]
+            self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
         # Load local container file
         elif file is not None:
@@ -398,7 +398,7 @@ class DataContainer(object):
             data = self.encode()
         with open(fn, "wb") as fp:
             fp.write(data)
-        self.mutable = False
+        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
     def read(self, fn, strict=True):
@@ -409,7 +409,7 @@ class DataContainer(object):
         with open(fn, "rb") as fp:
             data = fp.read()
         self.decode(data, False, strict)
-        self.mutable = False
+        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
     def upload(self, data=None, strict=True, server=None, key=None):
@@ -454,7 +454,7 @@ class DataContainer(object):
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = False
+        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
     def download(self, uuid, strict=True, server=None, key=None):
@@ -511,7 +511,7 @@ class DataContainer(object):
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = False
+        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
     def __str__(self):
