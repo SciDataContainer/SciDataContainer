@@ -17,9 +17,11 @@
 # .log:  Encoded text file (default encoding: UTF-8)
 # .pgm:  Encoded text file (default encoding: UTF-8)
 # .json: JSON file
+# .png:  PNG image (requires Python module cv2)
 #
-# Further item types may be registered using the functions
-# register_mimetype() and register_suffix().
+# Users may register other file extensions to file conversion classes
+# using the function register(). See package fileimage as an example for
+# such a conversion class.
 #
 ##########################################################################
 
