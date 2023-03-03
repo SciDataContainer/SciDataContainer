@@ -64,6 +64,8 @@ items = {
 dc = Container(items=items)
 dc["sim/test.txt"] = "hello"
 dc.freeze() # <- This makes the dataset static and immutable
+print(dc)
+dc.release()
 dc["sim/test.txt"] = "hello"
 print(dc)
 

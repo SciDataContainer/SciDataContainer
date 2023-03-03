@@ -358,7 +358,7 @@ class DataContainer(object):
         content = self["content.json"]
         content["static"] = False
         content["complete"] = True
-        for key in ("uuid", "replaces", "created", "modified"):
+        for key in ("uuid", "replaces", "created", "modified", "hash"):
             content.pop(key, None)
         self.validate_content()
         
