@@ -62,7 +62,9 @@ items = {
     "data/parameter.json": parameter,
     }
 dc = Container(items=items)
+dc["sim/test.txt"] = "hello"
 dc.freeze() # <- This makes the dataset static and immutable
+dc["sim/test.txt"] = "hello"
 print(dc)
 
 # Store container as local file

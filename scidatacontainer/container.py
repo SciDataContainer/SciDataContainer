@@ -63,7 +63,7 @@ class DataContainer(object):
         # Store all items in the container
         if items is not None:
             self._store(items, True, False)
-            self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
+            self.mutable = not self["content.json"]["static"]
 
         # Load local container file
         elif file is not None:
@@ -122,9 +122,9 @@ class DataContainer(object):
 
         """ Store data as a container item. """
 
-        # Static container must not be modified
+        # Immutable container must not be modified
         if not self.mutable:
-            raise RuntimeError("Static container!")
+            raise RuntimeError("Immutable container!")
         
         # Get file extension, default is FileBase
         ext = path.rsplit(".", 1)[1]
@@ -289,9 +289,9 @@ class DataContainer(object):
 
         """ Delete the given item. """
 
-        # Static container must not be modified
+        # Immutable container must not be modified
         if not self.mutable:
-            raise RuntimeError("Static container!")
+            raise RuntimeError("Immutable container!")
 
         # Delete item        
         if path in self:
