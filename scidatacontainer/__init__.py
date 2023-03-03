@@ -25,7 +25,7 @@
 
 from .filebase import FileBase, TextFile, JsonFile
 #from .fileimage import PngFile
-from .container import DataContainer
+from .container import DataContainer, timestamp
 
 suffixes = {
     "json": JsonFile,

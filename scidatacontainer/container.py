@@ -51,8 +51,7 @@ class DataContainer(object):
     """ Scientific data container with minimal file support. """
 
     _config = config
-    _suffixes = {"json": "application/json"}
-    _mimetypes = {"application/json": JsonFile}
+    _suffixes = {"json": JsonFile}
 
 
     def __init__(self, items=None, file=None, uuid=None, server=None, key=None):
@@ -133,7 +132,7 @@ class DataContainer(object):
             cls = FileBase
             #raise RuntimeError("Unknown file extension '%s'!" % ext)
         else:
-            cls = self._mimetypes[self._suffixes[ext]]
+            cls = self._suffixes[ext]
 
         # Initialize conversion object according to the file extension
         self._items[path] = cls(data)
