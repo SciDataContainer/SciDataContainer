@@ -11,11 +11,14 @@ The easiest way to install the latest version of `scidatacontainer` is using PIP
 >>> pip install scidatacontainer
 ```
 
-You find the source code together with test files some more on [GitHub](https://github.com/reincas/scidatacontainer).
+You find the source code together with test files on [GitHub](https://github.com/reincas/scidatacontainer).
 
 ## Structure and Terms
 
-Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (file in ZIP package), which are organized in *Parts* (folder in ZIP package). The standard file extension of the container files is `.zdc`. When you execute the file `zdc.reg` on Microsoft Windows, the operating system treats this extension in the same way as `.zip`. This allows to inspect the file with a double-click in the Windows Explorer.
+Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (files in ZIP package), which are organized in *Parts* (folders in ZIP package). The standard file extension of the container files is `.zdc`. In order to make Microsoft Windows handle ZDC files in the same way as ZIP files and inspect it with a double-click in the Windows Explorer, run the following on the command prompt:
+```
+>>> reg copy HKCR\.zip HKCR\.zdc /s /f
+```
 
 There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as JSON files in the ZIP package, if possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. Data *Attributes* are keys of JSON mappings.
 
