@@ -370,8 +370,8 @@ class DataContainer(object):
         items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
             with ZipFile(f, "w") as fp:
-                for path, value in items.items():
-                    fp.writestr(path, value)
+                for path in sorted(items.keys()):
+                    fp.writestr(path, items[path])
             f.seek(0)
             data = f.read()
         return data
@@ -430,9 +430,12 @@ class DataContainer(object):
         # Upload container as byte string
         if data is None:
             data = self.encode()
-        response = requests.post(server + "/api/datasets/",
-                                 files={"uploadfile": data},
-                                 headers={"Authorization": "Token " + key})
+        try:
+            response = requests.post(server + "/api/datasets/",
+                                     files={"uploadfile": data},
+                                     headers={"Authorization": "Token " + key})
+        except ConnectionError:
+            raise ConnectionError("Connection to server %s failed!" % server)
 
 ##        print("*** Debug file 'upload.zdc' ***")
 ##        with open("upload.zdc", "wb") as fp:
@@ -473,8 +476,11 @@ class DataContainer(object):
             raise RuntimeError("Server API key is missing!")
 
         # Download container as byte stream from the server
-        response = requests.get(server + "/api/datasets/" + uuid + "/download/",
-                                headers={"Authorization": "Token " + key})
+        try:
+            response = requests.get(server + "/api/datasets/" + uuid + "/download/",
+                                    headers={"Authorization": "Token " + key})
+        except ConnectionError:
+            raise ConnectionError("Connection to server %s failed!" % server)
         data = response.content
 
 ##        print("*** Debug file '%s.zdc' ***" % uuid)
