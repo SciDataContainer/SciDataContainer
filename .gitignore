@@ -2,6 +2,7 @@ __pycache__/
 attic/
 build/
 dist/
+test/*.zdc
 *.py[cod]
 *.egg-info
 MANIFEST.in
