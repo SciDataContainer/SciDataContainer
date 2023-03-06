@@ -435,7 +435,7 @@ class DataContainer(object):
                                      files={"uploadfile": data},
                                      headers={"Authorization": "Token " + key})
         except ConnectionError:
-            raise ConnectionError("Connection to server %s failed!" % server)
+            raise RuntimeError("Connection to server %s failed!" % server)
 
 ##        print("*** Debug file 'upload.zdc' ***")
 ##        with open("upload.zdc", "wb") as fp:
