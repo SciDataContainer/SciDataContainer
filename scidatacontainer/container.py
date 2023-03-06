@@ -436,7 +436,7 @@ class DataContainer(object):
                                      headers={"Authorization": "Token " + key})
         except:
             response = None
-        if response is None
+        if response is None:
             raise ConnectionError("Connection to server %s failed!" % server)
 
 ##        print("*** Debug file 'upload.zdc' ***")
@@ -481,7 +481,9 @@ class DataContainer(object):
         try:
             response = requests.get(server + "/api/datasets/" + uuid + "/download/",
                                     headers={"Authorization": "Token " + key})
-        except ConnectionError:
+        except:
+            response = None
+        if response is None:
             raise ConnectionError("Connection to server %s failed!" % server)
         data = response.content
 
