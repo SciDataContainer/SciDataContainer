@@ -15,7 +15,9 @@ You find the source code together with test files on [GitHub](https://github.com
 
 ## Structure and Terms
 
-Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (files in ZIP package), which are organized in *Parts* (folders in ZIP package). The standard file extension of the container files is `.zdc`. In order to make Microsoft Windows handle ZDC files in the same way as ZIP files and inspect it with a double-click in the Windows Explorer, run the following on the command prompt:
+Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The *Container* file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in *Items* (files in ZIP package), which are organized in *Parts* (folders in ZIP package). The standard file extension of the container files is `.zdc`.
+
+On Microsoft Windows you may inspect ZDC files with a double-click in the Windows Explorer. This requires that you register the extension `.zdc` as a copy of `.zip`. Run the following on the command prompt to achieve this:
 ```
 >>> reg copy HKCR\.zip HKCR\.zdc /s /f
 ```
