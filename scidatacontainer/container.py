@@ -434,8 +434,10 @@ class DataContainer(object):
             response = requests.post(server + "/api/datasets/",
                                      files={"uploadfile": data},
                                      headers={"Authorization": "Token " + key})
-        except ConnectionError:
-            raise RuntimeError("Connection to server %s failed!" % server)
+        except:
+            response = None
+        if response is None
+            raise ConnectionError("Connection to server %s failed!" % server)
 
 ##        print("*** Debug file 'upload.zdc' ***")
 ##        with open("upload.zdc", "wb") as fp:
