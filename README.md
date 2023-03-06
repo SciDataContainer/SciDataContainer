@@ -24,7 +24,7 @@ On Microsoft Windows you may inspect ZDC files with a double-click in the Window
 
 There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as [JSON](https://en.wikipedia.org/wiki/JSON) files in the ZIP package, whenever possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. We call the keys of JSON mappings data **Attributes**.
 
-Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the license text for the dataset in this container. The data payload and parameter data should be stored in an optional set of suggested parts as explained below.
+Only the two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the text of the license for the dataset. The data payload and the parameter data should be stored in an optional set of suggested parts as explained below.
 
 ## Container Parameters
 
@@ -64,6 +64,8 @@ The meta data describing the data payload of the container is stored in the requ
 - `license`: optional data license name (e.g. ["CC-BY"](https://creativecommons.org/licenses/by/4.0/))
 
 In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or from a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
+
+The value of the attribute `created` should be a UTC timestamp string in the form `2023-02-17 15:27:00 UTC`. You may use the function `scidatacontainer.timestamp()` to generate this string.
 
 ## Suggested Parts
 
@@ -139,9 +141,9 @@ In order to be able to use the server, you need an account. This enables you to 
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852", server="...", key="...")
 ```
 
-The server makes sure that UUIDs are unique. Once uploaded, a dataset can never be modified on a server. The only exemption are multi-step containers, see below. In the rare case that a certain dataset needs to be replaced, the attribute `replaces` may be used in `content.json`. Once uploaded, the server will always deliver the new dataset, even if the dataset with the old UUID is requested. Replacing is only allowed for the owner of a dataset.
+The server makes sure that UUIDs are unique. Once uploaded, a dataset can never be modified on a server. The only exemption are multi-step containers (see below). In the rare case that a certain dataset needs to be replaced, the attribute `replaces` may be used in `content.json`. Once uploaded, the server will always deliver the new dataset, even if the dataset with the old UUID is requested. Only the owner of a dataset is allowed to replace it.
 
-Three different types of containers are currently supported, which differ mainly in the way they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID:
+Three different types of containers are currently supported, which differ mainly in the way in which they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID:
 ```
 >>> items["content.json"]["complete"] = False
 >>> dc = Container(items=items)
@@ -150,14 +152,14 @@ Three different types of containers are currently supported, which differ mainly
 306e2c2d-a9f6-4306-8851-1ee0fceeb852
 ```
 
-The server will only accept containers with increasing modification timestamps. Since the resolution of the internal timestamps is a second, you must wait at least one second before the next step:
+The server will only accept containers with increasing modification timestamps. Since the resolution of the internal timestamps is a second, you must wait at least one second before the next upload:
 ```
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/newdata.json"] = newdata
 >>> dc.upload()
 ```
 
-For the final step, the upload must be marked as being complete. This makes this dataset immutable:
+For the final upload, the container must be marked as being complete. This makes this dataset immutable:
 ```
 >>> dc = Container(uuid="306e2c2d-a9f6-4306-8851-1ee0fceeb852")
 >>> dc["meas/finaldata.json"] = finaldata
@@ -165,7 +167,7 @@ For the final step, the upload must be marked as being complete. This makes this
 >>> dc.upload()
 ```
 
-The third container type is a **static container**. Static containers are intended for static parameters in contrast to measurement or simulation data. An example would be a detailed description of a measurement setup, which is used for many measurements. Instead of including the large setup data with each single measurement dataset, the whole setup may be stored as a single static dataset and referenced by its UUID in the measurement datasets.
+The third container type is a **static container**. Static containers are intended for static parameters in contrast to measurement or simulation data. An example would be a detailed description of a measurement setup, which is used for many measurements. Instead of including the large setup data with each individual measurement dataset, the whole setup may be stored as a single static dataset and referenced by its UUID in the measurement datasets.
 
 A static container is generated by calling the method `freeze()` of the container object:
 ```
@@ -180,7 +182,7 @@ Static Container
   author:   Reinhard Caspary
 ```
 
-Freezing a container sets the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates an SHA256 hash of the container content. When you try to upload a static container and there is another static container with the same attributes `containerType.name` and `hash`, the content of the current container object is silently replaced by the original one from the server.
+Freezing a container will set the attribute `static` in `content.json` to `True`, which makes this container immutable and it calculates an SHA256 hash of the container content. When you try to upload a static container and there is another static container with the same attributes `containerType.name` and `hash`, the content of the current container object is silently replaced by the original one from the server.
 
 ## Convenience Methods
 
@@ -198,3 +200,8 @@ False
 ```
 
 Furthermore, the method `items()` returns a list of all full item names including the respective parts. The method `hash()` may be used to calculate an SHA256 hash of the container content. The hex digest of this value is stored in the attribute `hash` of the item `container.json`.
+
+The container methods `read()` and `download()` are not intended to be called directly. They are called implicity when a new container is generated with the parameters `file=...` or `uuid=...`, respectively. They replace the current content of the container.
+
+Container objects generated from an items dictionary using the parameter `items=...` are mutable, which means that you can add, modify and delete items. As soon as you call one of the methods `write()`, `upload()`, `freeze()`, or `hash()`, the container becomes immutable. Containers loaded from a local file or a server are immutable as well. Immutable containers will throw an exception if you try to modify its content. However, this feature is not bullet-prove. It is not aware of any internal modifications of item objects. You can convert an immutable container into a mutable one by calling its method `release()`. This generates a new UUID and resets the attributes `replaces`, `created`, `modified`, `hash` and `modelVersion`.
+
