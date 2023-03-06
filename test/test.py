@@ -15,6 +15,9 @@
 import cv2 as cv
 from scidatacontainer import Container
 
+# Set to True for testing the server connection
+servertest = False
+
 # Dummy data: an image
 img = cv.imread("image.png")
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -46,6 +49,7 @@ parameter = {
 }
 
 # Create the scientific data container
+print("*** Test 1: Create container with hash")
 items = {
     "content.json": {
         "containerType": {"name": "myImage"},
@@ -57,27 +61,38 @@ items = {
     "data/parameter.json": parameter,
     }
 dc = Container(items=items)
+dc.hash()
 print(dc)
+print()
 
 # Store container as local file
-dc.hash()
-dc.write("image.zdc")
+print("*** Test 2: Write local container file")
+fn = "image.zdc"
+dc.write(fn)
+print("File: '%s'" % fn)
+print()
 
 # Read container from local file
-dc = Container(file="image.zdc")
+print("*** Test 3: Read local container file")
+dc = Container(file=fn)
 print(dc)
+print()
 
 # Upload container to server
-dc.upload()
-print("--- Container uploaded.")
+if servertest:
+    print("*** Test 4: Upload container to server")
+    try:
+        dc.upload()
+        uuid = dc["content.json"]["uuid"]
+        print("Upload sucessful: %s" % uuid)
+    except ConnectionError:
+        print("Server connection failed - skipping server tests.")
+        servertest = False
+    print()
 
 # Download container from server
-uuid = dc["content.json"]["uuid"]
-#uuid = "cb9e0243-401f-42d2-a59c-bda58d89f527"
-dc = Container(uuid=uuid)
-print("--- Container downloaded.")
-print(dc)
-
-### Double upload test: This must fail!
-##dc.upload()
-##print("--- Container uploaded twice *** ERROR ***.")
+if servertest:
+    print("*** Test 5: Upload container to server")
+    dc = Container(uuid=uuid)
+    print(dc)
+    print()

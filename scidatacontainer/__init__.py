@@ -47,17 +47,26 @@ except:
 
 def register(suffix, fclass):
 
-    """ Register a suffix to a conversion class. """
+    """ Register a suffix to a conversion class. If the parameter class
+    is a string, it is interpreted as known suffix and the conversion
+    class of this suffix is registered also for the new one. """
 
     # Suffix json is immutable
     if suffix == "json":
         raise RuntimeError("Suffix 'json' is immutable!")
-    
+
+    # Take conversion class from a known suffix
+    if isinstance(fclass, str):
+        if fclass not in suffixes:
+            raise RuntimeError("Unknown suffix '%s'!" % fclass)
+        fclass = suffixes[fclass]
+        
     # Simple sanity check for the class interface
-    for method in ("encode", "decode", "hash"):
-        if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
-            raise RuntimeError("No method %s() in class for suffix '%s'!" \
-                               % (method, suffix))
+    else:
+        for method in ("encode", "decode", "hash"):
+            if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
+                raise RuntimeError("No method %s() in class for suffix '%s'!" \
+                                   % (method, suffix))
 
     # Register suffix
     suffixes[suffix] = fclass
