@@ -13,7 +13,9 @@
 ##########################################################################
 
 import cv2 as cv
-from scidatacontainer import Container
+from scidatacontainer import Container, version
+print(version)
+aaa
 
 # Dummy data: an image
 img = cv.imread("image.png")

@@ -27,6 +27,7 @@
 
 from .filebase import FileBase, TextFile, JsonFile
 from .container import DataContainer, timestamp
+from .container import MODELVERSION as version
 
 suffixes = {
     "json": JsonFile,
