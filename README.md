@@ -205,3 +205,6 @@ The container methods `read()` and `download()` are not intended to be called di
 
 Container objects generated from an items dictionary using the parameter `items=...` are mutable, which means that you can add, modify and delete items. As soon as you call one of the methods `write()`, `upload()`, `freeze()`, or `hash()`, the container becomes immutable. Containers loaded from a local file or a server are immutable as well. Immutable containers will throw an exception if you try to modify its content. However, this feature is not bulletproof. It is not aware of any internal modifications of item objects. You can convert an immutable container into a mutable one by calling its method `release()`. This generates a new UUID and resets the attributes `replaces`, `created`, `modified`, `hash` and `modelVersion`.
 
+## File Formats
+
+The container class can handle virtually any file format. However, in order to store and read a file format, it needs to know, how to convert the respective Python object into a bytes stream and vice versa.
