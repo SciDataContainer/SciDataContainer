@@ -22,7 +22,7 @@ On Microsoft Windows you may inspect ZDC files with a double-click in the Window
 >>> reg copy HKCR\.zip HKCR\.zdc /s /f
 ```
 
-There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as JSON files in the ZIP package, whenever possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. We call the keys of JSON mappings data **Attributes**.
+There are no restrictions regarding data formats, but items should be represented as Python dictionaries and stored as [JSON](https://en.wikipedia.org/wiki/JSON) files in the ZIP package, whenever possible. This allows to inspect, use and even create data container files with the tools provided by the operating system without any special software. However, this container class makes these tasks much more convenient. We call the keys of JSON mappings data **Attributes**.
 
 Just two items `content.json` and `meta.json` are required and must be located in the root part of the container. The optional root item `license.txt` may be used to store the license text for the dataset in this container. The data payload and parameter data should be stored in an optional set of suggested parts as explained below.
 
