@@ -37,15 +37,27 @@ suffixes = {
     "pgm": TextFile,
     }
 
+classes = {
+    dict: JsonFile,
+    str: TextFile,
+    bytes: FileBase,
+    }
+
+formats = [
+    TextFile,
+    ]
+
+
 # Try to import image file formats requiring the Python module cv2
 try:
     from .fileimage import PngFile
     suffixes["png"] = PngFile
+    formats.append(PngFile)
 except:
     pass
 
 
-def register(suffix, fclass):
+def register(suffix, fclass, pclass=None):
 
     """ Register a suffix to a conversion class. If the parameter class
     is a string, it is interpreted as known suffix and the conversion
@@ -56,7 +68,9 @@ def register(suffix, fclass):
         raise RuntimeError("Suffix 'json' is immutable!")
 
     # Take conversion class from a known suffix
-    if isinstance(fclass, str):
+    if pclass is None:
+        if not isinstance(fclass, str):
+            raise RuntimeError("Python class missing for suffix '%s'!" % suffix)
         if fclass not in suffixes:
             raise RuntimeError("Unknown suffix '%s'!" % fclass)
         fclass = suffixes[fclass]
@@ -68,6 +82,10 @@ def register(suffix, fclass):
                 raise RuntimeError("No method %s() in class for suffix '%s'!" \
                                    % (method, suffix))
 
+        # Register unknown class
+        if fclass not in classes:
+            classes.append(fclass)
+
     # Register suffix
     suffixes[suffix] = fclass
 
@@ -78,5 +96,5 @@ class Container(DataContainer):
     """ Scientific data container. """
 
     _suffixes = suffixes
-
-
+    _classes = classes
+    _formats = _formats

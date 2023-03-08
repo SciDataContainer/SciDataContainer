@@ -24,7 +24,7 @@ import time
 import uuid
 from zipfile import ZipFile
 
-from .filebase import FileBase, JsonFile
+from .filebase import FileBase, TextFile, JsonFile
 from .config import load_config
 config = load_config()
 
@@ -51,7 +51,9 @@ class DataContainer(object):
     """ Scientific data container with minimal file support. """
 
     _config = config
-    _suffixes = {"json": JsonFile}
+    _suffixes = {"json": JsonFile, "txt": Textfile, "bin": FileBase}
+    _classes = {dict: JsonFile, str: TextFile, bytes: FileBase}
+    _formats = [TextFile]
 
 
     def __init__(self, items=None, file=None, uuid=None, server=None, key=None):
@@ -125,17 +127,37 @@ class DataContainer(object):
         if not self.mutable:
             raise RuntimeError("Immutable container!")
         
-        # Get file extension, default is FileBase
+        # Get file extension
         ext = path.rsplit(".", 1)[1]
+
+        # Unregistered file extension
         if not ext in self._suffixes:
-            print("*** Warning: Using FileBase class for unknown suffix '%s'! ***" % ext)
-            cls = FileBase
-            #raise RuntimeError("Unknown file extension '%s'!" % ext)
+
+            # Try to convert bytes. Default is FileBase.
+            if isinstance(data, bytes):
+                for cls in self._formats:
+                    try:
+                        item = cls(data)
+                        break
+                    except:
+                        pass
+                else:
+                    item = FileBase(data)
+
+            # Other Python object must be registered
+            else:
+                if type(data) in _classes:
+                    item = self._classes[type(data)]
+                else:
+                    raise RuntimeError("No matching file format found for item '%s'!" % path)
+
+        # Registered file extension         
         else:
             cls = self._suffixes[ext]
+            item = cls(data)
 
         # Initialize conversion object according to the file extension
-        self._items[path] = cls(data)
+        self._items[path] = item
 
 
     def __getitem__(self, path):
@@ -384,6 +406,7 @@ class DataContainer(object):
         
         with io.BytesIO() as f:
             f.write(data)
+            fp.seek(0)
             with ZipFile(f, "r") as fp:
                 items = {p: fp.read(p) for p in fp.namelist()}
         self._store(items, validate, strict)

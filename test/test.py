@@ -135,7 +135,5 @@ print(dc)
 dc.write("random.zdc")
 dc = Container(file="random.zdc")
 data = dc["sim/random.npy"]
-print(data)
+print(type(data))
 print()
-from requests import HTTPError
-raise HTTPError("Hallo")
