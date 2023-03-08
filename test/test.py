@@ -116,7 +116,7 @@ class NpyFile(FileBase):
             fp.seek(0)
             self.data = np.load(fp, allow_pickle=self.allow_pickle)
 
-register("npy", NpyFile)
+register("npy", NpyFile, np.ndarray)
 
 data = np.random.rand(7,5)
 

@@ -73,7 +73,9 @@ def register(suffix, fclass, pclass=None):
             raise RuntimeError("Python class missing for suffix '%s'!" % suffix)
         if fclass not in suffixes:
             raise RuntimeError("Unknown suffix '%s'!" % fclass)
-        fclass = suffixes[fclass]
+
+        # Register suffix
+        suffixes[suffix] = suffixes[fclass]
         
     # Simple sanity check for the class interface
     else:
@@ -82,12 +84,16 @@ def register(suffix, fclass, pclass=None):
                 raise RuntimeError("No method %s() in class for suffix '%s'!" \
                                    % (method, suffix))
 
-        # Register unknown class
-        if fclass not in classes:
-            classes.append(fclass)
+        # Register unknown file format
+        if fclass not in formats:
+            formats.append(fclass)
 
-    # Register suffix
-    suffixes[suffix] = fclass
+        # Register unknown Python class
+        if pclass not in classes:
+            classes[pclass] = fclass
+
+        # Register suffix
+        suffixes[suffix] = fclass
 
 
 # Inject certain known file formats into the container class
