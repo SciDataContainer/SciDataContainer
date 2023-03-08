@@ -225,7 +225,7 @@ The support for image and NumPy objects is only available when your Python envir
 >>> register("py", "txt")
 ```
 
-If you want to register another Python object, you need to provide a conversion class which can convert this object to and from a bytes string. This class should be inherited from `scidatacontainer.FileBase`. The storage of NumPy arrays for example is realized by the following code
+If you want to register another Python object, you need to provide a conversion class which can convert this object to and from a bytes string. This class should be inherited from `scidatacontainer.FileBase`. The storage of NumPy arrays for example may be realized by the following code
 ```
 import io
 import numpy as np
@@ -248,6 +248,6 @@ class NpyFile(FileBase):
             fp.seek(0)
             self.data = np.load(fp, allow_pickle=self.allow_pickle)
 
-register("npy", NpyFile)
+register("npy", NpyFile, np.ndarray)
 
 ```

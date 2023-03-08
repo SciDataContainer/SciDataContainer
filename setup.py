@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+##########################################################################
+# Copyright (c) 2023 Reinhard Caspary                                    #
+# <reinhard.caspary@phoenixd.uni-hannover.de>                            #
+# This program is free software under the terms of the MIT license.      #
+##########################################################################
 
 import re
 import setuptools  # required for command bdist_wheel
@@ -31,10 +36,10 @@ setup(name="SciDataContainer",
       url="https://github.com/reincas/scidatacontainer",
       packages=[pkg],
       keywords=["Research Data Management", "Data Container", "Meta Data"],
-      license="GNU Lesser General Public License (LGPL)",
+      license="MIT License",
       classifiers=[
           "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+          "License :: OSI Approved :: MIT License",
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering"],

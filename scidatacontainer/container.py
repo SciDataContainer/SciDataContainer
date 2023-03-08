@@ -1,11 +1,7 @@
 ##########################################################################
 # Copyright (c) 2023 Reinhard Caspary                                    #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
-##########################################################################
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
 # This module provides the Scientific Data Container as class
@@ -159,7 +155,7 @@ class DataContainer(object):
 
         # Store conversion object containing data
         self._items[path] = item
-        print("**** Class('%s') = %s ****" % (path, type(item).__name__))
+##        print("**** Class('%s') = %s ****" % (path, type(item).__name__))
 
 
     def __getitem__(self, path):

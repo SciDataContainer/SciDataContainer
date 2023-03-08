@@ -1,11 +1,7 @@
 ##########################################################################
 # Copyright (c) 2023 Reinhard Caspary                                    #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
-##########################################################################
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
 # This package provides the Scientific Data Container as class Container
@@ -88,8 +84,9 @@ def register(suffix, fclass, pclass=None):
         if fclass not in formats:
             formats.append(fclass)
 
-        # Register unknown Python class
-        if pclass not in classes:
+        # Register Python class. Last registration becomes default.
+        # Overriding the mapping dict:JsonFile is not allowed.
+        if pclass not is dict:
             classes[pclass] = fclass
 
         # Register suffix
