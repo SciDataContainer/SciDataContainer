@@ -6,7 +6,7 @@ The basic concept of the data container is that it keeps the raw dataset, parame
 
 ## Install
 
-The easiest way to install the latest version of `scidatacontainer` is using PIP:
+The easiest way to install the latest version of [`scidatacontainer`](https://pypi.org/project/scidatacontainer/) is using PIP:
 ```
 >>> pip install scidatacontainer
 ```
