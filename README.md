@@ -249,5 +249,6 @@ class NpyFile(FileBase):
             self.data = np.load(fp, allow_pickle=self.allow_pickle)
 
 register("npy", NpyFile, np.ndarray)
-
 ```
+
+Hash values are usually derived from the bytes string of an encoded object. If you require a different behaviour, you may also override the method `hash()` of the conversion class.
