@@ -127,14 +127,14 @@ items = {
     "meta.json": {
         "title": "This is a sample test dataset",
         },
-    "sim/random.apy": data,
+    "sim/random.npy": data,
     "data/parameter.json": parameter,
     }
 dc = Container(items=items)
 print(dc)
-print(dc["sim/random.apy"])
+print(dc["sim/random.npy"])
 dc.write("random.zdc")
 dc = Container(file="random.zdc")
-print(dc["sim/random.apy"])
+print(dc["sim/random.npy"])
 print()
 print(dc._classes)

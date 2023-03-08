@@ -158,8 +158,8 @@ class DataContainer(object):
             item = cls(data)
 
         # Store conversion object containing data
-        print("**** %s **** %s ****" % (path, type(item)))
         self._items[path] = item
+        print("**** Type of '%s' is %s ****" % (path, type(item)))
 
 
     def __getitem__(self, path):
