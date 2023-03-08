@@ -215,6 +215,6 @@ The container class can handle virtually any file format. However, in order to s
 | txt | Text file (UTF-8 encoding) | string | |
 | log | Text file (UTF-8 encoding) | string | |
 | pgm | Text file (UTF-8 encoding) | string | |
-| png | PNG image file (requires Python module `cv2`) | numpy array | `cv2`, `numpy`|
-| npy | Numpy array (requires Python module `numpy`) | numpy array | `numpy`|
+| png | PNG image file | numpy array | cv2, numpy |
+| npy | Numpy array | numpy array | numpy |
 | bin | Raw binary data file | bytes string | |
