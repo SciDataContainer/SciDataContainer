@@ -96,3 +96,46 @@ if servertest:
     dc = Container(uuid=uuid)
     print(dc)
     print()
+
+print("*** Test 6: New file format")
+import io
+import numpy as np
+from scidatacontainer import FileBase, register
+
+class NpyFile(FileBase):
+    allow_pickle = True
+    def encode(self):
+        with io.BytesIO() as fp:
+            np.save(fp, self.data, allow_pickle=self.allow_pickle)
+            fp.seek(0)
+            data = fp.read()
+        return data
+    def decode(self, data):
+        with io.BytesIO() as fp:
+            fp.write(data)
+            fp.seek(0)
+            self.data = np.load(fp, allow_pickle=self.allow_pickle)
+
+register("npy", NpyFile)
+
+data = np.random.rand(7,5)
+
+items = {
+    "content.json": {
+        "containerType": {"name": "myTest"},
+        },
+    "meta.json": {
+        "title": "This is a sample test dataset",
+        },
+    "sim/random.npy": data,
+    "data/parameter.json": parameter,
+    }
+dc = Container(items=items)
+print(dc)
+dc.write("random.zdc")
+dc = Container(file="random.zdc")
+data = dc["sim/random.npy"]
+print(data)
+print()
+from requests import HTTPError
+raise HTTPError("Hallo")

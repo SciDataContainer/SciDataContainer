@@ -207,4 +207,13 @@ Container objects generated from an items dictionary using the parameter `items=
 
 ## File Formats
 
-The container class can handle virtually any file format. However, in order to store and read a file format, it needs to know, how to convert the respective Python object into a bytes stream and vice versa.
+The container class can handle virtually any file format. However, in order to store and read a file format, it needs to know how to convert the respective Python object into a bytes stream and vice versa. File formats are identified by their file extension. The following file extentions are currently suppuorted by `scidatacontainer` out of the box:
+
+| Extension | File format |
+| --- | --- |
+| json | JSON file (UTF-8 encoding) |
+| txt | Text file (UTF-8 encoding) |
+| log | Text file (UTF-8 encoding) |
+| pgm | Text file (UTF-8 encoding) |
+| png | PNG image file (requires Python module `cv2`) |
+| npy | Numpy array (requires Python module `numpy`) |

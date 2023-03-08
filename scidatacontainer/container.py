@@ -451,7 +451,7 @@ class DataContainer(object):
             try:
                 self.decode(response.content, False, strict)
             except:
-                raise HTTPError("409: Existing static dataset (%s)" % uuid)
+                raise requests.HTTPError("409: Existing static dataset (%s)" % uuid)
 
         # Standard exception handler for other HTTP status codes
         else:
@@ -501,7 +501,7 @@ class DataContainer(object):
                 print("*** BEGIN ERROR MESSAGE ***")
                 print(data)
                 print("*** END ERROR MESSAGE ***")
-            raise HTTPError("204: Dataset deleted (%s)" % uuid)
+            raise requests.HTTPError("204: Dataset deleted (%s)" % uuid)
             
         # Replaced dataset: Store in this container
         elif response.status_code == 301:
@@ -513,7 +513,7 @@ class DataContainer(object):
                 print("*** BEGIN ERROR MESSAGE ***")
                 print(data)
                 print("*** END ERROR MESSAGE ***")
-            raise HTTPError("404: Unknown dataset (%s)" % uuid)
+            raise requests.HTTPError("404: Unknown dataset (%s)" % uuid)
             
         # Standard exception handler for other HTTP status codes
         else:
