@@ -158,7 +158,7 @@ class DataContainer(object):
             item = cls(data)
 
         # Store conversion object containing data
-        print("**** %s ****" % type(item))
+        print("**** %s **** %s ****" % (path, type(item)))
         self._items[path] = item
 
 
