@@ -232,13 +232,16 @@ import numpy as np
 from scidatacontainer import FileBase, register
 
 class NpyFile(FileBase):
+
     allow_pickle = False
+
     def encode(self):
         with io.BytesIO() as fp:
             np.save(fp, self.data, allow_pickle=self.allow_pickle)
             fp.seek(0)
             data = fp.read()
         return data
+
     def decode(self, data):
         with io.BytesIO() as fp:
             fp.write(data)

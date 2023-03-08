@@ -137,4 +137,4 @@ dc.write("random.zdc")
 dc = Container(file="random.zdc")
 print(dc["sim/random.npy"])
 print()
-print(dc._classes)
+
