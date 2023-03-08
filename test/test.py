@@ -132,8 +132,9 @@ items = {
     }
 dc = Container(items=items)
 print(dc)
+print(dc["sim/random.apy"])
 dc.write("random.zdc")
 dc = Container(file="random.zdc")
-data = dc["sim/random.npy"]
-print(type(data))
+print(dc["sim/random.apy"])
 print()
+print(dc._classes)
