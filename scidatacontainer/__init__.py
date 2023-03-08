@@ -97,4 +97,4 @@ class Container(DataContainer):
 
     _suffixes = suffixes
     _classes = classes
-    _formats = _formats
+    _formats = formats
