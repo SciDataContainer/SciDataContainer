@@ -217,6 +217,34 @@ The container class can handle virtually any file format. However, in order to s
 | pgm | Text file (UTF-8 encoding) | string | |
 | png | PNG image file | NumPy array | cv2, numpy |
 | npy | NumPy array | NumPy array | numpy |
-| bin | Raw binary data file | bytes string | |
+| bin | Raw binary data file | bytes | |
 
-The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/). 
+The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/). The container class tries to guess the format of items with unknown extension. However, it is more reliable to use the function `register()` to add alternative file extensions. The following commands will register the extension `py` as text file:
+```
+>>> from scidatacontainer import register
+>>> register("py", "txt")
+```
+
+If you want to register another Python object, you need to provide a conversion class which can convert this object to and from a bytes string. This class should be inherited from `scidatacontainer.FileBase`. The storage of NumPy arrays for example is realized by the following code
+```
+import io
+import numpy as np
+from scidatacontainer import FileBase, register
+
+class NpyFile(FileBase):
+    allow_pickle = False
+    def encode(self):
+        with io.BytesIO() as fp:
+            np.save(fp, self.data, allow_pickle=self.allow_pickle)
+            fp.seek(0)
+            data = fp.read()
+        return data
+    def decode(self, data):
+        with io.BytesIO() as fp:
+            fp.write(data)
+            fp.seek(0)
+            self.data = np.load(fp, allow_pickle=self.allow_pickle)
+
+register("npy", NpyFile)
+
+```

@@ -51,7 +51,7 @@ class DataContainer(object):
     """ Scientific data container with minimal file support. """
 
     _config = config
-    _suffixes = {"json": JsonFile, "txt": Textfile, "bin": FileBase}
+    _suffixes = {"json": JsonFile, "txt": TextFile, "bin": FileBase}
     _classes = {dict: JsonFile, str: TextFile, bytes: FileBase}
     _formats = [TextFile]
 
