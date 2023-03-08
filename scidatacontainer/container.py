@@ -406,7 +406,7 @@ class DataContainer(object):
         
         with io.BytesIO() as f:
             f.write(data)
-            fp.seek(0)
+            f.seek(0)
             with ZipFile(f, "r") as fp:
                 items = {p: fp.read(p) for p in fp.namelist()}
         self._store(items, validate, strict)

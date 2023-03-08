@@ -20,6 +20,7 @@ with open("VERSION", "w") as fp:
 with open("README.md", "r") as fp:
     readme = fp.read()
 
+# PyPI classifiers: https://pypi.org/classifiers/
 setup(name="SciDataContainer",
       version=version,
       description="A container class for the storage of scientific data together with meta data",
