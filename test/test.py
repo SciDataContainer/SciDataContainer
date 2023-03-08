@@ -103,7 +103,7 @@ import numpy as np
 from scidatacontainer import FileBase, register
 
 class NpyFile(FileBase):
-    allow_pickle = True
+    allow_pickle = False
     def encode(self):
         with io.BytesIO() as fp:
             np.save(fp, self.data, allow_pickle=self.allow_pickle)

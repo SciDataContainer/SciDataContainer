@@ -12,7 +12,7 @@
 # which may be stored as a ZIP package containing items (files). Based
 # on their file extension, the following item types are supported:
 #
-# .bin:  Raw bytes data file
+# .bin:  Raw binary data file
 # .txt:  Encoded text file (default encoding: UTF-8)
 # .log:  Encoded text file (default encoding: UTF-8)
 # .pgm:  Encoded text file (default encoding: UTF-8)

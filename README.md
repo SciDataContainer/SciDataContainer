@@ -219,4 +219,4 @@ The container class can handle virtually any file format. However, in order to s
 | npy | NumPy array | NumPy array | numpy |
 | bin | Raw binary data file | bytes string | |
 
-The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/).
+The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/). 
