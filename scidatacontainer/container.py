@@ -146,8 +146,9 @@ class DataContainer(object):
 
             # Other Python object must be registered
             else:
-                if type(data) in _classes:
-                    item = self._classes[type(data)]
+                if type(data) in self._classes:
+                    cls = self._classes[type(data)]
+                    item = cls(data)
                 else:
                     raise RuntimeError("No matching file format found for item '%s'!" % path)
 
@@ -156,7 +157,7 @@ class DataContainer(object):
             cls = self._suffixes[ext]
             item = cls(data)
 
-        # Initialize conversion object according to the file extension
+        # Store conversion object containing data
         self._items[path] = item
 
 

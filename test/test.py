@@ -127,7 +127,7 @@ items = {
     "meta.json": {
         "title": "This is a sample test dataset",
         },
-    "sim/random.npy": data,
+    "sim/random.apy": data,
     "data/parameter.json": parameter,
     }
 dc = Container(items=items)
