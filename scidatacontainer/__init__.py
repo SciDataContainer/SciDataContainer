@@ -54,8 +54,8 @@ for name in ("filenumpy", "fileimage", "filexx"):
         print("%s is not available" % fullname)
         continue
     module = importlib.import_module(fullname)
-    print(module.suffixes)
     print("%s imported now" % fullname)
+    print(module.suffixes)
 
     
 # Try to import array file formats requiring the Python module numpy
