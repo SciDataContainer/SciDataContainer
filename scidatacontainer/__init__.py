@@ -22,6 +22,7 @@
 ##########################################################################
 
 from importlib import import_module
+from .filebase import FileBase
 from .container import DataContainer, timestamp
 from .container import MODELVERSION as version
 
@@ -62,7 +63,7 @@ def register(suffix, fclass, pclass=None):
 
 # Initialize the conversion class database
 
-for name in ("filebase", "fileimage", "filenumpy", "filexx"):
+for name in ("filebase", "fileimage", "filenumpy"):
     fullname = __name__ + "." + name
     try:
         module = import_module(fullname)
