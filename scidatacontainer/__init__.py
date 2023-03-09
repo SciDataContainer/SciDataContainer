@@ -21,7 +21,6 @@
 #
 ##########################################################################
 
-import sys
 from importlib import import_module
 from .container import DataContainer, timestamp
 from .container import MODELVERSION as version
@@ -68,15 +67,11 @@ for name in ("filebase", "fileimage", "filenumpy", "filexx"):
     try:
         module = import_module(fullname)
     except ModuleNotFoundError:
-        print("%s import failed" % fullname)
+        #print("%s import failed" % fullname)
         continue
-    print("%s imported now" % fullname)
+    #print("%s imported" % fullname)
     for suffix, fclass, pclass in module.register:
         register(suffix, fclass, pclass)
-
-print(suffixes)
-print(classes)
-print(formats)
 
     
 # Inject certain known file formats into the container class
