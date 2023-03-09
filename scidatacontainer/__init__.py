@@ -65,9 +65,9 @@ def register(suffix, fclass, pclass=None):
 
 for name in ("filebase", "fileimage", "filenumpy", "filexx"):
     fullname = __name__ + "." + name
-    if fullname in sys.modules:
-        print("%s was already imported" % fullname)
-        continue
+##    if fullname in sys.modules:
+##        print("%s was already imported" % fullname)
+##        continue
     try:
         module = import_module(fullname)
     except ModuleNotFoundError:
