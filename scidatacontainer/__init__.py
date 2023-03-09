@@ -49,7 +49,7 @@ def register(suffix, fclass, pclass=None):
                                % (method, suffix))
 
     # Register suffix
-    suffixes[suffix] = suffixes[fclass]
+    suffixes[suffix] = fclass
 
     # Register Python class. Last registration becomes default.
     # Overriding the mapping dict:JsonFile is not allowed.
