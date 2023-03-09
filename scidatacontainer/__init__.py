@@ -21,6 +21,7 @@
 #
 ##########################################################################
 
+import importlib
 from .filebase import FileBase, TextFile, JsonFile
 from .container import DataContainer, timestamp
 from .container import MODELVERSION as version
@@ -42,6 +43,24 @@ classes = {
 formats = [
     TextFile,
     ]
+
+
+for module in ("filenumpy", "fileimage"):
+    if importlib.util.find_spec(module, ".") is None:
+        continue
+    importlib.import_module(module, ".")
+
+    
+# Try to import array file formats requiring the Python module numpy
+NpyFile = None
+try:
+    from .filenumpy import NpyFile
+except:
+    pass
+if NpyFile is not None:
+    suffixes["npy"] = NpyFile
+    #classes[
+    formats.append(NpyFile)
 
 
 # Try to import image file formats requiring the Python module cv2
@@ -86,7 +105,7 @@ def register(suffix, fclass, pclass=None):
 
         # Register Python class. Last registration becomes default.
         # Overriding the mapping dict:JsonFile is not allowed.
-        if pclass not is dict:
+        if not pclass is dict:
             classes[pclass] = fclass
 
         # Register suffix
