@@ -22,65 +22,13 @@
 ##########################################################################
 
 import sys
-import importlib
-from .filebase import FileBase, TextFile, JsonFile
+from importlib import import_module
 from .container import DataContainer, timestamp
 from .container import MODELVERSION as version
 
-suffixes = {
-    "json": JsonFile,
-    "bin": FileBase,
-    "txt": TextFile,
-    "log": TextFile,
-    "pgm": TextFile,
-    }
-
-classes = {
-    dict: JsonFile,
-    str: TextFile,
-    bytes: FileBase,
-    }
-
-formats = [
-    TextFile,
-    ]
-
-for name in ("filenumpy", "fileimage", "filexx"):
-    fullname = __name__ + "." + name
-    if fullname in sys.modules:
-        print("%s was already imported" % fullname)
-        continue
-##    if importlib.util.find_spec(fullname) is None:
-##        print("%s is not available" % fullname)
-##        continue
-    try:
-        module = importlib.import_module(fullname)
-    except ModuleNotFoundError:
-        print("%s import failed" % fullname)
-        continue
-    print("%s imported now" % fullname)
-    print(module.suffixes)
-
-    
-# Try to import array file formats requiring the Python module numpy
-NpyFile = None
-try:
-    from .filenumpy import NpyFile
-except:
-    pass
-if NpyFile is not None:
-    suffixes["npy"] = NpyFile
-    #classes[
-    formats.append(NpyFile)
-
-
-# Try to import image file formats requiring the Python module cv2
-try:
-    from .fileimage import PngFile
-    suffixes["png"] = PngFile
-    formats.append(PngFile)
-except:
-    pass
+suffixes = {}
+classes = {}
+formats = []
 
 
 def register(suffix, fclass, pclass=None):
@@ -89,40 +37,49 @@ def register(suffix, fclass, pclass=None):
     is a string, it is interpreted as known suffix and the conversion
     class of this suffix is registered also for the new one. """
 
-    # Suffix json is immutable
-    if suffix == "json":
-        raise RuntimeError("Suffix 'json' is immutable!")
+    if isinstance(fclass, str):
+        if not pclass is None:
+            raise RuntimeError("Alias %s:%s with default class!" % (suffix, fclass))
+        fclass = suffixes[fclass]
 
-    # Take conversion class from a known suffix
-    if pclass is None:
-        if not isinstance(fclass, str):
-            raise RuntimeError("Python class missing for suffix '%s'!" % suffix)
-        if fclass not in suffixes:
-            raise RuntimeError("Unknown suffix '%s'!" % fclass)
-
-        # Register suffix
-        suffixes[suffix] = suffixes[fclass]
-        
     # Simple sanity check for the class interface
-    else:
-        for method in ("encode", "decode", "hash"):
-            if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
-                raise RuntimeError("No method %s() in class for suffix '%s'!" \
-                                   % (method, suffix))
+    for method in ("encode", "decode", "hash"):
+        if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
+            raise RuntimeError("No method %s() in class for suffix '%s'!" \
+                               % (method, suffix))
 
-        # Register unknown file format
-        if fclass not in formats:
-            formats.append(fclass)
+    # Register suffix
+    suffixes[suffix] = suffixes[fclass]
 
-        # Register Python class. Last registration becomes default.
-        # Overriding the mapping dict:JsonFile is not allowed.
-        if not pclass is dict:
-            classes[pclass] = fclass
+    # Register Python class. Last registration becomes default.
+    # Overriding the mapping dict:JsonFile is not allowed.
+    if pclass not in classes or not pclass is dict:
+        classes[pclass] = fclass
 
-        # Register suffix
-        suffixes[suffix] = fclass
+    # Register unknown file format
+    if fclass not in formats:
+        formats.append(fclass)
 
 
+# Initialize the conversion class database
+
+for name in ("filebase", "fileimage", "filenumpy", "filexx"):
+    fullname = __name__ + "." + name
+    if fullname in sys.modules:
+        print("%s was already imported" % fullname)
+        continue
+    try:
+        module = import_module(fullname)
+    except ModuleNotFoundError:
+        print("%s import failed" % fullname)
+        continue
+    print("%s imported now" % fullname)
+    print(module.suffixes)
+
+    for suffix, fclass, pclass in module.register:
+        register(suffix, fclass, pclass)
+
+    
 # Inject certain known file formats into the container class
 class Container(DataContainer):
 

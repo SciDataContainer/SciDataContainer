@@ -42,7 +42,10 @@ class PngFile(FileBase):
         self.data = cv.imdecode(self.data, flags=flags)
 
 
-suffixes = {"png": PngFile}
-classes = {}
-formats = [PngFile]
+register = [
+    ("png", PngFile, None),
+    ]
+##suffixes = {"png": PngFile}
+##classes = {}
+##formats = [PngFile]
 

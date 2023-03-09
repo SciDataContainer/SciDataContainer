@@ -124,3 +124,12 @@ class JsonFile(FileBase):
 
         self.data = json.loads(data.decode(self.charset))
 
+
+register = [
+    ("bin", FileBase, bytes),
+    ("json", JsonFile, dict),
+    ("txt", TextFile, str),
+    ("log", TextFile, None),
+    ("pgm", "txt", None),
+    ]
+    
