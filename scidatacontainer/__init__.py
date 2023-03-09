@@ -44,10 +44,11 @@ formats = [
     TextFile,
     ]
 
-print(__name__)
 import sys
 if __name__ in sys.modules:
-    print("Hit!")
+    print(__name__, "Hit!")
+else:
+    print(__name__, "failed")
 
 for name in (".filenumpy", ".fileimage"):
     print(name)
