@@ -47,17 +47,23 @@ formats = [
 import sys
 
 for name in ("filenumpy", "fileimage"):
-    print(name)
     full = __name__ + "." + name
     if full in sys.modules:
         print(full, "Hit!")
     else:
         print(full, "failed")
+
     if importlib.util.find_spec("."+name, __name__) is None:
-        print(name, "failed.")
+        print(full, "failed.")
         continue
     module = importlib.import_module("."+name, __name__)
     print(module.suffixes)
+    print(full, "imported.")
+
+    if full in sys.modules:
+        print(full, "found")
+    else:
+        print(full, "missed")
 
     
 # Try to import array file formats requiring the Python module numpy
