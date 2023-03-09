@@ -45,9 +45,9 @@ formats = [
     ]
 
 
-for name in ("filenumpy", "fileimage"):
+for name in ("filenumpy", ".fileimage"):
     print(name)
-    spec = importlib.util.find_spec(name)
+    spec = importlib.util.find_spec(name, __name__)
     print(spec)
     if spec is None:
         print(name, "failed.")
