@@ -50,9 +50,9 @@ for name in ("filenumpy", "fileimage", "filexx"):
     if fullname in sys.modules:
         print("%s was already imported" % fullname)
         continue
-    if importlib.util.find_spec(fullname) is None:
-        print("%s is not available" % fullname)
-        continue
+##    if importlib.util.find_spec(fullname) is None:
+##        print("%s is not available" % fullname)
+##        continue
     try:
         module = importlib.import_module(fullname)
     except ModuleNotFoundError:
