@@ -45,11 +45,14 @@ formats = [
     ]
 
 
-for module in ("filenumpy", "fileimage"):
-    if importlib.util.find_spec(module, ".") is None:
-        print(module, "failed.")
+for name in ("filenumpy", "fileimage"):
+    print(name)
+    specc = importlib.util.find_spec(name)
+    print(spec)
+    if spec is None:
+        print(name, "failed.")
         continue
-    module = importlib.import_module(module, ".")
+    module = importlib.import_module(name)
     print(module, module.suffixes)
 
     
