@@ -45,17 +45,18 @@ formats = [
     ]
 
 import sys
-if __name__ in sys.modules:
-    print(__name__, "Hit!")
-else:
-    print(__name__, "failed")
 
-for name in (".filenumpy", ".fileimage"):
+for name in ("filenumpy", "fileimage"):
     print(name)
-    if importlib.util.find_spec(name, __name__) is None:
+    full = __name__ + "." + name
+    if full in sys.modules:
+        print(full, "Hit!")
+    else:
+        print(full, "failed")
+    if importlib.util.find_spec("."+name, __name__) is None:
         print(name, "failed.")
         continue
-    module = importlib.import_module(name, __name__)
+    module = importlib.import_module("."+name, __name__)
     print(module.suffixes)
 
     
