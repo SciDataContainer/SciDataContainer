@@ -78,6 +78,10 @@ for name in ("filebase", "fileimage", "filenumpy", "filexx"):
     for suffix, fclass, pclass in module.register:
         register(suffix, fclass, pclass)
 
+print(suffixes)
+print(classes)
+print(formats)
+
     
 # Inject certain known file formats into the container class
 class Container(DataContainer):
