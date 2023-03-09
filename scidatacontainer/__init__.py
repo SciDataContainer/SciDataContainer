@@ -21,6 +21,7 @@
 #
 ##########################################################################
 
+import sys
 import importlib
 from .filebase import FileBase, TextFile, JsonFile
 from .container import DataContainer, timestamp
@@ -44,8 +45,6 @@ formats = [
     TextFile,
     ]
 
-import sys
-
 for name in ("filenumpy", "fileimage"):
     full = __name__ + "." + name
     if full in sys.modules:
@@ -53,10 +52,10 @@ for name in ("filenumpy", "fileimage"):
     else:
         print(full, "failed")
 
-    if importlib.util.find_spec("."+name, __name__) is None:
+    if importlib.util.find_spec(full) is None:
         print(full, "failed.")
         continue
-    module = importlib.import_module("."+name, __name__)
+    module = importlib.import_module(full)
     print(module.suffixes)
     print(full, "imported.")
 
