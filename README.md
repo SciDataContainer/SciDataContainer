@@ -251,4 +251,6 @@ class NpyFile(FileBase):
 register("npy", NpyFile, np.ndarray)
 ```
 
+The third argument of the function `register()` sets this conversion class as default for NumPy array objects overriding the previous default class. This argument is optional.
+
 Hash values are usually derived from the bytes string of an encoded object. If you require a different behaviour, you may also override the method `hash()` of the conversion class.

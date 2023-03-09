@@ -8,12 +8,13 @@
 # which may be stored as a ZIP package containing items (files). Based
 # on their file extension, the following item types are supported:
 #
-# .bin:  Raw binary data file
+# .json: JSON file
 # .txt:  Encoded text file (default encoding: UTF-8)
 # .log:  Encoded text file (default encoding: UTF-8)
 # .pgm:  Encoded text file (default encoding: UTF-8)
-# .json: JSON file
-# .png:  PNG image (requires Python module cv2)
+# .bin:  Raw binary data file
+# .npy:  NumPy array (requires Python module numpy)
+# .png:  PNG image (requires Python modules cv2 and numpy)
 #
 # Users may register other file extensions to file conversion classes
 # using the function register(). See package fileimage as an example for
