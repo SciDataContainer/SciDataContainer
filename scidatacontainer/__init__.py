@@ -45,24 +45,17 @@ formats = [
     TextFile,
     ]
 
-for name in ("filenumpy", "fileimage"):
-    full = __name__ + "." + name
-    if full in sys.modules:
-        print(full, "Hit!")
-    else:
-        print(full, "failed")
-
-    if importlib.util.find_spec(full) is None:
-        print(full, "failed.")
+for name in ("filenumpy", "fileimage", "filexx"):
+    fullname = __name__ + "." + name
+    if fullname in sys.modules:
+        print("%s was already imported" % fullname)
         continue
-    module = importlib.import_module(full)
+    if importlib.util.find_spec(fullname) is None:
+        print("%s is not available" % fullname)
+        continue
+    module = importlib.import_module(fullname)
     print(module.suffixes)
-    print(full, "imported.")
-
-    if full in sys.modules:
-        print(full, "found")
-    else:
-        print(full, "missed")
+    print("%s imported now" % fullname)
 
     
 # Try to import array file formats requiring the Python module numpy
