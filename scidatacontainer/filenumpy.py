@@ -46,3 +46,8 @@ class NpyFile(FileBase):
             fp.write(data)
             fp.seek(0)
             self.data = np.load(fp, allow_pickle=self.allow_pickle)
+
+suffixes = {"npy": NpyFile}
+classes = {np.ndarray: NpyFile}
+formats = [NpyFile]
+

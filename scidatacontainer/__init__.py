@@ -48,7 +48,8 @@ formats = [
 for module in ("filenumpy", "fileimage"):
     if importlib.util.find_spec(module, ".") is None:
         continue
-    importlib.import_module(module, ".")
+    module = importlib.import_module(module, ".")
+    print(module, module.suffixes)
 
     
 # Try to import array file formats requiring the Python module numpy

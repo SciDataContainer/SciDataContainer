@@ -40,3 +40,9 @@ class PngFile(FileBase):
         flags = cv.IMREAD_ANYDEPTH | cv.IMREAD_ANYCOLOR
         self.data = np.frombuffer(data, dtype=np.uint8)
         self.data = cv.imdecode(self.data, flags=flags)
+
+
+suffixes = {"png": PngFile}
+classes = {}
+formats = [PngFile]
+
