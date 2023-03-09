@@ -74,7 +74,6 @@ for name in ("filebase", "fileimage", "filenumpy", "filexx"):
         print("%s import failed" % fullname)
         continue
     print("%s imported now" % fullname)
-    print(module.suffixes)
 
     for suffix, fclass, pclass in module.register:
         register(suffix, fclass, pclass)
