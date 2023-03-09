@@ -51,7 +51,7 @@ for name in (".filenumpy", ".fileimage"):
         print(name, "failed.")
         continue
     module = importlib.import_module(name, __name__)
-    print(module, module.suffixes)
+    print(module.suffixes)
 
     
 # Try to import array file formats requiring the Python module numpy
