@@ -44,6 +44,10 @@ formats = [
     TextFile,
     ]
 
+print(__name__)
+import sys
+if __name__ in sys.modules:
+    print("Hit!")
 
 for name in (".filenumpy", ".fileimage"):
     print(name)
