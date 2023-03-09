@@ -53,7 +53,11 @@ for name in ("filenumpy", "fileimage", "filexx"):
     if importlib.util.find_spec(fullname) is None:
         print("%s is not available" % fullname)
         continue
-    module = importlib.import_module(fullname)
+    try:
+        module = importlib.import_module(fullname)
+    except ModuleNotFoundError:
+        print("%s import failed" % fullname)
+        continue
     print("%s imported now" % fullname)
     print(module.suffixes)
 
