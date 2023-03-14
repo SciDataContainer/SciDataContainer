@@ -4,8 +4,6 @@ This is the Python 3 implementation of a lean container class for the storage of
 
 This is a project of the cluster of Excellence [PhoenixD](https://www.phoenixd.uni-hannover.de) and the data server is currently only available for PhoenixD members. However, we intend to make the whole project including the server publicly available. If you are from outside PhoenixD and wish to get early access, you are welcome. Please contact us.
 
-The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained.
-
 ## Install
 
 The easiest way to install the latest version of [`scidatacontainer`](https://pypi.org/project/scidatacontainer/) is using PIP:
@@ -15,7 +13,9 @@ The easiest way to install the latest version of [`scidatacontainer`](https://py
 
 You find the source code together with test files on [GitHub](https://github.com/reincas/scidatacontainer).
 
-## Structure and Terms
+## Data Container Concept
+
+The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained.
 
 Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The **Container** file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in **Items** (files in ZIP package), which are organized in **Parts** (folders in ZIP package). The standard file extension of the container files is `.zdc`.
 
