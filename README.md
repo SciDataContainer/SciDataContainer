@@ -125,7 +125,7 @@ Single-Step Container
 Feel free to check the content of the file `random.zdc` now by opening it on the operating system level. Be reminded that the Windows Explorer requires the file extension `.zdc` to be registered first as explained above. Recovering the dataset from the local file as a new container object works straight forward:
 ```
 >>> dc = Container(file="random.zdc")
->>> print(dc["sim/dice.json"])
+>>> dc["sim/dice.json"]
 [2, 5, 1, 3, 1, 4, 4, 4]
 ```
 
