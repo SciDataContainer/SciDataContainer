@@ -8,6 +8,7 @@
 #
 ##########################################################################
 
+import random
 import cv2 as cv
 from scidatacontainer import Container
 
@@ -123,6 +124,7 @@ items = {
         "title": "Static image parameter datatset",
         },
     "data/parameter.json": parameter,
+    #"data/random.json": random.random(),
     }
 dc = Container(items=items)
 dc.freeze()
@@ -144,6 +146,7 @@ if servertest:
     print("Upload sucessful: %s" % uuid)
     print()
 
+print(dc)
 dc.upload()
 
 # Done

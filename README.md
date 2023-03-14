@@ -215,7 +215,7 @@ The container class can handle virtually any file format. However, in order to s
 
 | Extension | File format | Python object | Required modules |
 | --- | --- | --- | --- |
-| json | JSON file (UTF-8 encoding) | dictionary | |
+| json | JSON file (UTF-8 encoding) | dictionary or others | |
 | txt | Text file (UTF-8 encoding) | string | |
 | log | Text file (UTF-8 encoding) | string | |
 | pgm | Text file (UTF-8 encoding) | string | |
