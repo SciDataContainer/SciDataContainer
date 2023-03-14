@@ -82,7 +82,7 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 
 ## Basic Usage
 
-Our simple application example just generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first, we import the Python `random` module and our class `Container`:
+Our simple application example generates and stores a list of random integer numbers. Parameters are quantity and range of the numbers. At first, we import the Python `random` module and our class `Container`:
 ```
 >>> import random
 >>> from scidatacontainer import Container
