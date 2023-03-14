@@ -15,7 +15,7 @@ You find the source code together with test files on [GitHub](https://github.com
 
 ## Data Container Concept
 
-The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which is traditionally recorded in lab books like test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained.
+The basic concept of the data container is that it keeps the raw dataset, parameter data and meta data together. Parameter data is every data which scientists traditionally record in lab books like a description of the test setup, measurement settings, simulation parameters or evaluation parameters. The idea is to make each dataset self-contained.
 
 Each data container is identified by a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which is usually generated automatically. The **Container** file is a [ZIP package file](https://en.wikipedia.org/wiki/ZIP_(file_format)). The data in the container is stored in **Items** (files in ZIP package), which are organized in **Parts** (folders in ZIP package). The standard file extension of the container files is `.zdc`.
 
