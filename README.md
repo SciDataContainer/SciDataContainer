@@ -153,7 +153,7 @@ Three different types of containers are currently supported, which differ mainly
 >>> dc = Container(items=items)
 >>> dc.upload()
 >>> dc["content.json"]["uuid"]
-306e2c2d-a9f6-4306-8851-1ee0fceeb852
+'306e2c2d-a9f6-4306-8851-1ee0fceeb852'
 ```
 
 The server will only accept containers with increasing modification timestamps. Since the resolution of the internal timestamps is a second, you must wait at least one second before the next upload:
@@ -194,7 +194,7 @@ The `Container` class provides a couple of convenience methods. It can be used v
 ```
 >>> dc = Container(items=items)
 >>> dc["content.json"]["uuid"]
-306e2c2d-a9f6-4306-8851-1ee0fceeb852
+'306e2c2d-a9f6-4306-8851-1ee0fceeb852'
 >>> dc["log/console.txt"] = "Hello World!"
 >>> "log/console.txt" in dc
 True
