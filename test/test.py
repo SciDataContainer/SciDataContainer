@@ -14,6 +14,9 @@ from scidatacontainer import Container
 # Set to True for testing the server connection
 servertest = True
 
+# Test counter
+cnt = 0
+
 # Dummy data: an image
 img = cv.imread("image.png")
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -45,7 +48,8 @@ parameter = {
 }
 
 # Create the scientific data container
-print("*** Test 1: Create container with hash")
+cnt += 1
+print("*** Test %d: Create container with hash" % cnt)
 items = {
     "content.json": {
         "containerType": {"name": "myImage"},
@@ -62,21 +66,24 @@ print(dc)
 print()
 
 # Store container as local file
-print("*** Test 2: Write local container file")
+cnt += 1
+print("*** Test %d: Write local container file" % cnt)
 fn = "image.zdc"
 dc.write(fn)
 print("File: '%s'" % fn)
 print()
 
 # Read container from local file
-print("*** Test 3: Read local container file")
+cnt += 1
+print("*** Test %d: Read local container file" % cnt)
 dc = Container(file=fn)
 print(dc)
 print()
 
 # Upload container to server
 if servertest:
-    print("*** Test 4: Upload container to server")
+    cnt += 1
+    print("*** Test %d: Upload container to server" % cnt)
     try:
         dc.upload()
         uuid = dc["content.json"]["uuid"]
@@ -88,49 +95,23 @@ if servertest:
 
 # Download container from server
 if servertest:
-    print("*** Test 5: Download container from server")
+    cnt += 1
+    print("*** Test %d: Download container from server" % cnt)
     dc = Container(uuid=uuid)
     print(dc)
     print()
 
-print("*** Test 6: New file format")
-import io
-import numpy as np
-from scidatacontainer import FileBase, register
+# Double server upload must fail
+cnt += 1
+print("*** Test %d: Upload container to server again" % cnt)
+dc.upload()
+##try:
+##    dc.upload()
+##    uuid = dc["content.json"]["uuid"]
+##    print("Upload sucessful: %s" % uuid)
+##except ConnectionError:
+##    print("Repeated upload was denied as expected.")
 
-class NpyFile(FileBase):
-    allow_pickle = False
-    def encode(self):
-        with io.BytesIO() as fp:
-            np.save(fp, self.data, allow_pickle=self.allow_pickle)
-            fp.seek(0)
-            data = fp.read()
-        return data
-    def decode(self, data):
-        with io.BytesIO() as fp:
-            fp.write(data)
-            fp.seek(0)
-            self.data = np.load(fp, allow_pickle=self.allow_pickle)
 
-register("npy", NpyFile, np.ndarray)
-
-data = np.random.rand(7,5)
-
-items = {
-    "content.json": {
-        "containerType": {"name": "myTest"},
-        },
-    "meta.json": {
-        "title": "This is a sample test dataset",
-        },
-    "sim/random.npy": data,
-    "data/parameter.json": parameter,
-    }
-dc = Container(items=items)
-print(dc)
-print(dc["sim/random.npy"])
-dc.write("random.zdc")
-dc = Container(file="random.zdc")
-print(dc["sim/random.npy"])
-print()
-
+# Done
+print("*** Tests finished.")

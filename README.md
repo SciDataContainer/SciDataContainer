@@ -65,7 +65,7 @@ The meta data describing the data payload of the container is stored in the requ
 - `doi`: optional digital object identifier of the dataset
 - `license`: optional data license name (e.g. ["MIT"](https://en.wikipedia.org/wiki/MIT_License) or ["CC-BY"](https://creativecommons.org/licenses/by/4.0/))
 
-In order to simplify the generation of meta data, the data container class will try to insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or from a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
+In order to simplify the generation of meta data, the data container class will try to insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or from a configuration file. This configuration file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
 
 The value of the attribute `created` should be a UTC timestamp string in the form `2023-02-17 15:27:00 UTC`. You may use the function `scidatacontainer.timestamp()` to generate this string.
 
@@ -205,13 +205,13 @@ False
 
 Furthermore, the method `items()` returns a list of all full item names including the respective parts. The method `hash()` may be used to calculate an SHA256 hash of the container content. The hex digest of this value is stored in the attribute `hash` of the item `container.json`.
 
-The container methods `read()` and `download()` are not intended to be called directly. They are called implicity when a new container is generated with the parameters `file=...` or `uuid=...`, respectively. They replace the current content of the container.
+The container methods `read()` and `download()` are not intended to be called directly. They are called implicitly when a new container is generated with the parameters `file=...` or `uuid=...`, respectively. They replace the current content of the container.
 
 Container objects generated from an items dictionary using the parameter `items=...` are mutable, which means that you can add, modify and delete items. As soon as you call one of the methods `write()`, `upload()`, `freeze()`, or `hash()`, the container becomes immutable. Containers loaded from a local file or a server are immutable as well. An immutable container will throw an exception if you try to modify its content. However, this feature is not bulletproof. It is not aware of any internal modifications of item objects. You can convert an immutable container into a mutable one by calling its method `release()`. This generates a new UUID and resets the attributes `replaces`, `created`, `modified`, `hash` and `modelVersion`.
 
 ## File Formats
 
-The container class can handle virtually any file format. However, in order to store and read a certain file format, it needs to know how to convert the respective Python object into a bytes stream and vice versa. File formats are identified by their file extension. The following file extentions are currently supported by `scidatacontainer` out of the box:
+The container class can handle virtually any file format. However, in order to store and read a certain file format, it needs to know how to convert the respective Python object into a bytes stream and vice versa. File formats are identified by their file extension. The following file extensions are currently supported by `scidatacontainer` out of the box:
 
 | Extension | File format | Python object | Required modules |
 | --- | --- | --- | --- |
