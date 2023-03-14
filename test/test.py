@@ -9,6 +9,8 @@
 ##########################################################################
 
 import random
+import time
+import requests
 import cv2 as cv
 from scidatacontainer import Container
 
@@ -47,6 +49,18 @@ parameter = {
         "width": 2064
     }
 }
+
+
+##########################################################################
+# Single-step container tests
+##########################################################################
+print(40*"-")
+if servertest:
+    print("Single-Step Container Tests")
+else:
+    print("Single-Step Container Tests (no server)")
+print(40*"-")
+print()
 
 # Create the scientific data container
 cnt += 1
@@ -102,16 +116,114 @@ if servertest:
     print(dc)
     print()
 
-### Double server upload must fail
-##cnt += 1
-##print("*** Test %d: Upload container to server again" % cnt)
-##dc.upload()
-##try:
-##    dc.upload()
-##    uuid = dc["content.json"]["uuid"]
-##    print("Upload sucessful: %s" % uuid)
-##except ConnectionError:
-##    print("Repeated upload was denied as expected.")
+# Double server upload must fail
+if servertest:
+    cnt += 1
+    print("*** Test %d: Upload container to server again" % cnt)
+    try:
+        dc.upload()
+        raise RuntimeError("Double server upload was possible!")
+    except requests.exceptions.HTTPError:
+        pass
+    print("Second upload failed as intended.")
+    print()
+
+
+##########################################################################
+# Multi-Step container tests
+##########################################################################
+print(40*"-")
+if servertest:
+    print("Multi-Step Container Tests")
+else:
+    print("Multi-Step Container Tests (no server)")
+print(40*"-")
+print()
+
+# Create a multi-step container
+cnt += 1
+print("*** Test %d: Create multi-step container" % cnt)
+items = {
+    "content.json": {
+        "containerType": {"name": "myMultiImage"},
+        "complete": False,
+        },
+    "meta.json": {
+        "title": "Multi-step image datatset",
+        },
+    "data/parameter.json": parameter,
+    "meas/image_1.png": img,
+    }
+dc = Container(items=items)
+print(dc)
+print()
+
+# Write and read multi-step container
+cnt += 1
+print("*** Test %d: Local file storage of multi-step container" % cnt)
+dc.write("image_multi.zdc")
+dc = Container(file="image_multi.zdc")
+print("Writing and reading succesful.")
+print()
+
+# Upload multi-step container
+if servertest:
+    cnt += 1
+    print("*** Test %d: Upload multi-step container" % cnt)
+    dc.upload()
+    uuid = dc["content.json"]["uuid"]
+    print("Upload sucessful: %s" % uuid)
+    print()
+
+# Update multi-step container
+if servertest:
+    cnt += 1
+    print("*** Test %d: Update multi-step container after 2 seconds" % cnt)
+    time.sleep(2)
+    dc = Container(uuid=uuid)
+    dc["meas/image_2.png"] = img
+    dc.upload()
+    uuid = dc["content.json"]["uuid"]
+    print("Upload sucessful: %s" % uuid)
+    print()
+
+# Update and finalize multi-step container
+if servertest:
+    cnt += 1
+    print("*** Test %d: Finalize multi-step container after 2 seconds" % cnt)
+    time.sleep(2)
+    dc = Container(uuid=uuid)
+    dc["meas/image_3.png"] = img
+    dc["content.json"]["complete"] = True
+    dc.upload()
+    uuid = dc["content.json"]["uuid"]
+    print(dc)
+    print("Upload sucessful: %s" % uuid)
+    print()
+
+# Next server upload must fail
+if servertest:
+    cnt += 1
+    print("*** Test %d: Upload container to server again" % cnt)
+    try:
+        dc.upload()
+        raise RuntimeError("Double server upload was possible!")
+    except requests.exceptions.HTTPError:
+        pass
+    print("Second upload failed as intended.")
+    print()
+
+
+##########################################################################
+# Static container tests
+##########################################################################
+print(40*"-")
+if servertest:
+    print("Static Container Tests")
+else:
+    print("Static Container Tests (no server)")
+print(40*"-")
+print()
 
 # Create a static container
 cnt += 1
@@ -149,20 +261,44 @@ if servertest:
 # Create same static container
 if servertest:
     cnt += 1
-    print("*** Test %d: Create same static container again" % cnt)
+    print("*** Test %d: Create same static container with new id" % cnt)
     dc = Container(items=items)
     dc.freeze()
     print(dc)
+    print()
 
-# Upload static container
+# Upload new static container
 if servertest:
     cnt += 1
     print("*** Test %d: Upload static container" % cnt)
+    uuid1 = dc["content.json"]["uuid"]
     dc.upload()
-    uuid = dc["content.json"]["uuid"]
-    print("Upload sucessful: %s" % uuid)
+    uuid2 = dc["content.json"]["uuid"]
+    if uuid2 == uuid1 or uuid2 != uuid:
+        raise RuntimeError("Replacement of multiple static container failed!")
+    print("  current:  %s" % uuid1)
+    print("  replaced: %s" % uuid2)
+    print("Container successfully replaced by server data.")
     print()
 
+# Convert static to single-step container
+cnt += 1
+print("*** Test %d: Convert static to fresh single-step container" % cnt)
+dc.release()
+dc["sim/test.txt"] = "hello"
+if "sim/test.txt" not in dc:
+    raise RuntimeError("Adding an item failed!")
+print(dc)
+print()
 
+
+##########################################################################
 # Done
-print("*** Tests finished.")
+##########################################################################
+
+print(40*"-")
+if servertest:
+    print("All tests finished successfully")
+else:
+    print("All tests finished successfully (no server)")
+print(40*"-")

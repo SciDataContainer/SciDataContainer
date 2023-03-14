@@ -11,7 +11,7 @@ The easiest way to install the latest version of [`scidatacontainer`](https://py
 >>> pip install scidatacontainer
 ```
 
-You find the source code together with test files on [GitHub](https://github.com/reincas/scidatacontainer).
+You find the source code together with a test file on [GitHub](https://github.com/reincas/scidatacontainer).
 
 ## Data Container Concept
 
