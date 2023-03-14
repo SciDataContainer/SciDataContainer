@@ -475,7 +475,7 @@ class DataContainer(object):
         # treatment: The current dataset is replaced by the one from the
         # server.
         if response.status_code == 409:
-            if self["content.json"]["static"]
+            if self["content.json"]["static"]:
                 data = json.loads(response.content.decode("UTF-8"))
                 if isinstance(data, dict) and data["static"]:
                     self.download(uuid=data["id"], server=server, key=key)

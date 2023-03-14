@@ -147,14 +147,22 @@ if servertest:
     print()
 
 # Create same static container
-cnt += 1
-print("*** Test %d: Create same static container again" % cnt)
-dc = Container(items=items)
-dc.freeze()
-print(dc)
+if servertest:
+    cnt += 1
+    print("*** Test %d: Create same static container again" % cnt)
+    dc = Container(items=items)
+    dc.freeze()
+    print(dc)
 
+# Upload static container
+if servertest:
+    cnt += 1
+    print("*** Test %d: Upload static container" % cnt)
+    dc.upload()
+    uuid = dc["content.json"]["uuid"]
+    print("Upload sucessful: %s" % uuid)
+    print()
 
-dc.upload()
 
 # Done
 print("*** Tests finished.")
