@@ -172,8 +172,8 @@ class DataContainer(object):
         """ Make sure that the item "content.json" exists and contains
         all required attributes. """
 
-        # Get item "content.json"
-        content = self["content.json"]
+        # Get a copy of the item "content.json"
+        content = copy.deepcopy(self["content.json"])
 
         # Keep UUID of a multi-step container and create a new one otherwise
         if "uuid" not in content or not content["uuid"]:
@@ -249,6 +249,9 @@ class DataContainer(object):
 
         # Version of the data model provided by this package
         content["modelVersion"] = MODELVERSION
+
+        # Store the item "content.json"
+        self["content.json"] = content
         
 
     def validate_meta(self):
@@ -256,8 +259,8 @@ class DataContainer(object):
         """ Make sure that the item "meta.json" exists and contains
         all required attributes. """
 
-        # Get item "meta.json"
-        meta = self["meta.json"]
+        # Get a copy of the item "meta.json"
+        meta = copy.deepcopy(self["meta.json"])
 
         # Author name is required
         if "author" not in meta:
@@ -302,6 +305,9 @@ class DataContainer(object):
         # Data license name is optional
         if "license" not in meta:
             meta["license"] = ""
+
+        # Store the item "meta.json"
+        self["meta.json"] = meta
 
 
     def __delitem__(self, path):
