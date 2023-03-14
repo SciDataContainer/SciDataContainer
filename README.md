@@ -46,7 +46,7 @@ The parameters describing the container are stored in the required root item `co
 - `usedSoftware`: optional list of software mappings
     + `name`: required software name
     + `version`: required software version
-    + `id`: optional software identifier (e.g. UUID of URL)
+    + `id`: optional software identifier (e.g. UUID or URL)
     + `idType`: required type of identifier, if `id` is given
 - `modelVersion`: automatic data model version
 
@@ -63,7 +63,7 @@ The meta data describing the data payload of the container is stored in the requ
 - `description`: optional abstract for the dataset
 - `created`: optional creation timestamp of the dataset
 - `doi`: optional digital object identifier of the dataset
-- `license`: optional data license name (e.g. ["CC-BY"](https://creativecommons.org/licenses/by/4.0/))
+- `license`: optional data license name (e.g. [MIT](https://en.wikipedia.org/wiki/MIT_License) or ["CC-BY"](https://creativecommons.org/licenses/by/4.0/))
 
 In order to simplify the generation of meta data, the data container class will insert default values for the author name and e-mail address. These default values are either been taken from the environment variables `DC_AUTHOR` and `DC_EMAIL` or from a configuration file. This configuraton file is `%USERPROFILE%\scidata.cfg` on Microsoft Windows and `~/.scidata` on other operating systems. The file is expected to be a text file. Leading and trailing white space is ignored, as well as lines starting with `#`. The parameters are taken from lines in the form `<key>=<value>`, with the keywords `author` and `email`. Optional white space before and after the equal sign is ignored. The keywords are case-insensitive.
 
