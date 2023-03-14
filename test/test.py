@@ -124,7 +124,7 @@ items = {
         "title": "Static image parameter datatset",
         },
     "data/parameter.json": parameter,
-    #"data/random.json": random.random(),
+    "data/random.json": random.random(),
     }
 dc = Container(items=items)
 dc.freeze()
@@ -146,7 +146,14 @@ if servertest:
     print("Upload sucessful: %s" % uuid)
     print()
 
+# Create same static container
+cnt += 1
+print("*** Test %d: Create same static container again" % cnt)
+dc = Container(items=items)
+dc.freeze()
 print(dc)
+
+
 dc.upload()
 
 # Done

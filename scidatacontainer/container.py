@@ -470,17 +470,18 @@ class DataContainer(object):
 ##        with open("upload.zdc", "wb") as fp:
 ##            fp.write(response.content)
 
-        # HTTP status code 409 is returned when a static dataset with
-        # the same content (hash) is already available on the server.
-        # The server returns this original dataset and we replace the
-        # current one by the original.
+        # HTTP status code 409 is returned when a dataset is already
+        # available on the server. Static datasets require a special
+        # treatment: The current dataset is replaced by the one from the
+        # server.
         if response.status_code == 409:
-            try:
-                content = json.loads(response.content.decode("UTF-8"))
-                print(content)
-                self.decode(response.content, False, strict)
-            except:
-                raise requests.HTTPError("409: Existing static dataset (%s)" % uuid)
+            if self["content.json"]["static"]
+                data = json.loads(response.content.decode("UTF-8"))
+                if isinstance(data, dict) and data["static"]:
+                    self.download(uuid=data["id"], server=server, key=key)
+                    return
+            uuid = self["content.json"]["uuid"]
+            raise requests.HTTPError("409: Duplicate UUID '%s'" % uuid)
 
         # Standard exception handler for other HTTP status codes
         else:
