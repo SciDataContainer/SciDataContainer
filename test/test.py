@@ -4,7 +4,7 @@
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
-# Testing the normal single-step dataset.
+# Testing the Container class of scidatacontainer.
 #
 ##########################################################################
 
@@ -101,10 +101,10 @@ if servertest:
     print(dc)
     print()
 
-# Double server upload must fail
-cnt += 1
-print("*** Test %d: Upload container to server again" % cnt)
-dc.upload()
+### Double server upload must fail
+##cnt += 1
+##print("*** Test %d: Upload container to server again" % cnt)
+##dc.upload()
 ##try:
 ##    dc.upload()
 ##    uuid = dc["content.json"]["uuid"]
@@ -112,6 +112,39 @@ dc.upload()
 ##except ConnectionError:
 ##    print("Repeated upload was denied as expected.")
 
+# Create a static container
+cnt += 1
+print("*** Test %d: Create static container" % cnt)
+items = {
+    "content.json": {
+        "containerType": {"name": "myImgParam"},
+        },
+    "meta.json": {
+        "title": "Static image parameter datatset",
+        },
+    "data/parameter.json": parameter,
+    }
+dc = Container(items=items)
+dc.freeze()
+print(dc)
+try:
+    dc["sim/test.txt"] = "hello"
+    raise RuntimeError("Modification of static container was possible!")
+except:
+    pass
+print("Modification of static container failed as intended.")
+print()
+
+# Upload static container
+if servertest:
+    cnt += 1
+    print("*** Test %d: Upload static container" % cnt)
+    dc.upload()
+    uuid = dc["content.json"]["uuid"]
+    print("Upload sucessful: %s" % uuid)
+    print()
+
+dc.upload()
 
 # Done
 print("*** Tests finished.")

@@ -476,7 +476,8 @@ class DataContainer(object):
         # current one by the original.
         if response.status_code == 409:
             try:
-                print(response.content)
+                content = json.loads(response.content.decode("UTF-8"))
+                print(content)
                 self.decode(response.content, False, strict)
             except:
                 raise requests.HTTPError("409: Existing static dataset (%s)" % uuid)
