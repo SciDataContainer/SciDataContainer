@@ -145,6 +145,8 @@ In order to be able to use the server, you need an account. This enables you to 
 
 The server makes sure that UUIDs are unique. Once uploaded, a dataset can never be modified on a server. The only exemption are multi-step containers (see below). In the rare case that a certain dataset needs to be replaced, the attribute `replaces` may be used in `content.json`. Once uploaded, the server will always deliver the new dataset, even if the dataset with the old UUID is requested. Only the owner of a dataset is allowed to replace it.
 
+## Container Types
+
 Three different types of containers are currently supported, which differ mainly in the way in which they are handled by the storage server. The standard one is the **single-step container**. The second one is a **multi-step container**, which is intended for long running measurements or simulations. As long as the attribute `complete` in `content.json` has the value `False`, the dataset may be uploaded repeatedly, each time replacing the dataset with the same UUID:
 ```
 >>> items["content.json"]["complete"] = False
