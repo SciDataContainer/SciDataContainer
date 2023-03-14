@@ -223,7 +223,7 @@ The container class can handle virtually any file format. However, in order to s
 | npy | NumPy array | NumPy array | numpy |
 | bin | Raw binary data file | bytes | |
 
-The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/). The container class tries to guess the format of items with unknown extension. However, it is more reliable to use the function `register()` to add alternative file extensions. The following commands will register the extension `py` as text file:
+The support for image and NumPy objects is only available when your Python environment contains the modules [`cv2`](https://pypi.org/project/opencv-python/) and/or [`numpy`](https://pypi.org/project/numpy/). The container class tries to guess the format of items with unknown extension. However, it is more reliable to use the function `register()` to add alternative file extensions to already known file formats. The following commands will register the extension `py` as text file:
 ```
 >>> from scidatacontainer import register
 >>> register("py", "txt")
