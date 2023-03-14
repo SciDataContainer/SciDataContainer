@@ -12,7 +12,7 @@ import cv2 as cv
 from scidatacontainer import Container
 
 # Set to True for testing the server connection
-servertest = False
+servertest = True
 
 # Dummy data: an image
 img = cv.imread("image.png")
@@ -88,7 +88,7 @@ if servertest:
 
 # Download container from server
 if servertest:
-    print("*** Test 5: Upload container to server")
+    print("*** Test 5: Download container from server")
     dc = Container(uuid=uuid)
     print(dc)
     print()
