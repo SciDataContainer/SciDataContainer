@@ -64,11 +64,11 @@ class DataContainer(object):
 
         # Load local container file
         elif file is not None:
-            self.read(fn=file)
+            self._read(fn=file)
 
         # Download container from server
         elif uuid is not None:
-            self.download(uuid=uuid, server=server, key=key)
+            self._download(uuid=uuid, server=server, key=key)
 
         # No data source
         else:
@@ -427,7 +427,7 @@ class DataContainer(object):
         self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
-    def read(self, fn, strict=True):
+    def _read(self, fn, strict=True):
 
         """ Read a ZIP package file and store it as container in this
         object. """
@@ -478,7 +478,7 @@ class DataContainer(object):
             if self["content.json"]["static"]:
                 data = json.loads(response.content.decode("UTF-8"))
                 if isinstance(data, dict) and data["static"]:
-                    self.download(uuid=data["id"], server=server, key=key)
+                    self._download(uuid=data["id"], server=server, key=key)
                     return
             uuid = self["content.json"]["uuid"]
             raise requests.HTTPError("409: Duplicate UUID '%s'" % uuid)
@@ -491,7 +491,7 @@ class DataContainer(object):
         self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
 
-    def download(self, uuid, strict=True, server=None, key=None):
+    def _download(self, uuid, strict=True, server=None, key=None):
 
         # Server name is required and must be provided either via config
         # file, environment variable or method parameter

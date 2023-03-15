@@ -205,8 +205,6 @@ False
 
 Furthermore, the method `items()` returns a list of all full item names including the respective parts. The method `hash()` may be used to calculate an SHA256 hash of the container content. The hex digest of this value is stored in the attribute `hash` of the item `container.json`.
 
-The container methods `read()` and `download()` are not intended to be called directly. They are called implicitly when a new container is generated with the parameters `file=...` or `uuid=...`, respectively. They replace the current content of the container.
-
 Container objects generated from an items dictionary using the parameter `items=...` are mutable, which means that you can add, modify and delete items. As soon as you call one of the methods `write()`, `upload()`, `freeze()`, or `hash()`, the container becomes immutable. Containers loaded from a local file or a server are immutable as well. An immutable container will throw an exception if you try to modify its content. However, this feature is not bulletproof. It is not aware of any internal modifications of item objects. You can convert an immutable container into a mutable one by calling its method `release()`. This generates a new UUID and resets the attributes `replaces`, `created`, `modified`, `hash` and `modelVersion`.
 
 ## File Formats
