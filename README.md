@@ -4,7 +4,7 @@ This is a lean container file format for scientific data, in a way compliant to 
 
 ## Documentation
 
-The full [documentation](https://github.com/reincas/scidatacontainer) together with all supported language implementations is hosted on [Read the Docs](https://readthedocs.org/).
+The full [documentation](https://scidatacontainer.readthedocs.io/en/latest/) together with all supported language implementations is hosted on [Read the Docs](https://readthedocs.org/).
 
 ## Implementations
 
