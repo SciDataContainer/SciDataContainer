@@ -4,7 +4,7 @@ This a Python 3 library for the container file format [SciDataContainer](https:/
 
 ## Documenation
 
-You find the [documentation](https://scidatacontainer.readthedocs.io/en/latest/) of the Python package `scidatacontainer` and more on [Read the Docs](https://readthedocs.org/).
+You find the [documentation](https://scidatacontainer.readthedocs.io/en/latest/python_library) of the Python package `scidatacontainer` and more on [Read the Docs](https://readthedocs.org/).
 
 ## Installation
 
