@@ -1,9 +1,8 @@
 __pycache__/
 attic/
-build/
-dist/
-test/*.zdc
+python/build/
+python/dist/
+python/test/*.zdc
 *.py[cod]
 *.egg-info
-MANIFEST.in
 *.bat

@@ -79,7 +79,7 @@ dc = Container(items=items)
 dc.hash()
 print(dc)
 print()
-
+      
 # Store container as local file
 cnt += 1
 print("*** Test %d: Write local container file" % cnt)
