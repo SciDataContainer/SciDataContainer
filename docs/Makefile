@@ -1,20 +1,42 @@
-# Minimal makefile for Sphinx documentation
-#
+# Makefile for the SciDataContainer documentation
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
+#######################################################################
+# Common variable definitions
+#######################################################################
+
+ifeq ($(OS),Windows_NT)
+    RMDIR := rmdir /s /q
+	RM := del /q
+else
+    RMDIR := rm -rf
+	RM := rm -f
+endif
+
+MAKE := make
+PYTHON := python
+
+#######################################################################
+# Sphinx configuration
+#######################################################################
+
+# You can set these variables from the command line, and the first
+# also from the environment.
 SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = source
-BUILDDIR      = build
+SPHINXBUILD   := sphinx-build
+SOURCEDIR     := source
+BUILDDIR      := build
 
-# Put it first so that "make" without argument is like "make help".
+#######################################################################
+# Targets
+#######################################################################
+
 help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
 
-.PHONY: help Makefile
+all: html
 
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+%:
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
+
+.PHONY: help all
+
