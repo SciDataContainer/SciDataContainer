@@ -8,7 +8,7 @@ You find the [documentation](https://github.com/reincas/scidatacontainer) of the
 
 ## Installation
 
-The easiest way to install the latest version of [`scidatacontainer`](https://pypi.org/project/scidatacontainer/) is using PIP:
+The easiest way to install the latest version of [`SciDataContainer`](https://pypi.org/project/scidatacontainer/) is using PIP:
 ```
->>> pip install scidatacontainer
+>>> pip install SciDataContainer
 ```
