@@ -4,7 +4,7 @@ This is a lean container file format for scientific data, in a way compliant to 
 
 In the folder `python` you find a Python 3 implementation. The full [documentation](https://github.com/reincas/scidatacontainer) of the container format together with all supported language implementations is hosted on [Read the Docs](https://readthedocs.org/).
 
-# Acknowledgement
+## Acknowledgement
 
 This is a project of the cluster of Excellence [PhoenixD](https://www.phoenixd.uni-hannover.de) funded by the Deutsche Forschungsgemeinschaft ([DFG](https://www.dfg.de/en/), German Research Foundation) under Germany’s [Excellence Strategy](https://www.dfg.de/en/research_funding/programmes/excellence_strategy/index.html) (EXC 2122, Project ID 390833453).
 
