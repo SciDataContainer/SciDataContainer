@@ -35,7 +35,7 @@ add: clean
 	$(GIT) add .
 
 commit: add
-	$(GIT) commit -am "$(msg)"
+	-$(GIT) commit -am "$(msg)"
 
 push: commit
 	$(GIT) push -u origin main
