@@ -21,21 +21,21 @@ GIT := git
 #######################################################################
 
 all:
-	$(MAKE) -c docs all
-	$(MAKE) -c python all
+	$(MAKE) -C docs all
+	$(MAKE) -C python all
 
 pypi:
-	$(MAKE) -c python pypi
+	$(MAKE) -C python pypi
 
 clean:
-	-$(MAKE) -c docs clean
-	-$(MAKE) -c python clean
+	-$(MAKE) -C docs clean
+	-$(MAKE) -C python clean
 
 add: clean
 	$(GIT) add .
 
 commit: add
-	$(GIT) commit -am "$(MSG)"
+	$(GIT) commit -am "$(msg)"
 
 push: commit
 	$(GIT) push -u origin main
