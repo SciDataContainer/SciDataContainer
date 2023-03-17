@@ -1,4 +1,4 @@
-# SciDataContainer
+# SciDataContainer for Python
 
 This a Python 3 library for the container file format [SciDataContainer](https://github.com/reincas/scidatacontainer) intended to store scientific data.
 
