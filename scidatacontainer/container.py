@@ -26,7 +26,7 @@ config = load_config()
 
 
 # Version of the implemented data model
-MODELVERSION = "0.5.0"
+MODELVERSION = "0.5.1"
 
 
 ##########################################################################
@@ -323,11 +323,25 @@ class DataContainer(object):
             del self._items[path]
             
 
-    def items(self):
+    def keys(self):
 
-        """ Return all container item paths. """
+        """ Return a sorted list of the full paths of all items. """
 
         return sorted(self._items.keys())
+
+
+    def values(self):
+
+        """ Return a list of all item objects. """
+
+        return [self[k] for k in self.keys()]
+
+
+    def items(self):
+
+        """ Return this container as a dictionary of item objects. """
+
+        return {k: self[k] for k in self.keys()}
 
 
     def hash(self):
