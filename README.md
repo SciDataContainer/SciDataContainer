@@ -1,6 +1,6 @@
 # SciDataContainer
 
-This is a lean container file format for scientific data, in a way compliant to the [FAIR principles](https://en.wikipedia.org/wiki/FAIR_data) of modern research data management. Using a standardized container file it provides maximum flexibility and minimal restrictions for scientists working in the lab or performing simulations. Data containers may be stored as local files or uploaded to a data storage server. The container is based on the well-known ZIP format and thus independent of the operating system as well as programming languages. This makes this container a perfect choice for the publication of scientific data in public online repositories.
+This is a lean container file format for scientific data, in a way compliant to the [FAIR principles](https://en.wikipedia.org/wiki/FAIR_data) of modern research data management. Using a standardized container file it provides maximum flexibility and minimal restrictions for scientists working in the lab or performing simulations. Data containers may be stored as local files or uploaded to a data storage server. The container is based on the well-known ZIP format and thus independent of the operating system as well as programming languages. This makes this container a perfect choice for the publication of scientific data in online repositories.
 
 ## Documentation
 
