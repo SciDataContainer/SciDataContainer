@@ -44,7 +44,7 @@ File Formats
 The ``Container`` class can handle virtually any file format. However, in order to store and read a certain file format, it needs to know how to convert the respective Python object into a bytes stream and vice versa. File formats are identified by their file extension. The following file extensions are currently supported by the package ``scidatacontainer`` out of the box:
 
 .. csv-table:: 
-	:header: Extension, File format, Python object, Required modules
+	:header: Extension, File format, Python object, Required packages
 
 	.json, JSON file (UTF-8 encoding), dictionary or others,
 	.txt, Text file (UTF-8 encoding), string,
@@ -54,7 +54,7 @@ The ``Container`` class can handle virtually any file format. However, in order 
 	.npy, NumPy array, NumPy array, numpy
 	.bin, Raw binary data file, bytes,
 
-Native support for image and NumPy objects is only available when your Python environment contains the modules `cv2 <https://pypi.org/project/opencv-python/>`_ and/or `numpy <https://pypi.org/project/numpy/>`_. The container class tries to guess the format of items with unknown extension. However, it is more reliable to use the function ``register()`` to add alternative file extensions to already known file formats. The following commands will register the extension ``.py`` as a text file:
+Native support for image and NumPy objects is only available when your Python environment contains the packages `cv2 <https://pypi.org/project/opencv-python/>`_ and/or `numpy <https://pypi.org/project/numpy/>`_. The container class tries to guess the format of items with unknown extension. However, it is more reliable to use the function ``register()`` to add alternative file extensions to already known file formats. The following commands will register the extension ``.py`` as a text file:
 
 	>>> from scidatacontainer import register
 	>>> register("py", "txt")

@@ -18,7 +18,7 @@ Response:
 	:header: HTTP return code, Description, Returned content
 
 	``201 Created``, Successful container upload
-	``400 Bad Request``, Existing static dataset with same hash and containerType, JSON object
+	``400 Bad Request``, Existing static dataset with same ``hash`` and ``containerType``, JSON object
 	``400 Bad Request``, Malformed or invalid container
 	``403 Forbidden``, Unauthorized access
 	``409 Conflict``, Existing completed dataset with same UUID

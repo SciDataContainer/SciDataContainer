@@ -9,7 +9,7 @@ There are no restrictions regarding data formats inside the container, but items
 
 Only the two items ``content.json`` and ``meta.json`` are required and must be located in the root part of the container. The optional root item ``license.txt`` may be used to store the text of the license for the dataset.
 
-The data payload of a container consisting of the datset and the parameter data should be stored in certain parts of the container. Although there are no restrictions in using parts, you should restrict yourself to a set of `suggested parts <#parts>`_.
+The data payload of a container consisting of the dataset and the parameter data should be stored in certain parts of the container. Although there are no restrictions in using parts, you should restrict yourself to a set of `suggested parts <#parts>`_.
 
 Container Parameters
 --------------------
@@ -78,7 +78,7 @@ Standardization simplifies data exchange as well as reuse of data. Therefore, it
 Container Variants
 ------------------
 
-Our data model currently supports three variants of data containers, based on certain usecases. The distinction is mainly relevant for data storage and therefore of particular interest when you upload the container to a storage server. The respective variant is selected using the boolean attributes ``static`` and ``complete`` of the item ``content.json``:
+Our data model currently supports three variants of data containers, based on certain use cases. The distinction is mainly relevant for data storage and therefore of particular interest when you upload the container to a storage server. The respective variant is selected using the boolean attributes ``static`` and ``complete`` of the item ``content.json``:
 
 .. csv-table:: 
     :header: ``static``, ``complete``, Container variant
