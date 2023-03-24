@@ -25,7 +25,7 @@
 from importlib import import_module
 from .filebase import FileBase
 from .container import DataContainer, timestamp
-from .container import MODELVERSION as version
+from .container import MODELVERSION as modelVersion
 
 suffixes = {}
 classes = {}

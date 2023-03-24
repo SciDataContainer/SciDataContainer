@@ -9,15 +9,7 @@ import re
 import setuptools  # required for command bdist_wheel
 from distutils.core import setup
 
-pkg = "scidatacontainer"
-version = None
-with open(pkg + "/container.py", "r") as fp:
-    for line in fp.readlines():
-        if line[:15] == "MODELVERSION = ":
-            version = eval(line[15:].split()[0].strip())
-            break
-    else:
-        raise RuntimeError("MODELVERSION missing in container.py!")
+version = "0.5.3"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
@@ -34,7 +26,7 @@ setup(name="SciDataContainer",
       author="Reinhard Caspary",
       author_email="reinhard.caspary@phoenixd.uni-hannover.de",
       url="https://github.com/reincas/scidatacontainer",
-      packages=[pkg],
+      packages=["scidatacontainer"],
       keywords=["Research Data Management", "Data Container", "Meta Data"],
       license="MIT License",
       classifiers=[

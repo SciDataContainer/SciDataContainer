@@ -24,9 +24,8 @@ from .filebase import FileBase, TextFile, JsonFile
 from .config import load_config
 config = load_config()
 
-
 # Version of the implemented data model
-MODELVERSION = "0.5.2"
+MODELVERSION = "0.6"
 
 
 ##########################################################################
@@ -488,14 +487,25 @@ class DataContainer(object):
         # available on the server. Static datasets require a special
         # treatment: The current dataset is replaced by the one from the
         # server.
-        if response.status_code == 409:
+        if response.status_code == 400:
             if self["content.json"]["static"]:
                 data = json.loads(response.content.decode("UTF-8"))
                 if isinstance(data, dict) and data["static"]:
                     self._download(uuid=data["id"], server=server, key=key)
                     return
-            uuid = self["content.json"]["uuid"]
-            raise requests.HTTPError("409: Duplicate UUID '%s'" % uuid)
+            raise requests.HTTPError("400 Bad Request: Invalid container content")
+
+        # Unauthorized access
+        elif response.status_code == 403:
+            raise requests.HTTPError("403 Forbidden: Unauthorized access")
+
+        # Duplicate UUID
+        elif response.status_code == 409:
+            raise requests.HTTPError("409 Conflict: UUID is already existing")
+
+        # Invalid container format
+        elif response.status_code == 415:
+            raise requests.HTTPError("415 Unsupported: Invalid container format")
 
         # Standard exception handler for other HTTP status codes
         else:
@@ -541,23 +551,19 @@ class DataContainer(object):
             
         # Deleted dataset: Raise exception
         elif response.status_code == 204:
-            if data:
-                print("*** BEGIN ERROR MESSAGE ***")
-                print(data)
-                print("*** END ERROR MESSAGE ***")
-            raise requests.HTTPError("204: Dataset deleted (%s)" % uuid)
+            raise requests.HTTPError("204 No Content: Deleted dataset")
             
         # Replaced dataset: Store in this container
         elif response.status_code == 301:
             self.decode(data, strict)
             
+        # Unauthorized access
+        elif response.status_code == 403:
+            raise requests.HTTPError("403 Forbidden: Unauthorized access")
+
         # Unknown dataset: Raise exception
         elif response.status_code == 404:
-            if data:
-                print("*** BEGIN ERROR MESSAGE ***")
-                print(data)
-                print("*** END ERROR MESSAGE ***")
-            raise requests.HTTPError("404: Unknown dataset (%s)" % uuid)
+            raise requests.HTTPError("404 Not Found: Unknown dataset")
             
         # Standard exception handler for other HTTP status codes
         else:
