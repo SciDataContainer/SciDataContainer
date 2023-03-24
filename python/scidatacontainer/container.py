@@ -26,7 +26,7 @@ config = load_config()
 
 
 # Version of the implemented data model
-MODELVERSION = "0.5.1"
+MODELVERSION = "0.5.2"
 
 
 ##########################################################################
@@ -34,9 +34,9 @@ MODELVERSION = "0.5.1"
 
 def timestamp():
 
-    """ Timestamp function. """
+    """ Return the current ISO 8601 compatible timestamp string. """
 
-    return time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(time.time()))
+    return time.strftime("%Y-%m-%dT%H:%M:%S%z", time.gmtime(time.time()))
 
 
 ##########################################################################
@@ -295,8 +295,8 @@ class DataContainer(object):
             meta["description"] = ""
 
         # Data creation time is optional
-        if "created" not in meta:
-            meta["created"] = ""
+        if "timestamp" not in meta:
+            meta["timestamp"] = ""
 
         # Data DOI is optional
         if "doi" not in meta:

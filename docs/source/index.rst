@@ -1,27 +1,11 @@
-.. scidatacontainer documentation master file, created by
-   sphinx-quickstart on Thu Mar 16 14:42:17 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to scidatacontainer's documentation!
+Welcome to SciDataContainer's documentation!
 ============================================
-This is a lean container class for the storage of scientific data, in a way compliant to the `FAIR principles <https://en.wikipedia.org/wiki/FAIR_data>`_ of modern research data management.
-Using a standardized container file it provides maximum flexibility and minimal restrictions.
-Data containers may be stored as local files and uploaded to a data storage server.
-The class is operating system independent.
-This is a project of the cluster of Excellence `PhoenixD <https://www.phoenixd.uni-hannover.de>`_ and the data server is currently only available for PhoenixD members.
-However, we intend to make the whole project including the server publicly available.
-If you are from outside PhoenixD and wish to get early access, you are welcome.
-Please contact us.
 
-Installation
-------------
-The easiest way to install the latest version of `scidatacontainer <https://pypi.org/project/scidatacontainer/>`_ is using PIP:
+This documentation describes a lean container file format for the storage of scientific data in a way compliant to the `FAIR principles <https://en.wikipedia.org/wiki/FAIR_data>`_ of modern research data management. The standardized data container provides maximum flexibility and minimal restrictions. It is operating system independent and may be stored as local file as well as uploaded to a data storage server.
 
-.. code-block:: console
+Data containers may be built and accessed using standard operating system tools. However, specialized tools make the workflow much more convenient. A `Python library <python_library/index.html>`_ is already available, others will follow. Furthermore, a native GUI application for Microsoft Windows is on the way.
 
-    pip install scidatacontainer
-
+This is a project of the cluster of Excellence `PhoenixD <https://www.phoenixd.uni-hannover.de>`_ and the data server is currently only available for PhoenixD members. However, we intend to make the whole project including the server publicly available. If you are from outside PhoenixD and wish to get early access, you are welcome. Please contact us.
 
 .. toctree::
    :maxdepth: 2
@@ -30,18 +14,14 @@ The easiest way to install the latest version of `scidatacontainer <https://pypi
    concept.rst
    configuration.rst
 
-
-Python Library
-==============
-
 .. toctree::
    :maxdepth: 2
 
    python_library/index.rst
 
-Indices and tables
-==================
+..	Indices and tables
+	==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+	* :ref:`genindex`
+	* :ref:`modindex`
+	* :ref:`search`

@@ -6,9 +6,11 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'scidatacontainer'
+project = 'SciDataContainer'
 copyright = '2023, Reinhard Caspary, Sven Kleinert'
 author = 'Reinhard Caspary, Sven Kleinert'
+version = '0.5'
+release = '0.5.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
