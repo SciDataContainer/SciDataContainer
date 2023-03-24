@@ -2,13 +2,15 @@ Configuration
 =============
 
 Container File Extension
-----------------------------------
+------------------------
 
 On Microsoft Windows you may inspect ZDC files with a double-click in the Windows Explorer. This requires that you register the extension ``.zdc`` in the same way as ``.zip``. Run the following on the command prompt to achieve this behaviour:
 
 .. code-block:: powershell
 
     reg copy HKCR\.zip HKCR\.zdc /s /f
+
+.. _scidata:
 
 Configuration File
 ------------------
@@ -26,6 +28,9 @@ The following parameters are supported:
 	``DC_EMAIL``, ``email``, e-mail address of the author
 	``DC_SERVER``, ``server``, name or address of the data storage server
 	``DC_KEY``, ``key``, key for the storage server API
+
+A value in the configuration file supersedes the content of the respective environment variable.
+
 
 Example Configuration File
 --------------------------

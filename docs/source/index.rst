@@ -1,5 +1,5 @@
-Welcome to SciDataContainer's documentation!
-============================================
+Welcome to SciDataContainer!
+============================
 
 This documentation describes a lean container file format for the storage of scientific data in a way compliant to the `FAIR principles <https://en.wikipedia.org/wiki/FAIR_data>`_ of modern research data management. The standardized data container provides maximum flexibility and minimal restrictions. It is operating system independent and may be stored as local file as well as uploaded to a data storage server.
 
@@ -11,17 +11,14 @@ The data storage server is currently only available for PhoenixD members. Howeve
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    concept.rst
    configuration.rst
+   python/index.rst
+   server.rst
 
-.. toctree::
-   :maxdepth: 2
-
-   python_library/index.rst
-
-..	Indices and tables
+..	Indices and Tables
 	==================
 
 	* :ref:`genindex`

@@ -33,7 +33,7 @@ The parameters describing the container itself are stored in the required root i
     + ``idType``: required type of identifier, if ``id`` is given
 - ``modelVersion``: required data model version
 
-Description of Data
+Dataset Description
 -------------------
 
 The meta data describing the data payload of the container is stored in the required root item ``meta.json``, which contains a single JSON object. The following set of attributes is currently defined for this item:
@@ -56,7 +56,7 @@ Timestamp Format
 
 An `ISO 8601 <https://en.wikipedia.org/wiki/ISO_8601>`_ compatible string in a certain format is expected as value of timestamp attributes in ``content.json`` and ``meta.json``. The required format contains the UTC date and time and the local timezone. For example::
 
-"2023-02-17T15:23:57-0100"
+"2023-02-17T15:23:57+0100"
 
 .. _parts:
 
