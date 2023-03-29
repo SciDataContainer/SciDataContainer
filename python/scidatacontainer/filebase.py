@@ -4,9 +4,9 @@
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
-# This module provides the base data conversion class FileBase and
+# This module provides the base data conversion class AbstractFile and
 # standard text conversion classes. All data conversion classes should
-# inherit from FileBase and must provide three methods:
+# inherit from AbstractFile and must provide three methods:
 #
 # encode(): Return data encoded as bytes string.
 # decode(data): Decode and store given bytes string data.
@@ -17,76 +17,111 @@
 #
 ##########################################################################
 
+from abc import ABC, abstractmethod
 import hashlib
 import json
+import typing
 
 
 ##########################################################################
 # Data conversion classes
 
-class FileBase(object):
-
-    """ Basic class for bytes data. """
+class AbstractFile(ABC):
+    """Base class for converting datatypes to their file representation."""
 
     def __init__(self, data):
-
-        """ Store data. """
-
+        """Constructor to create an instance of the converter class. """
         if isinstance(data, bytes):
             self.decode(data)
         else:
             self.data = data
 
-    def hash(self):
-
-        """ Return hex digest of SHA256 hash. """
-
+    def hash(self) -> str:
+        """Return hex digest of SHA256 hash.
+        
+        Returns:
+            str: Hex digest of this object as string.
+        """
         return hashlib.sha256(self.encode()).hexdigest()
 
-    def encode(self):
+    @abstractmethod
+    def encode(self) -> bytes:
+        """Encode the Container content to bytes. This is an abstract method
+        and it needs to be overwritten by inheriting class.
 
-        """ Return encoded data as bytes string. """
+        Returns:
+            bytes: Byte string representation of the object.
+        """
+        pass
 
+    @abstractmethod
+    def decode(self, data: bytes):
+        """Decode the Container content from bytes. This is an abstract method
+        and it neets to be overwritten by inheriting class.
+        """
+        pass
+
+
+class BinaryFile(AbstractFile):
+    """Data conversion class for a binary file."""
+
+    def encode(self) -> bytes:
+        """Return byte string stored in this class.
+
+        Returns:
+            bytes: Byte string representation of the object.
+        """
         return self.data
 
-    def decode(self, data):
-
-        """ Decode and store data from bytes string. """
-
+    def decode(self, data: bytes):
+        """Store bytes in this class."""
         self.data = data
 
 
-class TextFile(FileBase):
-
-    """ Data conversion class for a text file. """
-
+class TextFile(AbstractFile):
+    """ Data conversion class for a text file.
+    """
     charset = "utf8"
+    """charset (str): Character encoding used for translation from text to\
+                      bytes."""
 
-    def encode(self):
+    def encode(self) -> bytes:
+        """ Encode text to bytes string.
 
-        """ Encode text to bytes string. """
+        Returns:
+            bytes: Byte string representation of the object.
+        """
 
         return bytes(self.data, self.charset)
 
-    def decode(self, data):
+    def decode(self, data: bytes):
 
         """ Decode text from given bytes string. """
 
         self.data = data.decode(self.charset)
         
 
-class JsonFile(FileBase):
+class JsonFile(AbstractFile):
 
     """ Data conversion class for a JSON file represented as Python
     dictionary. """
 
     indent = 4
+    """indent (int): Indentation of exported JSON files."""
     charset = "utf8"
+    """charset (str): Character encoding used for translation from text to\
+                      bytes."""
 
-    def sortit(self, data):
-
+    def sortit(self, data: typing.Union[dict, list, tuple]) -> str:
         """ Return compact string representation with keys of all
-        sub-dictionaries sorted. """
+        sub-dictionaries sorted.
+
+        Args:
+            data: Dictionary, list or tuple to convert to string"
+
+        Returns:
+            str: String representation of `data`
+        """
 
         if isinstance(data, dict):
             keys = sorted(data.keys())
@@ -101,24 +136,30 @@ class JsonFile(FileBase):
             return data
         return repr(data)
 
-    def hash(self):
-
-        """ Return hex digest of the SHA256 hash calculated from the
+    def hash(self) -> str:
+        """Return hex digest of the SHA256 hash calculated from the
         sorted compact representation. This should result in the same
-        hash for semantically equal data dictionaries. """
+        hash for semantically equal data dictionaries.
+
+        Returns:
+            str: Hex digest of this object as string.
+        """
 
         data = bytes(self.sortit(self.data), self.charset)
         return hashlib.sha256(data).hexdigest()
 
-    def encode(self):
+    def encode(self) -> bytes:
+        """Convert dictionary to pretty string representation with
+        indentation and return it as bytes string.
 
-        """ Convert dictionary to pretty string representation with
-        indentation and return it as bytes string. """
+        Returns:
+            bytes: Byte string representation of the object.
+        """
 
         data = json.dumps(self.data, sort_keys=True, indent=self.indent)
         return bytes(data, self.charset)
 
-    def decode(self, data):
+    def decode(self, data: bytes):
 
         """ Decode dictionary from given bytes string. """
 
@@ -126,7 +167,7 @@ class JsonFile(FileBase):
 
 
 register = [
-    ("bin", FileBase, bytes),
+    ("bin", BinaryFile, bytes),
     ("json", JsonFile, dict),
     ("txt", TextFile, str),
     ("log", TextFile, None),

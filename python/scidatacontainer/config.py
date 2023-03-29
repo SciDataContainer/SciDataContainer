@@ -33,9 +33,19 @@ import os
 import platform
 
 
-def load_config():
+def load_config() -> dict:
+    """Get config data from environment variables and config file.
 
-    """ Get config data from environment variables and config file. """
+    This functions prefers values in the scidata config file and potentially
+    overwrites values that are present as environmental variables.
+
+    Usually, users doen't need to call this function. However, it can be used
+    for debugging purposes if the configuration parameters are not as expected.
+
+    Returns:
+        dict: A dictionary containing information strings with keys "author",\
+              "email", "server", "key".
+    """
 
     # Initialize config dictionary
     config = {"author": "", "email": "", "server": "", "key": ""}

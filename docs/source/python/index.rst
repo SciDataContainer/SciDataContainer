@@ -17,3 +17,4 @@ The easiest way to install the latest version of the `scidatacontainer <https://
 
    usage.rst
    advanced.rst
+   api.rst

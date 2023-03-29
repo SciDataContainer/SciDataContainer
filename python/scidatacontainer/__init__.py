@@ -23,8 +23,9 @@
 ##########################################################################
 
 from importlib import import_module
-from .filebase import FileBase
-from .container import DataContainer, timestamp
+import typing
+from .filebase import AbstractFile
+from .container import AbstractContainer, timestamp
 from .container import MODELVERSION as modelVersion
 
 suffixes = {}
@@ -32,11 +33,19 @@ classes = {}
 formats = []
 
 
-def register(suffix, fclass, pclass=None):
+def register(suffix: str,
+             fclass: typing.Type[AbstractFile],
+             pclass: typing.Type[object] = None):
+    """ Register a suffix to a conversion class.
 
-    """ Register a suffix to a conversion class. If the parameter class
-    is a string, it is interpreted as known suffix and the conversion
-    class of this suffix is registered also for the new one. """
+    If the parameter class is a string, it is interpreted as known suffix and
+    the conversion class of this suffix is registered also for the new one.
+
+    Args:
+        suffix: file suffix to identify this file type.
+        fclass: Conversion class derived from AbstractFile.
+        pclass: Python class that represents this object type.
+    """
 
     if isinstance(fclass, str):
         if not pclass is None:
@@ -77,7 +86,7 @@ for name in ("filebase", "fileimage", "filenumpy"):
 
     
 # Inject certain known file formats into the container class
-class Container(DataContainer):
+class Container(AbstractContainer):
 
     """ Scientific data container. """
 

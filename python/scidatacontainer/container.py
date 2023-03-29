@@ -11,16 +11,18 @@
 #
 ##########################################################################
 
+from abc import ABC
 import copy
 import hashlib
 import io
 import json
 import requests
 import time
+import typing 
 import uuid
 from zipfile import ZipFile
 
-from .filebase import FileBase, TextFile, JsonFile
+from .filebase import BinaryFile, TextFile, JsonFile
 from .config import load_config
 config = load_config()
 
@@ -31,9 +33,12 @@ MODELVERSION = "0.6"
 ##########################################################################
 # Timestamp function
 
-def timestamp():
+def timestamp() -> str:
+    """Return the current ISO 8601 compatible timestamp as string.
 
-    """ Return the current ISO 8601 compatible timestamp string. """
+    Returns:
+        str: timestamp as string
+    """
 
     return time.strftime("%Y-%m-%dT%H:%M:%S%z", time.gmtime(time.time()))
 
@@ -41,18 +46,42 @@ def timestamp():
 ##########################################################################
 # Data container class
 
-class DataContainer(object):
+class AbstractContainer(ABC):
+    """Scientific data container with minimal file support.
 
-    """ Scientific data container with minimal file support. """
+    The following file types are supported:
+        - .json <-> dict
+        - .txt <-> str
+        - .bin <-> bytes
+    """
 
     _config = config
-    _suffixes = {"json": JsonFile, "txt": TextFile, "bin": FileBase}
-    _classes = {dict: JsonFile, str: TextFile, bytes: FileBase}
+    _suffixes = {"json": JsonFile, "txt": TextFile, "bin": BinaryFile}
+    _classes = {dict: JsonFile, str: TextFile, bytes: BinaryFile}
     _formats = [TextFile]
 
 
-    def __init__(self, items=None, file=None, uuid=None, server=None, key=None):
+    def __init__(self,
+                 items: dict = None,
+                 file: str = None,
+                 uuid: str = None,
+                 server: str = None,
+                 key: str = None):
+        """Constructor of a DataContainer object.
 
+        It will try the following in the specified order:
+            - Create a new DataContainer if items is passed as argument.
+            - Load local DataContainer from hard drive if file is passed.
+            - Download a DataContainer from a server if uuid is passed.
+
+        Args:
+            items: Dictionary of items to build a new DataContainer.
+            file: Filename to read a DataContainer from local hard drive.
+            uuid: UUID of a Container to download from a server instance.
+            server: URL of the server instance that has the Container.
+            key: API-Key from the server to identify yourself.
+        """
+            
         # Container must be mutable initially
         self.mutable = True
 
@@ -128,7 +157,7 @@ class DataContainer(object):
         # Unregistered file extension
         if not ext in self._suffixes:
 
-            # Try to convert bytes. Default is FileBase.
+            # Try to convert bytes. Default is BinaryFile.
             if isinstance(data, bytes):
                 for cls in self._formats:
                     try:
@@ -137,7 +166,7 @@ class DataContainer(object):
                     except:
                         pass
                 else:
-                    item = FileBase(data)
+                    item = BinaryFile(data)
 
             # Other Python object must be registered
             else:
@@ -167,9 +196,9 @@ class DataContainer(object):
 
 
     def validate_content(self):
-
-        """ Make sure that the item "content.json" exists and contains
-        all required attributes. """
+        """Make sure that the item "content.json" exists and contains
+        all required attributes.
+        """
 
         # Get a copy of the item "content.json"
         content = copy.deepcopy(self["content.json"])
@@ -254,9 +283,9 @@ class DataContainer(object):
         
 
     def validate_meta(self):
-        
-        """ Make sure that the item "meta.json" exists and contains
-        all required attributes. """
+        """Make sure that the item "meta.json" exists and contains
+        all required attributes.
+        """
 
         # Get a copy of the item "meta.json"
         meta = copy.deepcopy(self["meta.json"])
@@ -322,30 +351,37 @@ class DataContainer(object):
             del self._items[path]
             
 
-    def keys(self):
+    def keys(self) -> typing.List[str]:
+        """Return a sorted list of the full paths of all items.
 
-        """ Return a sorted list of the full paths of all items. """
+        Returns:
+            typing.List[str]: List of paths of Container items.
+        """
 
         return sorted(self._items.keys())
 
 
-    def values(self):
+    def values(self) ->typing.List:
+        """Return a list of all item objects.
 
-        """ Return a list of all item objects. """
+        Returns:
+            typing.List: List of item objects of the Container.
+        """
 
         return [self[k] for k in self.keys()]
 
 
     def items(self):
-
-        """ Return this container as a dictionary of item objects. """
+        """Return this container as a dictionary of item objects (key, value)
+        tuples.
+        """
 
         return {k: self[k] for k in self.keys()}
 
 
     def hash(self):
-
-        """ Calculate hash value of this container. """
+        """Calculate and save the hash value of this container.
+        """
 
         # Some attributes of content.json are excluded from the hash
         # calculation
@@ -369,8 +405,7 @@ class DataContainer(object):
 
 
     def freeze(self):
-
-        """ Calculate the hash value of this container and make it
+        """Calculate the hash value of this container and make it
         static. The container cannot be modified any more when this
         method was called once. """
 
@@ -380,8 +415,7 @@ class DataContainer(object):
 
 
     def release(self):
-
-        """ Make this container mutable. If it was immutable, this
+        """Make this container mutable. If it was immutable, this
         method will create a new UUID and initialize the attributes
         replaces, created, modified and modelVersion in the item
         "content.json". It will also delete an existing hash and make it
@@ -402,9 +436,9 @@ class DataContainer(object):
         
 
     def encode(self):
-
         """ Encode container as ZIP package. Return package as binary
-        string. """
+        string.
+        """
 
         items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
@@ -416,10 +450,15 @@ class DataContainer(object):
         return data
     
 
-    def decode(self, data, validate=True, strict=True):
+    def decode(self, data:bytes, validate: bool = True, strict: bool = True):
+        """Take ZIP package as binary string. Read items from the
+        package and store them in this object.
 
-        """ Take ZIP package as binary string. Read items from the
-        package and store them in this object. """
+        Arguments:
+            data: Bytestring containing the ZIP DataContainer.
+            validate: If true, validate the content.
+            strict: If true, validate the hash, too.
+        """
         
         with io.BytesIO() as f:
             f.write(data)
@@ -429,9 +468,17 @@ class DataContainer(object):
         self._store(items, validate, strict)
 
         
-    def write(self, fn, data=None):
+    def write(self, fn: str, data:bytes = None):
+        """Write the container to a ZIP package file.
 
-        """ Write the container to a ZIP package file. """
+        If data is passed to the function, data will be written to the file.
+        Otherwise the byte representation of the class instance will be written
+        to the file, which is what you typically want.
+
+        Args:
+            fn: Filename of export file.
+            data: If given, data to write to the file.
+        """
 
         if data is None:
             data = self.encode()
@@ -441,17 +488,30 @@ class DataContainer(object):
 
 
     def _read(self, fn, strict=True):
-
-        """ Read a ZIP package file and store it as container in this
-        object. """
+        """Read a ZIP package file and store it as container in this
+        object.
+        """
 
         with open(fn, "rb") as fp:
             data = fp.read()
         self.decode(data, False, strict)
         self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
 
+    def upload(self,
+               data: bytes = None,
+               server: str = None,
+               key: str = None):
+        """Create a ZIP archive of the DataContainer and upload it to a server.
 
-    def upload(self, data=None, strict=True, server=None, key=None):
+        If data is passed to the function, data will be written to the file.
+        Otherwise the byte representation of the class instance will be written
+        to the file, which is what you typically want.
+        
+        Args:
+            data: If given, data to write to the file.
+            server: URL of the server.
+            key: API Key from the server to identify yourself.
+        """
 
         # Server name is required and must be provided either via config
         # file, environment variable or method parameter

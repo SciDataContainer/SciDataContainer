@@ -5,7 +5,7 @@
 ##########################################################################
 #
 # This module provides data conversion classes for image files. All
-# data conversion classes should inherit from filebase.FileBase and must
+# data conversion classes should inherit from filebase.AbstractFile and must
 # provide three methods:
 #
 # encode(): Return data encoded as bytes string.
@@ -20,10 +20,10 @@
 import cv2 as cv
 import numpy as np
 
-from .filebase import FileBase
+from .filebase import AbstractFile
 
 
-class PngFile(FileBase):
+class PngFile(AbstractFile):
 
     """ Data conversion class for PNG image. """
 

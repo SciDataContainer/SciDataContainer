@@ -1,3 +1,8 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../../python'))
+print(os.path.abspath('../../python/scidatacontainer'))
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -17,6 +22,9 @@ release = '0.5.4'
 
 extensions = [
               'sphinx_copybutton',
+              'sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.napoleon',
              ]
 
 templates_path = ['_templates']
