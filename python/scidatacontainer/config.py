@@ -33,7 +33,7 @@ import os
 import platform
 
 
-def load_config() -> dict:
+def load_config(config_path: str = None) -> dict:
     """Get config data from environment variables and config file.
 
     This functions prefers values in the scidata config file and potentially
@@ -41,6 +41,10 @@ def load_config() -> dict:
 
     Usually, users doen't need to call this function. However, it can be used
     for debugging purposes if the configuration parameters are not as expected.
+
+    Args:
+        str: Path of the config file. If this is None, the default file will
+             be used. This filename is only required for testing.
 
     Returns:
         dict: A dictionary containing information strings with keys "author",\
@@ -57,12 +61,14 @@ def load_config() -> dict:
             config[key] = os.environ[name]
             
     # Get default values from config file
-    if platform.system() == "Windows":
-        conf = os.path.join(os.path.expanduser("~"), "scidata.cfg")
-    else:
-        conf = os.path.join(os.path.expanduser("~"), ".scidata")
-    if os.path.exists(conf):
-        with open(conf, "r") as fp:
+    if not config_path:
+        if platform.system() == "Windows":
+            config_path = os.path.join(os.path.expanduser("~"), "scidata.cfg")
+        else:
+            config_path = os.path.join(os.path.expanduser("~"), ".scidata")
+
+    if os.path.exists(config_path):
+        with open(config_path, "r") as fp:
             for line in fp.readlines():
                 line = line.strip()
                 if line[:1] == "#":
@@ -76,4 +82,3 @@ def load_config() -> dict:
 
     # Return config dictionary
     return config
-
