@@ -124,6 +124,9 @@ class AbstractContainer(ABC):
             self.validate_content()
             self.validate_meta()
 
+        if self["content.json"]["static"] and not self["content.json"]["hash"]:
+            self.hash()
+
         # Check validity of hash
         if strict and self["content.json"]["hash"]:
             oldhash = self["content.json"]["hash"]
