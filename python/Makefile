@@ -14,6 +14,7 @@ endif
 
 MAKE := make
 PYTHON := python
+COVERAGE := coverage
 
 #######################################################################
 # Targets
@@ -36,11 +37,20 @@ sdist: clean
 bdist: clean
 	$(PYTHON) setup.py bdist_wheel
 
-test: install
-	$(MAKE) -C test test
-
 pypi:
 	$(PYTHON) -m twine upload dist/*
+
+test:
+	$(PYTHON) -m unittest discover
+
+coverage:
+	$(COVERAGE) run -m unittest discover
+
+report: coverage
+	$(COVERAGE) report -i
+
+htmlreport: coverage
+	 $(COVERAGE) html -i
 
 all: install pypi
 

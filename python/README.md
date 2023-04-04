@@ -12,3 +12,15 @@ The easiest way to install the latest version of [`SciDataContainer`](https://py
 ```
 >>> pip install SciDataContainer
 ```
+
+## Tests
+
+The tests require the [`coverage`](https://pypi.org/project/coverage/) python package. Run:
+```
+>>> make report
+```
+to get a command line coverage report. It's also possible to create a HTML report:
+```
+>>> make htmlreport
+```
+
