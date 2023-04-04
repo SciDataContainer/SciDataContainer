@@ -13,11 +13,11 @@
 
 from abc import ABC
 import copy
+from datetime import datetime, timezone
 import hashlib
 import io
 import json
 import requests
-import time
 import typing 
 import uuid
 from zipfile import ZipFile
@@ -34,13 +34,12 @@ MODELVERSION = "0.6"
 # Timestamp function
 
 def timestamp() -> str:
-    """Return the current ISO 8601 compatible timestamp as string.
+    """Return the current ISO 8601 compatible timestamp as string. 
 
     Returns:
         str: timestamp as string
     """
-
-    return time.strftime("%Y-%m-%dT%H:%M:%S%z", time.gmtime(time.time()))
+    return datetime.now(timezone.utc).isoformat(timespec='seconds')
 
 
 ##########################################################################

@@ -14,10 +14,9 @@ class TestMultiStepContainer(AbstractContainerTest):
         cls.items["content.json"]["static"] = False
         cls.items["content.json"]["complete"] = False
         cls.items_minimal["content.json"]["complete"] = False
-        created = datetime.strptime(cls.items["content.json"]["created"],
-                                    "%Y-%m-%dT%H:%M:%S%z")
+        created = datetime.fromisoformat(cls.items["content.json"]["created"])
         created -= timedelta(seconds=1)
-        cls.created = created.strftime("%Y-%m-%dT%H:%M:%S%z")
+        cls.created = created.isoformat(timespec="seconds")
         cls.items["content.json"]["created"] = cls.created
         cls.items_minimal["content.json"]["created"] = cls.created
 
