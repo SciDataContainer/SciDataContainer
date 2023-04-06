@@ -2,7 +2,7 @@ from abc import ABC
 from unittest import TestCase
 import uuid
 
-import numpy as np
+import requests
 
 import scidatacontainer
 
@@ -36,8 +36,7 @@ class AbstractContainerTest(ABC, TestCase):
                                      }
                           }
 
-        rng = np.random.default_rng()
-        cls.img = rng.integers(0, 256, size=(256, 128, 3))
+        cls.data = [[float(i) for i in range(256)] for j in range(128)]
         cls.name = "John Doe"
         cls.email = "john@example.com"
         cls.org = "Example ORG"
@@ -78,7 +77,7 @@ class AbstractContainerTest(ABC, TestCase):
                          "license": "MIT",
                          "timestamp": cls.timestamp,
                          },
-                     "meas/image.png": cls.img,
+                     "meas/image.tsv": cls.data,
                      "data/parameter.json": cls.parameter,
                      }
 
@@ -92,7 +91,7 @@ class AbstractContainerTest(ABC, TestCase):
                           "email": cls.email,
                           "title": "This is a sample image dataset",
                           },
-                      "meas/image.png": cls.img,
+                      "meas/image.tsv": cls.data,
                       "data/parameter.json": cls.parameter,
                       }
         cls.export_filename = "test.zdc"
@@ -144,8 +143,8 @@ class AbstractContainerTest(ABC, TestCase):
         self.assertEqual(items["meta.json"]["license"],
                          dc["meta.json"]["license"])
 
-        np.testing.assert_equal(dc["meas/image.png"],
-                                self.img)
+        self.assertEqual(dc["meas/image.tsv"],
+                         self.data)
 
         self.assertEqual(dc["data/parameter.json"],
                          self.parameter)
@@ -198,8 +197,25 @@ class AbstractContainerTest(ABC, TestCase):
         self.assertEqual("",
                          dc["meta.json"]["license"])
 
-        np.testing.assert_equal(dc["meas/image.png"],
-                                self.img)
+        self.assertEqual(dc["meas/image.tsv"],
+                         self.data)
 
         self.assertEqual(dc["data/parameter.json"],
                          self.parameter)
+
+
+def _check_server_connection():
+    cfg = scidatacontainer.config.load_config()
+    if (cfg["server"] == "") or (cfg["key"] == ""):
+        return False
+
+    try:
+        response = requests.get(cfg["server"] + "/api/datasets/",
+                                headers={"Authorization": "Token " +
+                                                          cfg["key"]})
+    except requests.exceptions.ConnectionError:
+        return False
+    return response.status_code == 200
+
+
+has_connection = _check_server_connection()

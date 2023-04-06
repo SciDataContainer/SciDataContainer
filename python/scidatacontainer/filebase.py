@@ -94,8 +94,8 @@ class TextFile(AbstractFile):
 
         return bytes(self.data, self.charset)
 
-    def decode(self, data: bytes):
 
+    def decode(self, data: bytes):
         """ Decode text from given bytes string. """
 
         self.data = data.decode(self.charset)
@@ -166,11 +166,38 @@ class JsonFile(AbstractFile):
         self.data = json.loads(data.decode(self.charset))
 
 
+class TabSeparatedValuesFile(AbstractFile):
+    """ Data conversion class for a tab-separated value file.
+    """
+    charset = "utf8"
+    """charset (str): Character encoding used for translation from a list of\
+                      lists to bytes."""
+
+    def encode(self) -> bytes:
+        """ Encode 2D array (list of lists) to bytes string.
+
+        Returns:
+            bytes: Byte string representation of the object.
+        """
+        s = '\n'.join(['\t'.join([str(v) for v in l]) for l in self.data])
+
+        return bytes(s, self.charset)
+
+    def decode(self, data: bytes):
+        """Decode 2D array (list of lists) from given bytes string.
+
+        """
+
+        s = data.decode(self.charset)
+        self.data = [[float(x) for x in l.split('\t')] for l in s.split('\n')]
+
+
 register = [
     ("bin", BinaryFile, bytes),
     ("json", JsonFile, dict),
     ("txt", TextFile, str),
     ("log", TextFile, None),
     ("pgm", "txt", None),
+    ("tsv", TabSeparatedValuesFile, None),
     ]
     

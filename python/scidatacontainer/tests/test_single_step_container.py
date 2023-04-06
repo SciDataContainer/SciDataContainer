@@ -1,13 +1,13 @@
 import copy
 import os
 
-
 from scidatacontainer import Container
 
 from ._abstract_container_test import AbstractContainerTest
 
 
-class TestSingleStepContainer(AbstractContainerTest):
+class AbstractSingleStepContainerTest(AbstractContainerTest):
+
     def _compare_with_items(self, dc):
         super()._compare_with_items(dc)
         self.assertFalse(dc["content.json"]["static"])
@@ -43,6 +43,8 @@ class TestSingleStepContainer(AbstractContainerTest):
 
         self.dc = dc
 
+
+class TestSingleStepContainer(AbstractSingleStepContainerTest):
     def test_container_creation_minimal(self):
         items = self.items_minimal
         dc = Container(items=items)
@@ -63,8 +65,8 @@ class TestSingleStepContainer(AbstractContainerTest):
 
         self._compare_with_items(dc)
 
-        old_hash = dc["content.json"]["hash"]
         self.assertIsNotNone(dc["content.json"]["hash"])
+        old_hash = dc["content.json"]["hash"]
 
         dc.hash()
         self.assertIsNotNone(dc["content.json"]["hash"])
@@ -168,8 +170,6 @@ class TestSingleStepContainer(AbstractContainerTest):
         self.dc["data/test.bin"] = b"Test123"
         self.dc["data/test.abc"] = b"Test123"
 
-        self.dc["data/test.abc"] = self.img
-
         with self.assertRaisesRegex(RuntimeError,
                                     "No matching file format found for item " +
                                     "'data/test.list'!"):
@@ -195,5 +195,5 @@ class TestSingleStepContainer(AbstractContainerTest):
         self.test_container_creation()
         self.assertEqual(self.dc.values(), [self.dc["content.json"],
                                             self.parameter,
-                                            self.img,
+                                            self.data,
                                             self.dc["meta.json"]])
