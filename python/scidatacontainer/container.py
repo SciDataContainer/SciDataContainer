@@ -20,7 +20,8 @@ import json
 import requests
 import typing 
 import uuid
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
+
 
 from .filebase import BinaryFile, TextFile, JsonFile
 from .config import load_config
@@ -65,7 +66,9 @@ class AbstractContainer(ABC):
                  file: str = None,
                  uuid: str = None,
                  server: str = None,
-                 key: str = None):
+                 key: str = None,
+                 compression: int = ZIP_DEFLATED,
+                 compresslevel: int = -1):
         """Constructor of a DataContainer object.
 
         It will try the following in the specified order:
@@ -79,6 +82,8 @@ class AbstractContainer(ABC):
             uuid: UUID of a Container to download from a server instance.
             server: URL of the server instance that has the Container.
             key: API-Key from the server to identify yourself.
+            compression: Numeric constant for the compression method
+            compresslevel: Level of compression, 0-fastest, 9-best compression
         """
             
         # Container must be mutable initially
@@ -96,10 +101,13 @@ class AbstractContainer(ABC):
         # Download container from server
         elif uuid is not None:
             self._download(uuid=uuid, server=server, key=key)
-
+        
         # No data source
         else:
             raise RuntimeError("No data!")
+
+        self.compression = compression
+        self.compresslevel = compresslevel
 
 
     def _store(self, items, validate=True, strict=True):
@@ -444,7 +452,9 @@ class AbstractContainer(ABC):
 
         items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
-            with ZipFile(f, "w") as fp:
+            with ZipFile(f, "w",
+                         compression=self.compression,
+                         compresslevel=self.compresslevel) as fp:
                 for path in sorted(items.keys()):
                     fp.writestr(path, items[path])
             f.seek(0)
