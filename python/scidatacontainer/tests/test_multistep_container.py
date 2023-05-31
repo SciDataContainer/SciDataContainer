@@ -26,7 +26,7 @@ class TestMultiStepContainer(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
 
         self.assertFalse(dc["content.json"]["complete"])
 
@@ -38,7 +38,7 @@ class TestMultiStepContainer(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
 
         self.assertFalse(dc["content.json"]["complete"])
 
@@ -76,26 +76,26 @@ class TestMultiStepContainer(AbstractContainerTest):
         self.test_container_creation()
         s = self.dc.__str__()
 
-        self.assertIn("Open Multi-Step Container", s)
+        self.assertIn("Incomplete Container", s)
         ct = self.items["content.json"]["containerType"]
-        self.assertIn("type:     " + ct["name"] + " " + ct["version"]
+        self.assertIn("type:        " + ct["name"] + " " + ct["version"]
                       + " (" + ct["id"] + ")", s)
-        self.assertIn("uuid:     " + self.dc["content.json"]["uuid"], s)
-        self.assertIn("replaces: " + self.dc["content.json"]["replaces"], s)
-        self.assertIn("created:  " + self.dc["content.json"]["created"], s)
-        self.assertIn("modified: " + self.dc["content.json"]["modified"], s)
-        self.assertIn("author:   " + self.dc["meta.json"]["author"], s)
+        self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
+        self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
+        self.assertIn("created:     " + self.dc["content.json"]["created"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
         self.dc["content.json"]["complete"] = True
 
         s = self.dc.__str__()
 
-        self.assertIn("Closed Multi-Step Container", s)
+        self.assertIn("Complete Container", s)
         ct = self.items["content.json"]["containerType"]
-        self.assertIn("type:     " + ct["name"] + " " + ct["version"]
+        self.assertIn("type:        " + ct["name"] + " " + ct["version"]
                       + " (" + ct["id"] + ")", s)
-        self.assertIn("uuid:     " + self.dc["content.json"]["uuid"], s)
-        self.assertIn("replaces: " + self.dc["content.json"]["replaces"], s)
-        self.assertIn("created:  " + self.dc["content.json"]["created"], s)
-        self.assertIn("modified: " + self.dc["content.json"]["modified"], s)
-        self.assertIn("author:   " + self.dc["meta.json"]["author"], s)
+        self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
+        self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
+        self.assertIn("created:     " + self.dc["content.json"]["created"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("author:      " + self.dc["meta.json"]["author"], s)

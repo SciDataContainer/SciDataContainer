@@ -15,7 +15,7 @@ class AbstractSingleStepContainerTest(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def _compare_with_minimal_items(self, dc):
@@ -25,7 +25,7 @@ class AbstractSingleStepContainerTest(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def test_container_creation(self):
@@ -150,14 +150,15 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
         self.test_container_creation()
         s = self.dc.__str__()
 
-        self.assertIn("Single-Step Container", s)
+        self.assertIn("Complete Container", s)
         ct = self.items["content.json"]["containerType"]
-        self.assertIn("type:     " + ct["name"] + " " + ct["version"]
+        self.assertIn("type:        " + ct["name"] + " " + ct["version"]
                       + " (" + ct["id"] + ")", s)
-        self.assertIn("uuid:     " + self.dc["content.json"]["uuid"], s)
-        self.assertIn("replaces: " + self.dc["content.json"]["replaces"], s)
-        self.assertIn("created:  " + self.dc["content.json"]["created"], s)
-        self.assertIn("author:   " + self.dc["meta.json"]["author"], s)
+        self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
+        self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
+        self.assertIn("created:     " + self.dc["content.json"]["created"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
     def test_setitem(self):
         self.test_container_creation()

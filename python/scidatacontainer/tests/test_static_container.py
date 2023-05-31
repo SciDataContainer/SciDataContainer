@@ -19,7 +19,7 @@ class TestStaticContainer(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
 
         self.assertTrue(dc["content.json"]["complete"])
 
@@ -31,7 +31,7 @@ class TestStaticContainer(AbstractContainerTest):
                          dc["content.json"]["created"])
 
         self.assertEqual(self.timestamp,
-                         dc["content.json"]["modified"])
+                         dc["content.json"]["storageTime"])
 
         self.assertTrue(dc["content.json"]["complete"])
 
@@ -123,13 +123,14 @@ class TestStaticContainer(AbstractContainerTest):
 
         self.assertIn("Static Container", s)
         ct = self.items["content.json"]["containerType"]
-        self.assertIn("type:     " + ct["name"] + " " + ct["version"]
+        self.assertIn("type:        " + ct["name"] + " " + ct["version"]
                       + " (" + ct["id"] + ")", s)
-        self.assertIn("uuid:     " + self.dc["content.json"]["uuid"], s)
-        self.assertIn("replaces: " + self.dc["content.json"]["replaces"], s)
-        self.assertIn("hash:     " + self.dc["content.json"]["hash"], s)
-        self.assertIn("created:  " + self.dc["content.json"]["created"], s)
-        self.assertIn("author:   " + self.dc["meta.json"]["author"], s)
+        self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
+        self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
+        self.assertIn("hash:        " + self.dc["content.json"]["hash"], s)
+        self.assertIn("created:     " + self.dc["content.json"]["created"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
     def test_immutable(self):
         self.test_freeze()

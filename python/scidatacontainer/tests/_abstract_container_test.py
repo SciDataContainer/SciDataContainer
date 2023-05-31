@@ -63,7 +63,7 @@ class AbstractContainerTest(ABC, TestCase):
                          "complete": True,
                          "static": False,
                          "created": cls.timestamp,
-                         "modified": cls.timestamp,
+                         "storageTime": cls.timestamp,
                          },
                      "meta.json": {
                          "author": cls.name,

@@ -53,7 +53,7 @@ def get_test_container():
                  "complete": True,
                  "static": False,
                  "created": timestamp,
-                 "modified": timestamp,
+                 "storageTime": timestamp,
                  },
              "meta.json": {
                  "author": name,

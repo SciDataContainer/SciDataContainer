@@ -54,4 +54,4 @@ htmlreport: coverage
 
 all: install pypi
 
-.PHONY: clean sdist bdist install pypi all
+.PHONY: clean test sdist bdist install pypi all

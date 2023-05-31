@@ -25,7 +25,7 @@ Container objects generated from an items dictionary using the parameter ``items
 An immutable container will throw an exception if you try to modify its content. However, this feature is not bulletproof. The ``Container`` class is not aware of any internal modifications of item objects.
 
 You can convert an immutable container into a mutable one by calling its method ``release()``.
-This generates a new UUID and resets the attributes ``replaces``, ``created``, ``modified``, ``hash`` and ``modelVersion``.
+This generates a new UUID and resets the attributes ``replaces``, ``created``, ``storageTime``, ``hash`` and ``modelVersion``.
 
 
 Server Storage

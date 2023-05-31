@@ -22,7 +22,7 @@ The parameters describing the container itself are stored in the required root i
     + ``id``: optional identifier for standardized containers
     + ``version``: required standard version, if ``id`` is given
 - ``created``: required creation timestamp (see `format <#timestamp>`_)
-- ``modified``: required last modification timestamp (see `format <#timestamp>`_)
+- ``storageTime``: required timestamp of storage or freeze (see `format <#timestamp>`_)
 - ``static``: required boolean flag (see `container variants <#variants>`_)
 - ``complete``: required boolean flag (see `container variants <#variants>`_)
 - ``hash``: optional hex digest of SHA256 hash, required for `static containers <#variants>`_
@@ -88,6 +88,6 @@ Our data model currently supports three variants of data containers, based on ce
 	false, true, normal completed container
 	false, false, incomplete container
 
-The **normal container** is generated and completed in a single step. This matches the typical workflow of generating data and saving all of it in one shot. However, if the data acquisition runs over a very long time like days or weeks, you may want to store also **incomplete containers**. In that case you can mark the container as containing incomplete data and update it as needed with increasing attribute ``modified``. Each server upload will replace the previous container. With your final upload you mark the container as being complete.
+The **normal container** is generated and completed in a single step. This matches the typical workflow of generating data and saving all of it in one shot. However, if the data acquisition runs over a very long time like days or weeks, you may want to store also **incomplete containers**. In that case you can mark the container as containing incomplete data and update it as needed with increasing attribute ``storageTime``. Each server upload will replace the previous container. With your final upload you mark the container as being complete.
 
 **Static containers** are intended to carry static parameters in contrast to measurement or simulation data. An example would be a detailed description of a measurement setup, which is used for many measurements. Instead of including the large setup data with each individual measurement dataset, the whole setup may be stored as a single static dataset and referenced by its UUID as measurement parameter in subsequent containers. Static containers must contain a hash string. The data storage server refuses the upload of multiple containers with same ``containerType`` and ``hash``.

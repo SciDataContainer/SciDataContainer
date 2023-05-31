@@ -14,8 +14,8 @@ print(os.path.abspath('../../python/scidatacontainer'))
 project = 'SciDataContainer'
 copyright = '2023, Reinhard Caspary, Sven Kleinert'
 author = 'Reinhard Caspary, Sven Kleinert'
-version = '0.5'
-release = '0.5.4'
+version = '1.0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -28,7 +28,7 @@ from .config import load_config
 config = load_config()
 
 # Version of the implemented data model
-MODELVERSION = "0.6"
+MODELVERSION = "1.0"
 
 
 ##########################################################################
@@ -261,10 +261,10 @@ class AbstractContainer(ABC):
         if "created" not in content or not content["created"]:
             content["created"] = ts
 
-        # The attribute 'modified' is updated automatically for a
-        # multi-step dataset
-        if "modified" not in content or not content["complete"]:
-            content["modified"] = ts
+        # The attribute 'storageTime' is updated automatically when the
+        # container is stored
+        if "storageTime" not in content or not content["complete"]:
+            content["storageTime"] = ts
 
         # The attribute 'hash' is optional
         if "hash" not in content or not content["hash"]:
@@ -395,7 +395,7 @@ class AbstractContainer(ABC):
 
         # Some attributes of content.json are excluded from the hash
         # calculation
-        save = ("uuid", "created", "modified")
+        save = ("uuid", "created", "storageTime")
         save = {k: self["content.json"][k] for k in save}
         for key in save:
             self["content.json"][key] = None
@@ -412,6 +412,7 @@ class AbstractContainer(ABC):
 
         # Make container immutable
         self.mutable = False
+        self["content.json"]["storageTime"] = timestamp()
 
 
     def freeze(self):
@@ -425,11 +426,11 @@ class AbstractContainer(ABC):
 
 
     def release(self):
-        """Make this container mutable. If it was immutable, this
-        method will create a new UUID and initialize the attributes
-        replaces, created, modified and modelVersion in the item
-        "content.json". It will also delete an existing hash and make it
-        a single-step container. """
+        """Make this container mutable. If it was immutable, this method
+        will create a new UUID and initialize the attributes replaces,
+        createdstorageTime and modelVersion in the item "content.json".
+        It will also delete an existing hash and make it a new
+        container. """
 
         # Do nothing if the container is already mutable
         if self.mutable:
@@ -440,7 +441,7 @@ class AbstractContainer(ABC):
         content = self["content.json"]
         content["static"] = False
         content["complete"] = True
-        for key in ("uuid", "replaces", "created", "modified", "hash"):
+        for key in ("uuid", "replaces", "created", "storageTime", "hash"):
             content.pop(key, None)
         self.validate_content()
         
@@ -492,6 +493,8 @@ class AbstractContainer(ABC):
             data: If given, data to write to the file.
         """
 
+        if self.mutable:
+            self["content.json"]["storageTime"] = timestamp()
         if data is None:
             data = self.encode()
         with open(fn, "wb") as fp:
@@ -540,6 +543,8 @@ class AbstractContainer(ABC):
             raise RuntimeError("Server API key is missing!")
 
         # Upload container as byte string
+        if self.mutable:
+            self["content.json"]["storageTime"] = timestamp()
         if data is None:
             data = self.encode()
         try:
@@ -653,27 +658,23 @@ class AbstractContainer(ABC):
         if content["static"]:
             ctype = "Static Container"
         elif content["complete"]:
-            if content["created"] == content["modified"]:
-                ctype = "Single-Step Container"
-            else:
-                ctype = "Closed Multi-Step Container"
+            ctype = "Complete Container"
         else:
-            ctype = "Open Multi-Step Container"
+            ctype = "Incomplete Container"
 
         s = [ctype]
         ptype = content["containerType"]
         name = ptype["name"]
         if "id" in ptype:
             name = "%s %s (%s)" % (name, ptype["version"], ptype["id"])
-        s.append("  type:     " + name)
-        s.append("  uuid:     " + content["uuid"])
+        s.append("  type:        " + name)
+        s.append("  uuid:        " + content["uuid"])
         if content["replaces"]:
-            s.append("  replaces: " + content["replaces"])
+            s.append("  replaces:    " + content["replaces"])
         if content["hash"]:
-            s.append("  hash:     " + content["hash"])
-        s.append("  created:  " + content["created"])
-        if "Multi" in ctype:
-            s.append("  modified: " + content["modified"])
-        s.append("  author:   " + meta["author"])
+            s.append("  hash:        " + content["hash"])
+        s.append("  created:     " + content["created"])
+        s.append("  storageTime: " + content["storageTime"])
+        s.append("  author:      " + meta["author"])
 
         return "\n".join(s)        

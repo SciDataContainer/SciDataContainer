@@ -9,7 +9,7 @@ import re
 import setuptools  # required for command bdist_wheel
 from distutils.core import setup
 
-version = "0.5.3"
+version = "1.0.0"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
