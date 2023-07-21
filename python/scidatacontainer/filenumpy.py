@@ -17,6 +17,7 @@
 #
 ##########################################################################
 
+import io
 import numpy as np
 
 from .filebase import AbstractFile
