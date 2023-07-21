@@ -51,3 +51,13 @@ Convenience functions
 .. currentmodule:: scidatacontainer.config
 
 .. autofunction:: load_config
+
+Metadata validation
+===================
+
+.. currentmodule:: scidatacontainer.jsonschema
+
+.. autofunction:: validate
+
+.. automodule:: scidatacontainer.jsonschema
+   :members: content, meta
