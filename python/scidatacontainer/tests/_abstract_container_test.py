@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import datetime, timedelta
 from unittest import TestCase
 import uuid
 
@@ -202,6 +203,11 @@ class AbstractContainerTest(ABC, TestCase):
 
         self.assertEqual(dc["data/parameter.json"],
                          self.parameter)
+
+    def _check_timestamp(self, timestamp):
+        t1 = datetime.fromisoformat(timestamp)
+        t2 = datetime.fromisoformat(self.timestamp)
+        self.assertTrue(abs(t1 - t2) < timedelta(seconds=2))
 
 
 def _check_server_connection():

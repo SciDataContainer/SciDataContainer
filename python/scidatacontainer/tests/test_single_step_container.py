@@ -11,21 +11,15 @@ class AbstractSingleStepContainerTest(AbstractContainerTest):
     def _compare_with_items(self, dc):
         super()._compare_with_items(dc)
         self.assertFalse(dc["content.json"]["static"])
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
-
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def _compare_with_minimal_items(self, dc):
         super()._compare_with_minimal_items(dc)
         self.assertFalse(dc["content.json"]["static"])
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
-
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def test_container_creation(self):
@@ -186,8 +180,7 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
 
     def test_getitem(self):
         self.test_container_creation()
-        self.assertEqual(self.timestamp,
-                         self.dc["content.json"]["created"])
+        self._check_timestamp(self.dc["content.json"]["created"])
 
         with self.assertRaisesRegex(KeyError, "Unknown item 'data/test.abc'!"):
             self.dc["data/test.abc"]
