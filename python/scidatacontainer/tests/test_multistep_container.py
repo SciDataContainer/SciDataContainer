@@ -79,7 +79,8 @@ class TestMultiStepContainer(AbstractContainerTest):
         self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
         self.dc["content.json"]["complete"] = True
@@ -93,5 +94,6 @@ class TestMultiStepContainer(AbstractContainerTest):
         self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)

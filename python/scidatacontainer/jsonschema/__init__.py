@@ -132,6 +132,7 @@ def validate(instance: dict,
         else:
             raise
 
+
 VERSIONS_AVAILABLE = ["1.0.0"]
 
 for version in VERSIONS_AVAILABLE:

@@ -45,7 +45,3 @@ class PngFile(AbstractFile):
 register = [
     ("png", PngFile, None),
     ]
-##suffixes = {"png": PngFile}
-##classes = {}
-##formats = [PngFile]
-

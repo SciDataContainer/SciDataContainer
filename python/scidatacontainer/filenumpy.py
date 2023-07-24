@@ -52,8 +52,3 @@ class NpyFile(AbstractFile):
 register = [
     ("npx", NpyFile, np.ndarray),
     ]
-
-##suffixes = {"npy": NpyFile}
-##classes = {np.ndarray: NpyFile}
-##formats = [NpyFile]
-

@@ -59,7 +59,7 @@ def load_config(config_path: str = None) -> dict:
         name = "DC_%s" % key.upper()
         if name in os.environ:
             config[key] = os.environ[name]
-            
+
     # Get default values from config file
     if not config_path:
         if platform.system() == "Windows":
