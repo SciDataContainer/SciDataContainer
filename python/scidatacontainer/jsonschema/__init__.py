@@ -1,3 +1,5 @@
+from __future__ import annotations # required for |-operator in typing
+
 import json
 import os
 
