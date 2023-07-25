@@ -142,6 +142,22 @@ class AbstractContainer(ABC):
         # Restore mutable flag
         self.mutable = mutable
 
+    @property
+    def content(self) -> dict:
+        return self["content.json"]
+
+    @content.setter
+    def content(self, value: dict):
+        self["content.json"] = value
+
+    @property
+    def meta(self):
+        return self["meta.json"]
+
+    @meta.setter
+    def meta(self, value: dict):
+        self["meta.json"] = value
+
     def __contains__(self, path):
 
         """ Return true, if the given path matches an item in this
