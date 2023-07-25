@@ -14,7 +14,7 @@ class JSONSchemaTest(TestCase):
         self.assertIsInstance(content, dict)
 
         self.assertEqual(len(VERSIONS_AVAILABLE), len(content))
-        
+
         for v in VERSIONS_AVAILABLE:
             self.assertIn(v, content.keys())
 
@@ -22,7 +22,7 @@ class JSONSchemaTest(TestCase):
         self.assertIsInstance(meta, dict)
 
         self.assertEqual(len(VERSIONS_AVAILABLE), len(meta))
-        
+
         for v in VERSIONS_AVAILABLE:
             self.assertIn(v, meta.keys())
 
@@ -31,7 +31,7 @@ class JSONSchemaTest(TestCase):
         validate(a["content.json"],
                  schema=content[VERSIONS_AVAILABLE[-1]],
                  schema_name="content")
-                 
+
     def test_validate_meta(self):
         a = get_test_container()
         validate(a["meta.json"],
@@ -155,7 +155,6 @@ class JSONSchemaTest(TestCase):
                  schema=content[VERSIONS_AVAILABLE[-1]],
                  schema_name="content")
 
-
         del a["content.json"]["hash"]
 
         with self.assertRaises(ValidationError) as cm:
@@ -167,7 +166,7 @@ class JSONSchemaTest(TestCase):
                          "A static container requires a hash.")
 
         a["content.json"]["hash"] = None
-        
+
         with self.assertRaises(ValidationError) as cm:
             validate(a["content.json"],
                      schema=content[VERSIONS_AVAILABLE[-1]],

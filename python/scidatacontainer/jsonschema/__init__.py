@@ -1,4 +1,11 @@
-from __future__ import annotations # required for |-operator in typing
+from __future__ import annotations  # required for |-operator in typing
+
+__all__ = [
+           "content",
+           "meta",
+           "validate",
+           "VERSIONS_AVAILABLE",
+           ]
 
 import json
 import os
