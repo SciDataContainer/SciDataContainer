@@ -52,14 +52,14 @@ class AbstractFile(ABC):
         Returns:
             bytes: Byte string representation of the object.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def decode(self, data: bytes):
         """Decode the Container content from bytes. This is an abstract method
         and it neets to be overwritten by inheriting class.
         """
-        pass
+        pass  # pragma: no cover
 
 
 class BinaryFile(AbstractFile):

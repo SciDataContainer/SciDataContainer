@@ -113,6 +113,19 @@ class TestStaticContainer(AbstractContainerTest):
         # new hash is equal with the old one
         self.assertEqual(old_hash, dc["content.json"]["hash"])
 
+    def test_read_wrong_hash(self, clean=True):
+        self.test_freeze()
+        self.dc.content["hash"] += "ab"
+        self.dc.write(self.export_filename)
+
+        with self.assertRaises(RuntimeError) as cm:
+            Container(file=self.export_filename)
+
+        self.assertEqual(cm.exception.args[0], "Wrong hash!")
+
+        if clean:
+            os.remove(self.export_filename)
+
     def test_print(self):
         self.test_freeze()
         s = self.dc.__str__()
