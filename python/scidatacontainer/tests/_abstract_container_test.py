@@ -74,7 +74,7 @@ class AbstractContainerTest(ABC, TestCase):
                          "title": "This is a sample image dataset",
                          "keywords": ["keyword1", "keyword2", "keyword3"],
                          "description": "Example description",
-                         "doi": "example doi str",
+                         "doi": "https://example.com/" + str(uuid.uuid4()),
                          "license": "MIT",
                          "timestamp": cls.timestamp,
                          },

@@ -43,7 +43,11 @@ def _translate_validation_error(exception: ValidationError,
     elif " is not a" in exception.message:
         exception.message = "Value of '" + exception.path[0] + "' in " +\
                             filename + ".json has the wrong format: " +\
-                            exception.message
+                            exception.message + "."
+    elif " is not of type " in exception.message:
+        exception.message = "Value of '" + exception.path[0] + "' in " +\
+                            filename + ".json has the wrong type: " +\
+                            exception.message + "."
     raise exception
 
 
