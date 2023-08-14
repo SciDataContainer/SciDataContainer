@@ -28,7 +28,7 @@ from .config import load_config
 config = load_config()
 
 # Version of the implemented data model
-MODELVERSION = "1.0"
+MODELVERSION = "1.0.0"
 
 
 ##########################################################################

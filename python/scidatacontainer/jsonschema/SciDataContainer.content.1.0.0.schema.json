@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/SciDataContainer/SciDataContainer/v1.0.0/json-schema/SciDataContainer.schema.json",
+  "$id": "https://raw.githubusercontent.com/SciDataContainer/SciDataContainer/1.1.0/python/scidatacontainer/jsonschema/SciDataContainer.content.1.0.0.schema.json",
   "title": "SciDataContainer",
   "description": "A scientific data container",
   "type": "object",
