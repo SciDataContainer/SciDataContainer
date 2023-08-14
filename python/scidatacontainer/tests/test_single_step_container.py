@@ -11,21 +11,15 @@ class AbstractSingleStepContainerTest(AbstractContainerTest):
     def _compare_with_items(self, dc):
         super()._compare_with_items(dc)
         self.assertFalse(dc["content.json"]["static"])
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
-
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def _compare_with_minimal_items(self, dc):
         super()._compare_with_minimal_items(dc)
         self.assertFalse(dc["content.json"]["static"])
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
-
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
         self.assertTrue(dc["content.json"]["complete"])
 
     def test_container_creation(self):
@@ -157,7 +151,8 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
         self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
     def test_setitem(self):
@@ -186,8 +181,7 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
 
     def test_getitem(self):
         self.test_container_creation()
-        self.assertEqual(self.timestamp,
-                         self.dc["content.json"]["created"])
+        self._check_timestamp(self.dc["content.json"]["created"])
 
         with self.assertRaisesRegex(KeyError, "Unknown item 'data/test.abc'!"):
             self.dc["data/test.abc"]
@@ -198,3 +192,40 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
                                             self.parameter,
                                             self.data,
                                             self.dc["meta.json"]])
+
+    def test_content_getter(self):
+        self.test_container_creation()
+        self.assertDictEqual(self.dc.content, self.dc["content.json"])
+        self.assertTrue(self.dc["content.json"]["complete"])
+        self.dc.content["complete"] = False
+        self.assertFalse(self.dc["content.json"]["complete"])
+        self.assertDictEqual(self.dc.content, self.dc["content.json"])
+
+    def test_content_setter(self):
+        self.test_container_creation()
+        self.assertDictEqual(self.dc.content, self.dc["content.json"])
+        self.dc.release()
+        d2 = {"test123": "test"}
+        self.dc.content = d2
+        self.assertDictEqual(self.dc.content, d2)
+        self.assertDictEqual(self.dc["content.json"], d2)
+
+    def test_meta_getter(self):
+        self.test_container_creation()
+        self.assertDictEqual(self.dc.meta, self.dc["meta.json"])
+        self.assertEqual(self.dc["meta.json"]["title"],
+                         "This is a sample image dataset")
+
+        self.dc.meta["title"] = "This is NOT a sample image dataset"
+        self.assertEqual(self.dc["meta.json"]["title"],
+                         "This is NOT a sample image dataset")
+        self.assertDictEqual(self.dc.meta, self.dc["meta.json"])
+
+    def test_meta_setter(self):
+        self.test_container_creation()
+        self.assertDictEqual(self.dc.meta, self.dc["meta.json"])
+        self.dc.release()
+        d2 = {"test123": "test"}
+        self.dc.meta = d2
+        self.assertDictEqual(self.dc.meta, d2)
+        self.assertDictEqual(self.dc["meta.json"], d2)

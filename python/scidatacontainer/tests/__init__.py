@@ -1,5 +1,7 @@
 import scidatacontainer
 
+import uuid
+
 
 def get_test_container():
     parameter = {
@@ -63,7 +65,7 @@ def get_test_container():
                  "title": "This is a sample image dataset",
                  "keywords": ["keyword1", "keyword2", "keyword3"],
                  "description": "Example description",
-                 "doi": "example doi str",
+                 "doi": "https://example.com/" + str(uuid.uuid4()),
                  "license": "MIT",
                  "timestamp": timestamp,
                  },

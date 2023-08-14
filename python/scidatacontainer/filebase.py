@@ -38,7 +38,7 @@ class AbstractFile(ABC):
 
     def hash(self) -> str:
         """Return hex digest of SHA256 hash.
-        
+
         Returns:
             str: Hex digest of this object as string.
         """
@@ -52,14 +52,14 @@ class AbstractFile(ABC):
         Returns:
             bytes: Byte string representation of the object.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def decode(self, data: bytes):
         """Decode the Container content from bytes. This is an abstract method
         and it neets to be overwritten by inheriting class.
         """
-        pass
+        pass  # pragma: no cover
 
 
 class BinaryFile(AbstractFile):
@@ -94,12 +94,11 @@ class TextFile(AbstractFile):
 
         return bytes(self.data, self.charset)
 
-
     def decode(self, data: bytes):
         """ Decode text from given bytes string. """
 
         self.data = data.decode(self.charset)
-        
+
 
 class JsonFile(AbstractFile):
 
@@ -179,7 +178,7 @@ class TabSeparatedValuesFile(AbstractFile):
         Returns:
             bytes: Byte string representation of the object.
         """
-        s = '\n'.join(['\t'.join([str(v) for v in l]) for l in self.data])
+        s = '\n'.join(['\t'.join([str(v) for v in a]) for a in self.data])
 
         return bytes(s, self.charset)
 
@@ -189,7 +188,7 @@ class TabSeparatedValuesFile(AbstractFile):
         """
 
         s = data.decode(self.charset)
-        self.data = [[float(x) for x in l.split('\t')] for l in s.split('\n')]
+        self.data = [[float(x) for x in a.split('\t')] for a in s.split('\n')]
 
 
 register = [
@@ -200,4 +199,3 @@ register = [
     ("pgm", "txt", None),
     ("tsv", TabSeparatedValuesFile, None),
     ]
-    

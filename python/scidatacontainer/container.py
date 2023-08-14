@@ -18,7 +18,7 @@ import hashlib
 import io
 import json
 import requests
-import typing 
+import typing
 import uuid
 from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -28,14 +28,14 @@ from .config import load_config
 config = load_config()
 
 # Version of the implemented data model
-MODELVERSION = "1.0"
+MODELVERSION = "1.0.0"
 
 
 ##########################################################################
 # Timestamp function
 
 def timestamp() -> str:
-    """Return the current ISO 8601 compatible timestamp as string. 
+    """Return the current ISO 8601 compatible timestamp as string.
 
     Returns:
         str: timestamp as string
@@ -59,7 +59,6 @@ class AbstractContainer(ABC):
     _suffixes = {"json": JsonFile, "txt": TextFile, "bin": BinaryFile}
     _classes = {dict: JsonFile, str: TextFile, bytes: BinaryFile}
     _formats = [TextFile]
-
 
     def __init__(self,
                  items: dict = None,
@@ -85,7 +84,7 @@ class AbstractContainer(ABC):
             compression: Numeric constant for the compression method
             compresslevel: Level of compression, 0-fastest, 9-best compression
         """
-            
+
         # Container must be mutable initially
         self.mutable = True
 
@@ -101,14 +100,13 @@ class AbstractContainer(ABC):
         # Download container from server
         elif uuid is not None:
             self._download(uuid=uuid, server=server, key=key)
-        
+
         # No data source
         else:
             raise RuntimeError("No data!")
 
         self.compression = compression
         self.compresslevel = compresslevel
-
 
     def _store(self, items, validate=True, strict=True):
 
@@ -144,6 +142,21 @@ class AbstractContainer(ABC):
         # Restore mutable flag
         self.mutable = mutable
 
+    @property
+    def content(self) -> dict:
+        return self["content.json"]
+
+    @content.setter
+    def content(self, value: dict):
+        self["content.json"] = value
+
+    @property
+    def meta(self) -> dict:
+        return self["meta.json"]
+
+    @meta.setter
+    def meta(self, value: dict):
+        self["meta.json"] = value
 
     def __contains__(self, path):
 
@@ -151,8 +164,7 @@ class AbstractContainer(ABC):
         container. """
 
         return path in self._items
-    
-        
+
     def __setitem__(self, path, data):
 
         """ Store data as a container item. """
@@ -160,12 +172,12 @@ class AbstractContainer(ABC):
         # Immutable container must not be modified
         if not self.mutable:
             raise RuntimeError("Immutable container!")
-        
+
         # Get file extension
         ext = path.rsplit(".", 1)[1]
 
         # Unregistered file extension
-        if not ext in self._suffixes:
+        if ext not in self._suffixes:
 
             # Try to convert bytes. Default is BinaryFile.
             if isinstance(data, bytes):
@@ -173,7 +185,7 @@ class AbstractContainer(ABC):
                     try:
                         item = cls(data)
                         break
-                    except:
+                    except Exception:
                         pass
                 else:
                     item = BinaryFile(data)
@@ -184,17 +196,16 @@ class AbstractContainer(ABC):
                     cls = self._classes[type(data)]
                     item = cls(data)
                 else:
-                    raise RuntimeError("No matching file format found for item '%s'!" % path)
+                    raise RuntimeError("No matching file format found for " +
+                                       "item '%s'!" % path)
 
-        # Registered file extension         
+        # Registered file extension
         else:
             cls = self._suffixes[ext]
             item = cls(data)
 
         # Store conversion object containing data
         self._items[path] = item
-##        print("**** Class('%s') = %s ****" % (path, type(item).__name__))
-
 
     def __getitem__(self, path):
 
@@ -203,7 +214,6 @@ class AbstractContainer(ABC):
         if path in self:
             return self._items[path].data
         raise KeyError("Unknown item '%s'!" % path)
-
 
     def validate_content(self):
         """Make sure that the item "content.json" exists and contains
@@ -238,7 +248,7 @@ class AbstractContainer(ABC):
             raise RuntimeError("Attribute containerType is no dictionary!")
         if "name" not in ptype:
             raise RuntimeError("Name of containerType is missing!")
-        if "id" in ptype and not "version" in ptype:
+        if "id" in ptype and "version" not in ptype:
             raise RuntimeError("Version of containerType is missing!")
 
         # The boolean attribute 'static' is required. Default is False.
@@ -278,11 +288,11 @@ class AbstractContainer(ABC):
         if "usedSoftware" not in content or not content["usedSoftware"]:
             content["usedSoftware"] = []
         for sw in content["usedSoftware"]:
-            if not "name" in sw:
+            if "name" not in sw:
                 raise RuntimeError("Software name is missing!")
-            if not "version" in sw:
+            if "version" not in sw:
                 raise RuntimeError("Software version is missing!")
-            if "id" in sw and not "idType" in sw:
+            if "id" in sw and "idType" not in sw:
                 raise RuntimeError("Type of software reference id is missing!")
 
         # Version of the data model provided by this package
@@ -290,7 +300,6 @@ class AbstractContainer(ABC):
 
         # Store the item "content.json"
         self["content.json"] = content
-        
 
     def validate_meta(self):
         """Make sure that the item "meta.json" exists and contains
@@ -347,7 +356,6 @@ class AbstractContainer(ABC):
         # Store the item "meta.json"
         self["meta.json"] = meta
 
-
     def __delitem__(self, path):
 
         """ Delete the given item. """
@@ -356,10 +364,9 @@ class AbstractContainer(ABC):
         if not self.mutable:
             raise RuntimeError("Immutable container!")
 
-        # Delete item        
+        # Delete item
         if path in self:
             del self._items[path]
-            
 
     def keys(self) -> typing.List[str]:
         """Return a sorted list of the full paths of all items.
@@ -370,8 +377,7 @@ class AbstractContainer(ABC):
 
         return sorted(self._items.keys())
 
-
-    def values(self) ->typing.List:
+    def values(self) -> typing.List:
         """Return a list of all item objects.
 
         Returns:
@@ -380,14 +386,12 @@ class AbstractContainer(ABC):
 
         return [self[k] for k in self.keys()]
 
-
     def items(self):
         """Return this container as a dictionary of item objects (key, value)
         tuples.
         """
 
         return {k: self[k] for k in self.keys()}
-
 
     def hash(self):
         """Calculate and save the hash value of this container.
@@ -414,7 +418,6 @@ class AbstractContainer(ABC):
         self.mutable = False
         self["content.json"]["storageTime"] = timestamp()
 
-
     def freeze(self):
         """Calculate the hash value of this container and make it
         static. The container cannot be modified any more when this
@@ -423,7 +426,6 @@ class AbstractContainer(ABC):
         self["content.json"]["static"] = True
         self["content.json"]["complete"] = True
         self.hash()
-
 
     def release(self):
         """Make this container mutable. If it was immutable, this method
@@ -436,7 +438,7 @@ class AbstractContainer(ABC):
         if self.mutable:
             return
         self.mutable = True
-        
+
         # Remove and initialize certain container attributes
         content = self["content.json"]
         content["static"] = False
@@ -444,7 +446,6 @@ class AbstractContainer(ABC):
         for key in ("uuid", "replaces", "created", "storageTime", "hash"):
             content.pop(key, None)
         self.validate_content()
-        
 
     def encode(self):
         """ Encode container as ZIP package. Return package as binary
@@ -461,9 +462,8 @@ class AbstractContainer(ABC):
             f.seek(0)
             data = f.read()
         return data
-    
 
-    def decode(self, data:bytes, validate: bool = True, strict: bool = True):
+    def decode(self, data: bytes, validate: bool = True, strict: bool = True):
         """Take ZIP package as binary string. Read items from the
         package and store them in this object.
 
@@ -472,7 +472,7 @@ class AbstractContainer(ABC):
             validate: If true, validate the content.
             strict: If true, validate the hash, too.
         """
-        
+
         with io.BytesIO() as f:
             f.write(data)
             f.seek(0)
@@ -480,8 +480,7 @@ class AbstractContainer(ABC):
                 items = {p: fp.read(p) for p in fp.namelist()}
         self._store(items, validate, strict)
 
-        
-    def write(self, fn: str, data:bytes = None):
+    def write(self, fn: str, data: bytes = None):
         """Write the container to a ZIP package file.
 
         If data is passed to the function, data will be written to the file.
@@ -499,8 +498,8 @@ class AbstractContainer(ABC):
             data = self.encode()
         with open(fn, "wb") as fp:
             fp.write(data)
-        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
-
+        self.mutable = not (self["content.json"]["static"] or
+                            self["content.json"]["complete"])
 
     def _read(self, fn, strict=True):
         """Read a ZIP package file and store it as container in this
@@ -510,7 +509,8 @@ class AbstractContainer(ABC):
         with open(fn, "rb") as fp:
             data = fp.read()
         self.decode(data, False, strict)
-        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
+        self.mutable = not (self["content.json"]["static"] or
+                            self["content.json"]["complete"])
 
     def upload(self,
                data: bytes = None,
@@ -521,7 +521,7 @@ class AbstractContainer(ABC):
         If data is passed to the function, data will be written to the file.
         Otherwise the byte representation of the class instance will be written
         to the file, which is what you typically want.
-        
+
         Args:
             data: If given, data to write to the file.
             server: URL of the server.
@@ -551,14 +551,10 @@ class AbstractContainer(ABC):
             response = requests.post(server + "/api/datasets/",
                                      files={"uploadfile": data},
                                      headers={"Authorization": "Token " + key})
-        except:
+        except Exception:
             response = None
         if response is None:
             raise ConnectionError("Connection to server %s failed!" % server)
-
-##        print("*** Debug file 'upload.zdc' ***")
-##        with open("upload.zdc", "wb") as fp:
-##            fp.write(response.content)
 
         # HTTP status code 409 is returned when a dataset is already
         # available on the server. Static datasets require a special
@@ -570,7 +566,8 @@ class AbstractContainer(ABC):
                 if isinstance(data, dict) and data["static"]:
                     self._download(uuid=data["id"], server=server, key=key)
                     return
-            raise requests.HTTPError("400 Bad Request: Invalid container content")
+            raise requests.HTTPError("400 Bad Request: Invalid container " +
+                                     "content")
 
         # Unauthorized access
         elif response.status_code == 403:
@@ -582,15 +579,16 @@ class AbstractContainer(ABC):
 
         # Invalid container format
         elif response.status_code == 415:
-            raise requests.HTTPError("415 Unsupported: Invalid container format")
+            raise requests.HTTPError("415 Unsupported: Invalid container" +
+                                     "format")
 
         # Standard exception handler for other HTTP status codes
         else:
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
-
+        self.mutable = not (self["content.json"]["static"] or
+                            self["content.json"]["complete"])
 
     def _download(self, uuid, strict=True, server=None, key=None):
 
@@ -600,7 +598,7 @@ class AbstractContainer(ABC):
             server = self._config["server"]
         if not server:
             raise RuntimeError("Server URL is missing!")
-        
+
         # API key is required and must be provided either via config
         # file, environment variable or method parameter
         if key is None:
@@ -610,30 +608,27 @@ class AbstractContainer(ABC):
 
         # Download container as byte stream from the server
         try:
-            response = requests.get(server + "/api/datasets/" + uuid + "/download/",
+            url = server + "/api/datasets/" + uuid + "/download/"
+            response = requests.get(url,
                                     headers={"Authorization": "Token " + key})
-        except:
+        except Exception:
             response = None
         if response is None:
             raise ConnectionError("Connection to server %s failed!" % server)
         data = response.content
 
-##        print("*** Debug file '%s.zdc' ***" % uuid)
-##        with open(uuid+".zdc", "wb") as fp:
-##            fp.write(data)
-
         # Valid dataset: Store in this container
         if response.status_code == 200:
             self.decode(data, False, strict)
-            
+
         # Deleted dataset: Raise exception
         elif response.status_code == 204:
             raise requests.HTTPError("204 No Content: Deleted dataset")
-            
+
         # Replaced dataset: Store in this container
         elif response.status_code == 301:
             self.decode(data, strict)
-            
+
         # Unauthorized access
         elif response.status_code == 403:
             raise requests.HTTPError("403 Forbidden: Unauthorized access")
@@ -641,14 +636,14 @@ class AbstractContainer(ABC):
         # Unknown dataset: Raise exception
         elif response.status_code == 404:
             raise requests.HTTPError("404 Not Found: Unknown dataset")
-            
+
         # Standard exception handler for other HTTP status codes
         else:
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = not (self["content.json"]["static"] or self["content.json"]["complete"])
-
+        self.mutable = not (self["content.json"]["static"] or
+                            self["content.json"]["complete"])
 
     def __str__(self):
 
@@ -677,4 +672,4 @@ class AbstractContainer(ABC):
         s.append("  storageTime: " + content["storageTime"])
         s.append("  author:      " + meta["author"])
 
-        return "\n".join(s)        
+        return "\n".join(s)

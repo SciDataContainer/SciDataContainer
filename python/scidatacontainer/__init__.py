@@ -22,11 +22,20 @@
 #
 ##########################################################################
 
+__all__ = [
+           "timestamp",
+           "modelVersion",
+           "register",
+           "Container",
+           ]
+
 from importlib import import_module
 import typing
 from .filebase import AbstractFile
 from .container import AbstractContainer, timestamp
 from .container import MODELVERSION as modelVersion
+
+__version__ = "1.1.0"
 
 suffixes = {}
 classes = {}
@@ -48,14 +57,16 @@ def register(suffix: str,
     """
 
     if isinstance(fclass, str):
-        if not pclass is None:
-            raise RuntimeError("Alias %s:%s with default class!" % (suffix, fclass))
+        if pclass is not None:
+            raise RuntimeError("Alias %s:%s with default class!"
+                               % (suffix, fclass))
         fclass = suffixes[fclass]
 
     # Simple sanity check for the class interface
     for method in ("encode", "decode", "hash"):
-        if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
-            raise RuntimeError("No method %s() in class for suffix '%s'!" \
+        if not hasattr(fclass, method) or \
+                not callable(getattr(fclass, method)):
+            raise RuntimeError("No method %s() in class for suffix '%s'!"
                                % (method, suffix))
 
     # Register suffix
@@ -63,7 +74,7 @@ def register(suffix: str,
 
     # Register Python class. Last registration becomes default.
     # Overriding the mapping dict:JsonFile is not allowed.
-    if pclass not in classes or not pclass is dict:
+    if pclass not in classes or pclass is not dict:
         classes[pclass] = fclass
 
     # Register unknown file format
@@ -78,13 +89,12 @@ for name in ("filebase", "fileimage", "filenumpy"):
     try:
         module = import_module(fullname)
     except ModuleNotFoundError:
-        #print("%s import failed" % fullname)
         continue
-    #print("%s imported" % fullname)
+
     for suffix, fclass, pclass in module.register:
         register(suffix, fclass, pclass)
 
-    
+
 # Inject certain known file formats into the container class
 class Container(AbstractContainer):
 

@@ -1,11 +1,18 @@
 Data Storage Server
 ===================
 
+The data storage server provides a browser interface as well as a `REST API <https://en.wikipedia.org/wiki/Representational_state_transfer>`_.
+A user account is required to access the server and get an API key for the REST API via the browser interface.
+The source code can be found `on Github <https://github.com/SciDataContainer/django-scidatacontainer>`_.
+
+REST API
+--------
+
 The data storage server provides a browser interface as well as a `REST API <https://en.wikipedia.org/wiki/Representational_state_transfer>`_. A user account is required to access the server and get an API key for the REST API via the browser interface.
 
 
 Container Upload
-----------------
+^^^^^^^^^^^^^^^^
 
 :Method: POST
 :URL: http://<server>/api/datasets/
@@ -27,7 +34,8 @@ Response:
 
 
 Container Download
-------------------
+^^^^^^^^^^^^^^^^^^
+
 
 :Method: GET
 :URL: http://<server>/api/datasets/<uuid>/download/

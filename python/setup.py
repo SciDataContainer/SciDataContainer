@@ -5,28 +5,33 @@
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 
-import re
-import setuptools  # required for command bdist_wheel
+import setuptools  # noqa: F401 - required for command bdist_wheel
 from distutils.core import setup
 
-version = "1.0.0"
+version = "1.1.0"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
-    
+
 with open("README.md", "r") as fp:
     readme = fp.read()
 
 # PyPI classifiers: https://pypi.org/classifiers/
 setup(name="SciDataContainer",
       version=version,
-      description="A container class for the storage of scientific data together with meta data",
+      description="A container class for the storage of scientific data " +
+                  "together with meta data.",
       long_description=readme,
       long_description_content_type='text/markdown',
       author="Reinhard Caspary",
       author_email="reinhard.caspary@phoenixd.uni-hannover.de",
       url="https://github.com/reincas/scidatacontainer",
-      packages=["scidatacontainer", "scidatacontainer.tests"],
+      packages=[
+          "scidatacontainer",
+          "scidatacontainer.tests",
+          "scidatacontainer.jsonschema"
+          ],
+      package_data={'scidatacontainer': ['jsonschema/*']},
       keywords=["Research Data Management", "Data Container", "Meta Data"],
       license="MIT License",
       classifiers=[
@@ -35,6 +40,8 @@ setup(name="SciDataContainer",
           "Operating System :: OS Independent",
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering"],
-      install_requires=["requests"],
+      install_requires=[
+          "requests",
+          "jsonschema[format-nongpl]"
+          ],
       )
-

@@ -22,11 +22,9 @@ class TestMultiStepContainer(AbstractContainerTest):
 
     def _compare_with_items(self, dc):
         super()._compare_with_items(dc)
-        self.assertEqual(self.created,
-                         dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["created"])
 
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
 
         self.assertFalse(dc["content.json"]["complete"])
 
@@ -34,11 +32,9 @@ class TestMultiStepContainer(AbstractContainerTest):
 
     def _compare_with_minimal_items(self, dc):
         super()._compare_with_minimal_items(dc)
-        self.assertEqual(self.created,
-                         dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["created"])
 
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
 
         self.assertFalse(dc["content.json"]["complete"])
 
@@ -83,7 +79,8 @@ class TestMultiStepContainer(AbstractContainerTest):
         self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
         self.dc["content.json"]["complete"] = True
@@ -97,5 +94,6 @@ class TestMultiStepContainer(AbstractContainerTest):
         self.assertIn("uuid:        " + self.dc["content.json"]["uuid"], s)
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)

@@ -15,11 +15,9 @@ class TestStaticContainer(AbstractContainerTest):
 
     def _compare_with_items(self, dc):
         super()._compare_with_items(dc)
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["created"])
 
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
 
         self.assertTrue(dc["content.json"]["complete"])
 
@@ -27,11 +25,9 @@ class TestStaticContainer(AbstractContainerTest):
 
     def _compare_with_minimal_items(self, dc):
         super()._compare_with_minimal_items(dc)
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["created"])
+        self._check_timestamp(dc["content.json"]["created"])
 
-        self.assertEqual(self.timestamp,
-                         dc["content.json"]["storageTime"])
+        self._check_timestamp(dc["content.json"]["storageTime"])
 
         self.assertTrue(dc["content.json"]["complete"])
 
@@ -117,6 +113,19 @@ class TestStaticContainer(AbstractContainerTest):
         # new hash is equal with the old one
         self.assertEqual(old_hash, dc["content.json"]["hash"])
 
+    def test_read_wrong_hash(self, clean=True):
+        self.test_freeze()
+        self.dc.content["hash"] += "ab"
+        self.dc.write(self.export_filename)
+
+        with self.assertRaises(RuntimeError) as cm:
+            Container(file=self.export_filename)
+
+        self.assertEqual(cm.exception.args[0], "Wrong hash!")
+
+        if clean:
+            os.remove(self.export_filename)
+
     def test_print(self):
         self.test_freeze()
         s = self.dc.__str__()
@@ -129,7 +138,8 @@ class TestStaticContainer(AbstractContainerTest):
         self.assertIn("replaces:    " + self.dc["content.json"]["replaces"], s)
         self.assertIn("hash:        " + self.dc["content.json"]["hash"], s)
         self.assertIn("created:     " + self.dc["content.json"]["created"], s)
-        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"], s)
+        self.assertIn("storageTime: " + self.dc["content.json"]["storageTime"],
+                      s)
         self.assertIn("author:      " + self.dc["meta.json"]["author"], s)
 
     def test_immutable(self):
