@@ -151,7 +151,7 @@ class AbstractContainer(ABC):
         self["content.json"] = value
 
     @property
-    def meta(self):
+    def meta(self) -> dict:
         return self["meta.json"]
 
     @meta.setter
