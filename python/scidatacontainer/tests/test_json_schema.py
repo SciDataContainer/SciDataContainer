@@ -130,6 +130,30 @@ class JSONSchemaTest(TestCase):
                          "Value of 'email' in meta.json has the wrong " +
                          "format: 'test123' is not a 'email'.")
 
+        a = get_test_container()
+        a["content.json"]["hash"] = "test"
+        with self.assertRaises(ValidationError) as cm:
+            validate(a["content.json"],
+                     schema=content[VERSIONS_AVAILABLE[-1]],
+                     schema_name="content")
+
+        self.assertEqual(cm.exception.message,
+                         "Value of 'hash' in content.json has the wrong " +
+                         "format: A hash can only contain hex digits (0-9, " +
+                         "a-f and A-F).")
+
+        a = get_test_container()
+        a["content.json"]["modelVersion"] = "1.bcd.2.3"
+        with self.assertRaises(ValidationError) as cm:
+            validate(a["content.json"],
+                     schema=content[VERSIONS_AVAILABLE[-1]],
+                     schema_name="content")
+
+        self.assertEqual(cm.exception.message,
+                         "Value of 'modelVersion' in content.json has the " +
+                         "wrong format: A model version only contains digits" +
+                         " and dots.")
+
     def test_guess_schema(self):
         a = get_test_container()
         a["content.json"]["uuid"] = "test123"

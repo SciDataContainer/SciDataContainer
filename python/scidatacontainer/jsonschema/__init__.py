@@ -9,6 +9,7 @@ __all__ = [
 
 import json
 import os
+from packaging import version
 
 import jsonschema
 from jsonschema.validators import Draft202012Validator, validator_for
@@ -47,16 +48,24 @@ def _translate_validation_error(exception: ValidationError,
     """
     if "errorMessage" in exception.validator_value:
         exception.message = exception.validator_value["errorMessage"]
-    elif "is a required property" in exception.message:
+    elif exception.validator == "required":
         exception.message = exception.message + " in " + filename + ".json."
-    elif " is not a" in exception.message:
+    elif exception.validator == "format":
         exception.message = "Value of '" + exception.path[0] + "' in " +\
                             filename + ".json has the wrong format: " +\
                             exception.message + "."
-    elif " is not of type " in exception.message:
+    elif exception.validator == "type":
         exception.message = "Value of '" + exception.path[0] + "' in " +\
                             filename + ".json has the wrong type: " +\
                             exception.message + "."
+    elif exception.validator == "pattern":
+        exception.message = "Value of '" + exception.path[0] + "' in " +\
+                            filename + ".json has the wrong format: "
+        if "patternErrorMessage" in exception.schema:
+            exception.message += exception.schema["patternErrorMessage"]
+        else:
+            exception.message += exception.message + "."
+
     raise exception
 
 
@@ -146,17 +155,27 @@ def validate(instance: dict,
             raise
 
 
-VERSIONS_AVAILABLE = ["1.0.0"]
+VERSIONS_AVAILABLE = []
 
-for version in VERSIONS_AVAILABLE:
-    filename = "SciDataContainer.content." + version + ".schema.json"
-    with open(_DIR + "/" + filename, 'r') as content_file:
-        content_json = content_file.read()
-        content[version] = json.loads(content_json)
-        Draft202012Validator.check_schema(content[version])
+for filename in os.listdir(_DIR):
+    if filename.startswith("SciDataContainer.content."):
+        modelVersion = filename[len("SciDataContainer.content."):]
+        modelVersion = modelVersion[:-len(".schema.json")]
+        if modelVersion not in VERSIONS_AVAILABLE:
+            VERSIONS_AVAILABLE.append(modelVersion)
+        with open(_DIR + "/" + filename, 'r') as content_file:
+            content_json = content_file.read()
+            content[modelVersion] = json.loads(content_json)
+            Draft202012Validator.check_schema(content[modelVersion])
 
-    filename = "SciDataContainer.meta." + version + ".schema.json"
-    with open(_DIR + "/" + filename, 'r') as meta_file:
-        meta_json = meta_file.read()
-        meta[version] = json.loads(meta_json)
-        Draft202012Validator.check_schema(meta[version])
+    elif filename.startswith("SciDataContainer.meta."):
+        modelVersion = filename[len("SciDataContainer.meta."):]
+        modelVersion = modelVersion[:-len(".schema.json")]
+        if modelVersion not in VERSIONS_AVAILABLE:
+            VERSIONS_AVAILABLE.append(modelVersion)
+        with open(_DIR + "/" + filename, 'r') as meta_file:
+            meta_json = meta_file.read()
+            meta[modelVersion] = json.loads(meta_json)
+            Draft202012Validator.check_schema(meta[modelVersion])
+
+VERSIONS_AVAILABLE.sort(key=version.parse)

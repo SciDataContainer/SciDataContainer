@@ -71,7 +71,8 @@
         "string",
         "null"
       ],
-      "pattern": "^[0-9a-fA-F]+$"
+      "pattern": "^[0-9a-fA-F]+$",
+      "patternErrorMessage": "A hash can only contain hex digits (0-9, a-f and A-F)."
     },
     "usedSoftware": {
       "description": "Array of software objects used to generate this container",
@@ -110,7 +111,9 @@
     "modelVersion": {
       "description": "Version of the data model / meta data schema",
       "type": "string",
-      "readOnly": true
+      "readOnly": true,
+      "pattern": "^[0-9]+(\\.[0-9]+)+$",
+      "patternErrorMessage": "A model version only contains digits and dots."
     }
   },
   "required": [
