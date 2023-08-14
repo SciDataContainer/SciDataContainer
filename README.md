@@ -4,7 +4,7 @@ This is a lean container file format for scientific data, in a way compliant to 
 
 ## Documentation
 
-[![Sphinx Docs](https://github.com/svenkleinert/scidatacontainer/actions/workflows/sphinx-docs.yml/badge.svg)](https://github.com/svenkleinert/scidatacontainer/actions/workflows/sphinx-docs.yml)
+[![Sphinx Docs](https://github.com/SciDataContainer/SciDataContainer/actions/workflows/sphinx-docs.yml/badge.svg)](https://github.com/SciDataContainer/SciDataContainer/actions/workflows/sphinx-docs.yml)
 
 The full [documentation](https://scidatacontainer.readthedocs.io/en/latest/) together with all supported language implementations is hosted on [Read the Docs](https://readthedocs.org/).
 

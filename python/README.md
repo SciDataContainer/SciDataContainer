@@ -1,7 +1,7 @@
 # SciDataContainer for Python
 
-[![Python package](https://github.com/svenkleinert/scidatacontainer/actions/workflows/python-package.yml/badge.svg)](https://github.com/svenkleinert/scidatacontainer/actions/workflows/python-package.yml)
-[![codecov](https://codecov.io/gh/svenkleinert/scidatacontainer/branch/main/graph/badge.svg?token=P3RFBHLFAN)](https://codecov.io/gh/svenkleinert/scidatacontainer)
+[![Python package](https://github.com/SciDataContainer/SciDataContainer/actions/workflows/python-package.yml/badge.svg)](https://github.com/SciDataContainer/SciDataContainer/actions/workflows/python-package.yml)
+[![codecov](https://codecov.io/gh/SciDataContainer/SciDataContainer/branch/main/graph/badge.svg?token=Q8QSUX2YQM)](https://codecov.io/gh/SciDataContainer/SciDataContainer)
 
 This a Python 3 library for the container file format [SciDataContainer](https://github.com/reincas/scidatacontainer) intended to store scientific data.
 
