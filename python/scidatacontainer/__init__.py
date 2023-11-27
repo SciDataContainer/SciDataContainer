@@ -35,7 +35,7 @@ from .filebase import AbstractFile
 from .container import AbstractContainer, timestamp
 from .container import MODELVERSION as modelVersion
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 suffixes = {}
 classes = {}

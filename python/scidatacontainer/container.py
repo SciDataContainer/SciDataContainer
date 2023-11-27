@@ -158,6 +158,10 @@ class AbstractContainer(ABC):
     def meta(self, value: dict):
         self["meta.json"] = value
 
+    @property
+    def uuid(self) -> str:
+        return self["content.json"]["uuid"]
+
     def __contains__(self, path):
 
         """ Return true, if the given path matches an item in this

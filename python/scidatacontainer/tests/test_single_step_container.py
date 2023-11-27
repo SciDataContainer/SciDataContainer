@@ -1,5 +1,6 @@
 import copy
 import os
+import uuid
 
 from scidatacontainer import Container
 
@@ -229,3 +230,16 @@ class TestSingleStepContainer(AbstractSingleStepContainerTest):
         self.dc.meta = d2
         self.assertDictEqual(self.dc.meta, d2)
         self.assertDictEqual(self.dc["meta.json"], d2)
+
+    def test_uuid_getter(self):
+        self.test_container_creation()
+        dc_uuid = self.dc["content.json"]["uuid"]
+        self.assertEqual(dc_uuid, self.dc.uuid)
+
+        self.dc["content.json"]["uuid"] = str(uuid.uuid4())
+        self.assertNotEqual(dc_uuid, self.dc.uuid)
+
+    def test_uuid_setter(self):
+        self.test_container_creation()
+        with self.assertRaises(AttributeError):
+            self.dc.uuid = str(uuid.uuid4())
