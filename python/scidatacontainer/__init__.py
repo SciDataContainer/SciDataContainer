@@ -23,11 +23,11 @@
 ##########################################################################
 
 __all__ = [
-           "timestamp",
-           "modelVersion",
-           "register",
-           "Container",
-           ]
+    "timestamp",
+    "modelVersion",
+    "register",
+    "Container",
+]
 
 from importlib import import_module
 import typing
@@ -35,17 +35,17 @@ from .filebase import AbstractFile
 from .container import AbstractContainer, timestamp
 from .container import MODELVERSION as modelVersion
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 suffixes = {}
 classes = {}
 formats = []
 
 
-def register(suffix: str,
-             fclass: typing.Type[AbstractFile],
-             pclass: typing.Type[object] = None):
-    """ Register a suffix to a conversion class.
+def register(
+    suffix: str, fclass: typing.Type[AbstractFile], pclass: typing.Type[object] = None
+):
+    """Register a suffix to a conversion class.
 
     If the parameter class is a string, it is interpreted as known suffix and
     the conversion class of this suffix is registered also for the new one.
@@ -58,16 +58,15 @@ def register(suffix: str,
 
     if isinstance(fclass, str):
         if pclass is not None:
-            raise RuntimeError("Alias %s:%s with default class!"
-                               % (suffix, fclass))
+            raise RuntimeError("Alias %s:%s with default class!" % (suffix, fclass))
         fclass = suffixes[fclass]
 
     # Simple sanity check for the class interface
     for method in ("encode", "decode", "hash"):
-        if not hasattr(fclass, method) or \
-                not callable(getattr(fclass, method)):
-            raise RuntimeError("No method %s() in class for suffix '%s'!"
-                               % (method, suffix))
+        if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
+            raise RuntimeError(
+                "No method %s() in class for suffix '%s'!" % (method, suffix)
+            )
 
     # Register suffix
     suffixes[suffix] = fclass
@@ -98,7 +97,7 @@ for name in ("filebase", "fileimage", "filenumpy"):
 # Inject certain known file formats into the container class
 class Container(AbstractContainer):
 
-    """ Scientific data container. """
+    """Scientific data container."""
 
     _suffixes = suffixes
     _classes = classes
