@@ -26,11 +26,12 @@ import typing
 ##########################################################################
 # Data conversion classes
 
+
 class AbstractFile(ABC):
     """Base class for converting datatypes to their file representation."""
 
     def __init__(self, data):
-        """Constructor to create an instance of the converter class. """
+        """Constructor to create an instance of the converter class."""
         if isinstance(data, bytes):
             self.decode(data)
         else:
@@ -79,14 +80,14 @@ class BinaryFile(AbstractFile):
 
 
 class TextFile(AbstractFile):
-    """ Data conversion class for a text file.
-    """
+    """Data conversion class for a text file."""
+
     charset = "utf8"
     """charset (str): Character encoding used for translation from text to\
                       bytes."""
 
     def encode(self) -> bytes:
-        """ Encode text to bytes string.
+        """Encode text to bytes string.
 
         Returns:
             bytes: Byte string representation of the object.
@@ -95,15 +96,15 @@ class TextFile(AbstractFile):
         return bytes(self.data, self.charset)
 
     def decode(self, data: bytes):
-        """ Decode text from given bytes string. """
+        """Decode text from given bytes string."""
 
         self.data = data.decode(self.charset)
 
 
 class JsonFile(AbstractFile):
 
-    """ Data conversion class for a JSON file represented as Python
-    dictionary. """
+    """Data conversion class for a JSON file represented as Python
+    dictionary."""
 
     indent = 4
     """indent (int): Indentation of exported JSON files."""
@@ -112,7 +113,7 @@ class JsonFile(AbstractFile):
                       bytes."""
 
     def sortit(self, data: typing.Union[dict, list, tuple]) -> str:
-        """ Return compact string representation with keys of all
+        """Return compact string representation with keys of all
         sub-dictionaries sorted.
 
         Args:
@@ -155,40 +156,39 @@ class JsonFile(AbstractFile):
             bytes: Byte string representation of the object.
         """
 
-        data = json.dumps(self.data, sort_keys=True, indent=self.indent)
+        data = json.dumps(
+            self.data, sort_keys=True, indent=self.indent, ensure_ascii=False
+        )
         return bytes(data, self.charset)
 
     def decode(self, data: bytes):
-
-        """ Decode dictionary from given bytes string. """
+        """Decode dictionary from given bytes string."""
 
         self.data = json.loads(data.decode(self.charset))
 
 
 class TabSeparatedValuesFile(AbstractFile):
-    """ Data conversion class for a tab-separated value file.
-    """
+    """Data conversion class for a tab-separated value file."""
+
     charset = "utf8"
     """charset (str): Character encoding used for translation from a list of\
                       lists to bytes."""
 
     def encode(self) -> bytes:
-        """ Encode 2D array (list of lists) to bytes string.
+        """Encode 2D array (list of lists) to bytes string.
 
         Returns:
             bytes: Byte string representation of the object.
         """
-        s = '\n'.join(['\t'.join([str(v) for v in a]) for a in self.data])
+        s = "\n".join(["\t".join([str(v) for v in a]) for a in self.data])
 
         return bytes(s, self.charset)
 
     def decode(self, data: bytes):
-        """Decode 2D array (list of lists) from given bytes string.
-
-        """
+        """Decode 2D array (list of lists) from given bytes string."""
 
         s = data.decode(self.charset)
-        self.data = [[float(x) for x in a.split('\t')] for a in s.split('\n')]
+        self.data = [[float(x) for x in a.split("\t")] for a in s.split("\n")]
 
 
 register = [
@@ -198,4 +198,4 @@ register = [
     ("log", TextFile, None),
     ("pgm", "txt", None),
     ("tsv", TabSeparatedValuesFile, None),
-    ]
+]
