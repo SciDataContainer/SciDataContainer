@@ -8,7 +8,7 @@
 import setuptools  # noqa: F401 - required for command bdist_wheel
 from distutils.core import setup
 
-version = "1.1.2"
+version = "1.1.3"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
