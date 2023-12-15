@@ -64,6 +64,8 @@ class AbstractContainer(ABC):
                  items: dict = None,
                  file: str = None,
                  uuid: str = None,
+                 author: str = None,
+                 email: str = None,
                  server: str = None,
                  key: str = None,
                  compression: int = ZIP_DEFLATED,
@@ -79,7 +81,9 @@ class AbstractContainer(ABC):
             items: Dictionary of items to build a new DataContainer.
             file: Filename to read a DataContainer from local hard drive.
             uuid: UUID of a Container to download from a server instance.
-            server: URL of the server instance that has the Container.
+            author: Author name for meta.json
+            email: Author email for meta.json
+            server: URL of the server instance providing the Container.
             key: API-Key from the server to identify yourself.
             compression: Numeric constant for the compression method
             compresslevel: Level of compression, 0-fastest, 9-best compression
@@ -90,6 +94,10 @@ class AbstractContainer(ABC):
 
         # Store all items in the container
         if items is not None:
+            if author is not None:
+                items["meta.json"]["author"] = author
+            if email is not None:
+                items["meta.json"]["email"] = email
             self._store(items, True, False)
             self.mutable = not self["content.json"]["static"]
 
