@@ -29,13 +29,14 @@ __all__ = [
     "Container",
 ]
 
-from importlib import import_module
 import typing
-from .filebase import AbstractFile
-from .container import AbstractContainer, timestamp
-from .container import MODELVERSION as modelVersion
+from importlib import import_module
 
-__version__ = "1.1.3"
+from .container import MODELVERSION as modelVersion
+from .container import AbstractContainer, timestamp
+from .filebase import AbstractFile
+
+__version__ = "1.1.4"
 
 suffixes = {}
 classes = {}
@@ -43,7 +44,9 @@ formats = []
 
 
 def register(
-    suffix: str, fclass: typing.Type[AbstractFile], pclass: typing.Type[object] = None
+    suffix: str,
+    fclass: typing.Type[AbstractFile],
+    pclass: typing.Type[object] = None,
 ):
     """Register a suffix to a conversion class.
 
@@ -58,12 +61,16 @@ def register(
 
     if isinstance(fclass, str):
         if pclass is not None:
-            raise RuntimeError("Alias %s:%s with default class!" % (suffix, fclass))
+            raise RuntimeError(
+                "Alias %s:%s with default class!" % (suffix, fclass)
+            )
         fclass = suffixes[fclass]
 
     # Simple sanity check for the class interface
     for method in ("encode", "decode", "hash"):
-        if not hasattr(fclass, method) or not callable(getattr(fclass, method)):
+        if not hasattr(fclass, method) or not callable(
+            getattr(fclass, method)
+        ):
             raise RuntimeError(
                 "No method %s() in class for suffix '%s'!" % (method, suffix)
             )

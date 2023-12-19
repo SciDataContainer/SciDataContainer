@@ -5,10 +5,11 @@
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 
-import setuptools  # noqa: F401 - required for command bdist_wheel
 from distutils.core import setup
 
-version = "1.1.3"
+import setuptools  # noqa: F401 - required for command bdist_wheel
+
+version = "1.1.4"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
