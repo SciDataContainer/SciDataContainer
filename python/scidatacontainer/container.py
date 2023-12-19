@@ -11,20 +11,22 @@
 #
 ##########################################################################
 
-from abc import ABC
 import copy
-from datetime import datetime, timezone
 import hashlib
 import io
 import json
-import requests
 import typing
 import uuid
-from zipfile import ZipFile, ZIP_DEFLATED
+from abc import ABC
+from datetime import datetime, timezone
+from types import SimpleNamespace
+from zipfile import ZIP_DEFLATED, ZipFile
 
+import requests
 
-from .filebase import BinaryFile, TextFile, JsonFile
 from .config import load_config
+from .filebase import BinaryFile, JsonFile, TextFile
+
 config = load_config()
 
 # Version of the implemented data model
@@ -34,17 +36,19 @@ MODELVERSION = "1.0.0"
 ##########################################################################
 # Timestamp function
 
+
 def timestamp() -> str:
     """Return the current ISO 8601 compatible timestamp as string.
 
     Returns:
         str: timestamp as string
     """
-    return datetime.now(timezone.utc).isoformat(timespec='seconds')
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 ##########################################################################
 # Data container class
+
 
 class AbstractContainer(ABC):
     """Scientific data container with minimal file support.
@@ -60,17 +64,20 @@ class AbstractContainer(ABC):
     _classes = {dict: JsonFile, str: TextFile, bytes: BinaryFile}
     _formats = [TextFile]
 
-    def __init__(self,
-                 items: dict = None,
-                 file: str = None,
-                 uuid: str = None,
-                 author: str = None,
-                 email: str = None,
-                 server: str = None,
-                 key: str = None,
-                 compression: int = ZIP_DEFLATED,
-                 compresslevel: int = -1):
-        """Constructor of a DataContainer object.
+    def __init__(
+        self,
+        items: dict = None,
+        file: str = None,
+        uuid: str = None,
+        author: str = None,
+        email: str = None,
+        server: str = None,
+        key: str = None,
+        compression: int = ZIP_DEFLATED,
+        compresslevel: int = -1,
+        **kwargs,
+    ):
+        """Construct a DataContainer object.
 
         It will try the following in the specified order:
             - Create a new DataContainer if items is passed as argument.
@@ -88,38 +95,72 @@ class AbstractContainer(ABC):
             compression: Numeric constant for the compression method
             compresslevel: Level of compression, 0-fastest, 9-best compression
         """
+        self.kwargs = {
+            "items": items,
+            "file": file,
+            "uuid": uuid,
+            "author": author,
+            "email": email,
+            "server": server,
+            "key": key,
+            "compression": compression,
+            "compresslevel": compresslevel,
+        }
+        self.kwargs.update(kwargs)
+
+        self.__pre_init__()
+
+        # load variables from kwargs in namespace
+        n = SimpleNamespace(**self.kwargs)
 
         # Container must be mutable initially
         self.mutable = True
 
         # Store all items in the container
-        if items is not None:
-            if author is not None:
-                items["meta.json"]["author"] = author
-            if email is not None:
-                items["meta.json"]["email"] = email
-            self._store(items, True, False)
+        if n.items is not None:
+            if n.author is not None:
+                n.items["meta.json"]["author"] = n.author
+            if n.email is not None:
+                n.items["meta.json"]["email"] = n.email
+            self._store(n.items, True, False)
             self.mutable = not self["content.json"]["static"]
 
         # Load local container file
-        elif file is not None:
-            self._read(fn=file)
+        elif n.file is not None:
+            self._read(fn=n.file)
 
         # Download container from server
-        elif uuid is not None:
-            self._download(uuid=uuid, server=server, key=key)
+        elif n.uuid is not None:
+            self._download(uuid=n.uuid, server=n.server, key=n.key)
 
         # No data source
         else:
             raise RuntimeError("No data!")
 
-        self.compression = compression
-        self.compresslevel = compresslevel
+        self.compression = n.compression
+        self.compresslevel = n.compresslevel
+
+        self.__post_init__()
+
+    def __pre_init__(self):
+        """Manipulate the container before initialization.
+
+        This method can be overwritten by inheriting classes to manipulate the
+        container object or the arguments passed to __init__ before the
+        arguments are processed in __init__. To do so, manipulate the
+        dictionary self.kwargs inside this function.
+        """
+
+    def __post_init__(self):
+        """Manipulate the container after initialization.
+
+        This method can be overwritten by inheriting classes to manipulate the
+        container object after __init__ is executed. This might be useful to
+        implement custom checks after creation of a container.
+        """
 
     def _store(self, items, validate=True, strict=True):
-
-        """ Store all items in the container. """
-
+        """Store all items in the container."""
         # Add all items in the container
         self._items = {}
         mutable = self.mutable
@@ -171,16 +212,11 @@ class AbstractContainer(ABC):
         return self["content.json"]["uuid"]
 
     def __contains__(self, path):
-
-        """ Return true, if the given path matches an item in this
-        container. """
-
+        """Return true, if the given path matches an item in this container."""
         return path in self._items
 
     def __setitem__(self, path, data):
-
-        """ Store data as a container item. """
-
+        """Store data as a container item."""
         # Immutable container must not be modified
         if not self.mutable:
             raise RuntimeError("Immutable container!")
@@ -190,7 +226,6 @@ class AbstractContainer(ABC):
 
         # Unregistered file extension
         if ext not in self._suffixes:
-
             # Try to convert bytes. Default is BinaryFile.
             if isinstance(data, bytes):
                 for cls in self._formats:
@@ -208,8 +243,10 @@ class AbstractContainer(ABC):
                     cls = self._classes[type(data)]
                     item = cls(data)
                 else:
-                    raise RuntimeError("No matching file format found for " +
-                                       "item '%s'!" % path)
+                    raise RuntimeError(
+                        "No matching file format found for "
+                        + "item '%s'!" % path
+                    )
 
         # Registered file extension
         else:
@@ -220,9 +257,7 @@ class AbstractContainer(ABC):
         self._items[path] = item
 
     def __getitem__(self, path):
-
-        """ Get the data content of a container item. """
-
+        """Get the data content of a container item."""
         if path in self:
             return self._items[path].data
         raise KeyError("Unknown item '%s'!" % path)
@@ -231,7 +266,6 @@ class AbstractContainer(ABC):
         """Make sure that the item "content.json" exists and contains
         all required attributes.
         """
-
         # Get a copy of the item "content.json"
         content = copy.deepcopy(self["content.json"])
 
@@ -314,10 +348,8 @@ class AbstractContainer(ABC):
         self["content.json"] = content
 
     def validate_meta(self):
-        """Make sure that the item "meta.json" exists and contains
-        all required attributes.
-        """
-
+        """Make sure that the item "meta.json" exists and contains all
+        required attributes."""
         # Get a copy of the item "meta.json"
         meta = copy.deepcopy(self["meta.json"])
 
@@ -369,9 +401,7 @@ class AbstractContainer(ABC):
         self["meta.json"] = meta
 
     def __delitem__(self, path):
-
-        """ Delete the given item. """
-
+        """Delete the given item."""
         # Immutable container must not be modified
         if not self.mutable:
             raise RuntimeError("Immutable container!")
@@ -386,7 +416,6 @@ class AbstractContainer(ABC):
         Returns:
             typing.List[str]: List of paths of Container items.
         """
-
         return sorted(self._items.keys())
 
     def values(self) -> typing.List:
@@ -395,20 +424,16 @@ class AbstractContainer(ABC):
         Returns:
             typing.List: List of item objects of the Container.
         """
-
         return [self[k] for k in self.keys()]
 
     def items(self):
         """Return this container as a dictionary of item objects (key, value)
         tuples.
         """
-
         return {k: self[k] for k in self.keys()}
 
     def hash(self):
-        """Calculate and save the hash value of this container.
-        """
-
+        """Calculate and save the hash value of this container."""
         # Some attributes of content.json are excluded from the hash
         # calculation
         save = ("uuid", "created", "storageTime")
@@ -433,8 +458,7 @@ class AbstractContainer(ABC):
     def freeze(self):
         """Calculate the hash value of this container and make it
         static. The container cannot be modified any more when this
-        method was called once. """
-
+        method was called once."""
         self["content.json"]["static"] = True
         self["content.json"]["complete"] = True
         self.hash()
@@ -444,8 +468,7 @@ class AbstractContainer(ABC):
         will create a new UUID and initialize the attributes replaces,
         createdstorageTime and modelVersion in the item "content.json".
         It will also delete an existing hash and make it a new
-        container. """
-
+        container."""
         # Do nothing if the container is already mutable
         if self.mutable:
             return
@@ -460,15 +483,17 @@ class AbstractContainer(ABC):
         self.validate_content()
 
     def encode(self):
-        """ Encode container as ZIP package. Return package as binary
+        """Encode container as ZIP package. Return package as binary
         string.
         """
-
         items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
-            with ZipFile(f, "w",
-                         compression=self.compression,
-                         compresslevel=self.compresslevel) as fp:
+            with ZipFile(
+                f,
+                "w",
+                compression=self.compression,
+                compresslevel=self.compresslevel,
+            ) as fp:
                 for path in sorted(items.keys()):
                     fp.writestr(path, items[path])
             f.seek(0)
@@ -484,7 +509,6 @@ class AbstractContainer(ABC):
             validate: If true, validate the content.
             strict: If true, validate the hash, too.
         """
-
         with io.BytesIO() as f:
             f.write(data)
             f.seek(0)
@@ -503,31 +527,28 @@ class AbstractContainer(ABC):
             fn: Filename of export file.
             data: If given, data to write to the file.
         """
-
         if self.mutable:
             self["content.json"]["storageTime"] = timestamp()
         if data is None:
             data = self.encode()
         with open(fn, "wb") as fp:
             fp.write(data)
-        self.mutable = not (self["content.json"]["static"] or
-                            self["content.json"]["complete"])
+        self.mutable = not (
+            self["content.json"]["static"] or self["content.json"]["complete"]
+        )
 
     def _read(self, fn, strict=True):
         """Read a ZIP package file and store it as container in this
         object.
         """
-
         with open(fn, "rb") as fp:
             data = fp.read()
         self.decode(data, False, strict)
-        self.mutable = not (self["content.json"]["static"] or
-                            self["content.json"]["complete"])
+        self.mutable = not (
+            self["content.json"]["static"] or self["content.json"]["complete"]
+        )
 
-    def upload(self,
-               data: bytes = None,
-               server: str = None,
-               key: str = None):
+    def upload(self, data: bytes = None, server: str = None, key: str = None):
         """Create a ZIP archive of the DataContainer and upload it to a server.
 
         If data is passed to the function, data will be written to the file.
@@ -539,7 +560,6 @@ class AbstractContainer(ABC):
             server: URL of the server.
             key: API Key from the server to identify yourself.
         """
-
         # Server name is required and must be provided either via config
         # file, environment variable or method parameter
         if server is None:
@@ -560,9 +580,11 @@ class AbstractContainer(ABC):
         if data is None:
             data = self.encode()
         try:
-            response = requests.post(server + "/api/datasets/",
-                                     files={"uploadfile": data},
-                                     headers={"Authorization": "Token " + key})
+            response = requests.post(
+                server + "/api/datasets/",
+                files={"uploadfile": data},
+                headers={"Authorization": "Token " + key},
+            )
         except Exception:
             response = None
         if response is None:
@@ -578,8 +600,9 @@ class AbstractContainer(ABC):
                 if isinstance(data, dict) and data["static"]:
                     self._download(uuid=data["id"], server=server, key=key)
                     return
-            raise requests.HTTPError("400 Bad Request: Invalid container " +
-                                     "content")
+            raise requests.HTTPError(
+                "400 Bad Request: Invalid container " + "content"
+            )
 
         # Unauthorized access
         elif response.status_code == 403:
@@ -591,19 +614,20 @@ class AbstractContainer(ABC):
 
         # Invalid container format
         elif response.status_code == 415:
-            raise requests.HTTPError("415 Unsupported: Invalid container" +
-                                     "format")
+            raise requests.HTTPError(
+                "415 Unsupported: Invalid container" + "format"
+            )
 
         # Standard exception handler for other HTTP status codes
         else:
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = not (self["content.json"]["static"] or
-                            self["content.json"]["complete"])
+        self.mutable = not (
+            self["content.json"]["static"] or self["content.json"]["complete"]
+        )
 
     def _download(self, uuid, strict=True, server=None, key=None):
-
         # Server name is required and must be provided either via config
         # file, environment variable or method parameter
         if server is None:
@@ -621,8 +645,9 @@ class AbstractContainer(ABC):
         # Download container as byte stream from the server
         try:
             url = server + "/api/datasets/" + uuid + "/download/"
-            response = requests.get(url,
-                                    headers={"Authorization": "Token " + key})
+            response = requests.get(
+                url, headers={"Authorization": "Token " + key}
+            )
         except Exception:
             response = None
         if response is None:
@@ -654,11 +679,11 @@ class AbstractContainer(ABC):
             response.raise_for_status()
 
         # Make container immutable
-        self.mutable = not (self["content.json"]["static"] or
-                            self["content.json"]["complete"])
+        self.mutable = not (
+            self["content.json"]["static"] or self["content.json"]["complete"]
+        )
 
     def __str__(self):
-
         content = self["content.json"]
         meta = self["meta.json"]
 
