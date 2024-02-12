@@ -1,5 +1,5 @@
 ##########################################################################
-# Copyright (c) 2023 Reinhard Caspary                                    #
+# Copyright (c) 2023-2024 Reinhard Caspary                               #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
@@ -359,9 +359,13 @@ class AbstractContainer(ABC):
         if "email" not in meta:
             meta["email"] = self._config["email"]
 
+        # Author ORCiD is optional
+        if "orcid" not in meta:
+            meta["orcid"] = self._config["orcid"]
+
         # Author affiliation is optional
         if "organization" not in meta:
-            meta["organization"] = ""
+            meta["organization"] = self._config["organization"]
 
         # Comment on dataset is optional
         if "comment" not in meta:

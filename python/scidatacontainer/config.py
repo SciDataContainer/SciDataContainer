@@ -1,18 +1,20 @@
 ##########################################################################
-# Copyright (c) 2023 Reinhard Caspary                                    #
+# Copyright (c) 2023-2024 Reinhard Caspary                               #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
-# This module provides the function getconfig() to read the default
+# This module provides the function load_config() to read the default
 # configuration parameters
 #
-# Parameter    | key
-# -------------+--------
-# author name  | author
-# author email | email
-# server URL   | server
-# server key   | key
+# Parameter           | key
+# --------------------+--------
+# author name         | author
+# author email        | email
+# author ORCiD        | orcid
+# author organization | organization
+# server URL          | server
+# server key          | key
 #
 # The values of these parameters are taken either from environment
 # variables or a config file. Both options are optional. Data from the
