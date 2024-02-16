@@ -1,5 +1,5 @@
 ##########################################################################
-# Copyright (c) 2023 Reinhard Caspary                                    #
+# Copyright (c) 2023-2024 Reinhard Caspary                               #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
@@ -25,6 +25,7 @@
 __all__ = [
     "timestamp",
     "modelVersion",
+    "load_config",
     "register",
     "Container",
 ]
@@ -34,6 +35,7 @@ from importlib import import_module
 
 from .container import MODELVERSION as modelVersion
 from .container import AbstractContainer, timestamp
+from .config import load_config
 from .filebase import AbstractFile
 
 __version__ = "1.1.4"

@@ -1,18 +1,20 @@
 ##########################################################################
-# Copyright (c) 2023 Reinhard Caspary                                    #
+# Copyright (c) 2023-2024 Reinhard Caspary                               #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
 #
-# This module provides the function getconfig() to read the default
+# This module provides the function load_config() to read the default
 # configuration parameters
 #
-# Parameter    | key
-# -------------+--------
-# author name  | author
-# author email | email
-# server URL   | server
-# server key   | key
+# Parameter           | key
+# --------------------+--------
+# author name         | author
+# author email        | email
+# author ORCiD        | orcid
+# author organization | organization
+# server URL          | server
+# server key          | key
 #
 # The values of these parameters are taken either from environment
 # variables or a config file. Both options are optional. Data from the
@@ -33,40 +35,49 @@ import os
 import platform
 
 
-def load_config(config_path: str = None) -> dict:
-    """Get config data from environment variables and config file.
+def load_config(config_path: str = None, **kwargs) -> dict:
+    
+    """Get author identity and server configuration.
 
-    This functions prefers values in the scidata config file and potentially
-    overwrites values that are present as environmental variables.
+    This function uses kwargs, the scidata config file and environmental
+    variables as sources for each parameter. The former sources
+    overriding the latter ones.
 
-    Usually, users doen't need to call this function. However, it can be used
-    for debugging purposes if the configuration parameters are not as expected.
+    Users may use the result of this function to inject the author
+    identity when building a new container:
+
+    config = load_config(author="John Doe", email="john@doe.com")
+    dc = Container(config=config)
 
     Args:
         str: Path of the config file. If this is None, the default file will
              be used. This filename is only required for testing.
 
+        kwargs: Parameter values as keyword arguments.
+        
     Returns:
         dict: A dictionary containing information strings with keys "author",\
-              "email", "server", "key".
+              "email", "orcid", "organization", "server", "key".
     """
 
     # Initialize config dictionary
-    config = {"author": "", "email": "", "server": "", "key": ""}
+    config = {"author": "", "email": "", "orcid": "",
+              "organization": "", "server": "", "key": ""}
 
     # Get default values from environment variables
     for key in config:
         name = "DC_%s" % key.upper()
         if name in os.environ:
-            config[key] = os.environ[name]
+            config[key] = os.environ[name].strip()
 
-    # Get default values from config file
+    # Path to scidata config file
     if not config_path:
         if platform.system() == "Windows":
             config_path = os.path.join(os.path.expanduser("~"), "scidata.cfg")
         else:
             config_path = os.path.join(os.path.expanduser("~"), ".scidata")
 
+    # Get default values from config file
     if os.path.exists(config_path):
         with open(config_path, "r") as fp:
             for line in fp.readlines():
@@ -80,5 +91,10 @@ def load_config(config_path: str = None) -> dict:
                 if key in config:
                     config[key] = line[1].strip()
 
+    # Use keyword arguments
+    for key in config:
+        if key in kwargs:
+            config[key] = kwargs[key].strip()
+    
     # Return config dictionary
     return config

@@ -1,5 +1,5 @@
 ##########################################################################
-# Copyright (c) 2023 Reinhard Caspary                                    #
+# Copyright (c) 2023-2024 Reinhard Caspary                               #
 # <reinhard.caspary@phoenixd.uni-hannover.de>                            #
 # This program is free software under the terms of the MIT license.      #
 ##########################################################################
@@ -26,8 +26,6 @@ import requests
 
 from .config import load_config
 from .filebase import BinaryFile, JsonFile, TextFile
-
-config = load_config()
 
 # Version of the implemented data model
 MODELVERSION = "1.0.0"
@@ -59,7 +57,7 @@ class AbstractContainer(ABC):
         - .bin <-> bytes
     """
 
-    _config = config
+    _config = None
     _suffixes = {"json": JsonFile, "txt": TextFile, "bin": BinaryFile}
     _classes = {dict: JsonFile, str: TextFile, bytes: BinaryFile}
     _formats = [TextFile]
@@ -69,10 +67,7 @@ class AbstractContainer(ABC):
         items: dict = None,
         file: str = None,
         uuid: str = None,
-        author: str = None,
-        email: str = None,
-        server: str = None,
-        key: str = None,
+        config: dict = None,
         compression: int = ZIP_DEFLATED,
         compresslevel: int = -1,
         **kwargs,
@@ -99,10 +94,7 @@ class AbstractContainer(ABC):
             "items": items,
             "file": file,
             "uuid": uuid,
-            "author": author,
-            "email": email,
-            "server": server,
-            "key": key,
+            "config": config,
             "compression": compression,
             "compresslevel": compresslevel,
         }
@@ -110,18 +102,20 @@ class AbstractContainer(ABC):
 
         self.__pre_init__()
 
-        # load variables from kwargs in namespace
+        # Load variables from kwargs in namespace
         n = SimpleNamespace(**self.kwargs)
 
         # Container must be mutable initially
         self.mutable = True
 
+        # Load configuration
+        if n.config is not None:
+            self._config = dict(n.config)
+        else:
+            self._config = load_config()
+
         # Store all items in the container
         if n.items is not None:
-            if n.author is not None:
-                n.items["meta.json"]["author"] = n.author
-            if n.email is not None:
-                n.items["meta.json"]["email"] = n.email
             self._store(n.items, True, False)
             self.mutable = not self["content.json"]["static"]
 
@@ -131,7 +125,9 @@ class AbstractContainer(ABC):
 
         # Download container from server
         elif n.uuid is not None:
-            self._download(uuid=n.uuid, server=n.server, key=n.key)
+            server = self._config["server"]
+            key = self._config["key"]
+            self._download(uuid=n.uuid, server=server, key=key)
 
         # No data source
         else:
@@ -363,9 +359,13 @@ class AbstractContainer(ABC):
         if "email" not in meta:
             meta["email"] = self._config["email"]
 
+        # Author ORCiD is optional
+        if "orcid" not in meta:
+            meta["orcid"] = self._config["orcid"]
+
         # Author affiliation is optional
         if "organization" not in meta:
-            meta["organization"] = ""
+            meta["organization"] = self._config["organization"]
 
         # Comment on dataset is optional
         if "comment" not in meta:
