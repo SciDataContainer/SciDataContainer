@@ -136,6 +136,9 @@ class AbstractContainer(ABC):
         self.compression = n.compression
         self.compresslevel = n.compresslevel
 
+        # Check validity of author ORCID
+        self._norm_orcid()
+
         self.__post_init__()
 
     def __pre_init__(self):
@@ -486,6 +489,10 @@ class AbstractContainer(ABC):
         """Encode container as ZIP package. Return package as binary
         string.
         """
+
+        # Check/format of author ORCID
+        self._norm_orcid()
+
         items = {p: self._items[p].encode() for p in self.items()}
         with io.BytesIO() as f:
             with ZipFile(
@@ -710,3 +717,55 @@ class AbstractContainer(ABC):
         s.append("  author:      " + meta["author"])
 
         return "\n".join(s)
+
+    def _norm_orcid(self, orcid: typing.Optional[str] = None) -> None:
+        """Set ORCID to normalized string if the given string is a valid ORCiD
+        or to an empty string otherwise."""
+
+        if orcid is None:
+            orcid = self["meta.json"]["orcid"]
+
+        assert isinstance(orcid, str)
+
+        # Pick all digits and normalize
+        orcid = orcid.replace("-", "").replace(" ", "").upper()
+        if len(orcid) != 16:
+            self["meta.json"]["orcid"] = ""
+            return
+
+        # Check if ORCID is in the correct number space.
+        try:
+            orcid_number = int(orcid[:-1])
+        except ValueError:
+            self["meta.json"]["orcid"] = ""
+            return
+
+        if not (
+            (15000000 <= int(orcid_number) <= 35000000)
+            or (900000000000 <= int(orcid_number) <= 900100000000)
+        ):
+            self["meta.json"]["orcid"] = ""
+            return
+
+        # Calculate checksum product
+        r = 2
+        m = 11
+        try:
+            product = 0
+            for digit in orcid[:-1]:
+                product = ((int(digit) + product) * r) % m
+        except ValueError:
+            self["meta.json"]["orcid"] = ""
+            return
+
+        # Calculate checksum digit
+        checksum = (m + 1 - product) % m
+        check = "0123456789X"[checksum]
+        if orcid[-1] != check:
+            self["meta.json"]["orcid"] = ""
+            return
+
+        # Valid ORCID. Set orcid variable to formatted string
+        self["meta.json"]["orcid"] = (
+            orcid[:4] + "-" + orcid[4:8] + "-" + orcid[8:12] + "-" + orcid[12:]
+        )

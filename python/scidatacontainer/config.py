@@ -36,7 +36,6 @@ import platform
 
 
 def load_config(config_path: str = None, **kwargs) -> dict:
-    
     """Get author identity and server configuration.
 
     This function uses kwargs, the scidata config file and environmental
@@ -54,15 +53,21 @@ def load_config(config_path: str = None, **kwargs) -> dict:
              be used. This filename is only required for testing.
 
         kwargs: Parameter values as keyword arguments.
-        
+
     Returns:
         dict: A dictionary containing information strings with keys "author",\
               "email", "orcid", "organization", "server", "key".
     """
 
     # Initialize config dictionary
-    config = {"author": "", "email": "", "orcid": "",
-              "organization": "", "server": "", "key": ""}
+    config = {
+        "author": "",
+        "email": "",
+        "orcid": "",
+        "organization": "",
+        "server": "",
+        "key": "",
+    }
 
     # Get default values from environment variables
     for key in config:
@@ -95,6 +100,6 @@ def load_config(config_path: str = None, **kwargs) -> dict:
     for key in config:
         if key in kwargs:
             config[key] = kwargs[key].strip()
-    
+
     # Return config dictionary
     return config
