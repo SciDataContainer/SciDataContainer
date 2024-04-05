@@ -33,12 +33,12 @@ __all__ = [
 import typing
 from importlib import import_module
 
+from .config import load_config
 from .container import MODELVERSION as modelVersion
 from .container import AbstractContainer, timestamp
-from .config import load_config
 from .filebase import AbstractFile
 
-__version__ = "1.1.4"
+__version__ = "1.1.5"
 
 suffixes = {}
 classes = {}

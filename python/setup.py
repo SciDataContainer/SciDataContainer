@@ -9,7 +9,7 @@ from distutils.core import setup
 
 import setuptools  # noqa: F401 - required for command bdist_wheel
 
-version = "1.1.4"
+version = "1.1.5"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
