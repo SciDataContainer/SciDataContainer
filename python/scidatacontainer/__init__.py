@@ -38,7 +38,7 @@ from .container import MODELVERSION as modelVersion
 from .container import AbstractContainer, timestamp
 from .filebase import AbstractFile
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 
 suffixes = {}
 classes = {}
@@ -105,7 +105,6 @@ for name in ("filebase", "fileimage", "filenumpy"):
 
 # Inject certain known file formats into the container class
 class Container(AbstractContainer):
-
     """Scientific data container."""
 
     _suffixes = suffixes

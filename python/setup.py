@@ -9,7 +9,7 @@ from distutils.core import setup
 
 import setuptools  # noqa: F401 - required for command bdist_wheel
 
-version = "1.1.5"
+version = "1.1.6"
 
 with open("VERSION", "w") as fp:
     fp.write(version)
@@ -27,7 +27,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Reinhard Caspary",
     author_email="reinhard.caspary@phoenixd.uni-hannover.de",
-    url="https://github.com/reincas/scidatacontainer",
+    url="https://github.com/SciDataContainer/SciDataContainer",
     packages=[
         "scidatacontainer",
         "scidatacontainer.tests",
