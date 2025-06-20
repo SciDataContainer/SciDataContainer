@@ -18,20 +18,19 @@
 ##########################################################################
 
 import io
+
 import numpy as np
 
 from .filebase import AbstractFile
 
 
 class NpyFile(AbstractFile):
-
-    """ Data conversion class for NumPy arrays (ndarray). """
+    """Data conversion class for NumPy arrays (ndarray)."""
 
     allow_pickle = False
 
     def encode(self):
-
-        """ Convert NumPy array to bytes string. """
+        """Convert NumPy array to bytes string."""
 
         with io.BytesIO() as fp:
             np.save(fp, self.data, allow_pickle=self.allow_pickle)
@@ -40,8 +39,7 @@ class NpyFile(AbstractFile):
         return data
 
     def decode(self, data):
-
-        """ Decode NumPy array from bytes string. """
+        """Decode NumPy array from bytes string."""
 
         with io.BytesIO() as fp:
             fp.write(data)
@@ -50,5 +48,5 @@ class NpyFile(AbstractFile):
 
 
 register = [
-    ("npx", NpyFile, np.ndarray),
-    ]
+    ("npy", NpyFile, np.ndarray),
+]

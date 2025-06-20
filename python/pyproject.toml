@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "SciDataContainer"
-version = "1.1.5"
+version = "1.1.6"
 authors = [
   { name="Reinhard Caspary", email="reinhard.caspary@phoenixd.uni-hannover.de" },
 ]
 description = "A container class for the storage of scientific data together with meta data."
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

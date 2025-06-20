@@ -59,34 +59,42 @@ Native support for image and NumPy objects is only available when your Python en
 	>>> from scidatacontainer import register
 	>>> register("py", "txt")
 
-If you want to register another Python object, you need to provide a conversion class which can convert this object to and from a bytes string. This class should be inherited from the class ``FileBase``. The storage of NumPy arrays for example may be realized by the following code:
+If you want to register another Python object, you need to provide a conversion class which can convert this object to and from a bytes string. This class should be inherited from the class ``AbstractFile``. The storage of NumPy arrays for example may be realized by the following code:
 
 .. code-block:: python
-	:linenos:
+  :linenos:
 
-	import io
-	import numpy as np
-	from scidatacontainer import FileBase, register
-	
-	class NpyFile(FileBase):
-	
-		allow_pickle = False
-		
-		def encode(self):
-			with io.BytesIO() as fp:
-				np.save(fp, self.data, allow_pickle=self.allow_pickle)
-				fp.seek(0)
-				data = fp.read()
-			return data
-			
-		def decode(self, data):
-			with io.BytesIO() as fp:
-				fp.write(data)
-				fp.seek(0)
-				self.data = np.load(fp, allow_pickle=self.allow_pickle)
-
-	register("npy", NpyFile, np.ndarray)
+  import io
+  
+  import numpy as np
+  from scidatacontainer import AbstractFile, register
+  
+  
+  class NpyFile(AbstractFile):
+      """Data conversion class for NumPy arrays (ndarray)."""
+  
+      allow_pickle = False
+  
+      def encode(self):
+          """Convert NumPy array to bytes string."""
+  
+          with io.BytesIO() as fp:
+              np.save(fp, self.data, allow_pickle=self.allow_pickle)
+              fp.seek(0)
+              data = fp.read()
+          return data
+  
+      def decode(self, data):
+          """Decode NumPy array from bytes string."""
+  
+          with io.BytesIO() as fp:
+              fp.write(data)
+              fp.seek(0)
+              self.data = np.load(fp, allow_pickle=self.allow_pickle)
+  
+  
+  register("npy", NpyFile, np.ndarray)
 
 The third argument of the function ``register()`` sets this conversion class as default for NumPy array objects overriding any previous default class. This argument is optional.
 
-Hash values are usually derived from the bytes string of an encoded object. If you require a different behaviour, you may also override the method ``hash()`` of the class ``FileBase``.
+Hash values are usually derived from the bytes string of an encoded object. If you require a different behaviour, you may also override the method ``hash()`` of the class ``AbstractFile``.
