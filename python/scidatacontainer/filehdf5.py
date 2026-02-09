@@ -1,6 +1,5 @@
 import io
 from hashlib import sha256
-from typing import override
 
 import h5py
 import numpy as np
@@ -9,7 +8,6 @@ from scidatacontainer import AbstractFile
 
 
 class Hdf5File(AbstractFile):
-    @override
     def encode(self):
         with io.BytesIO() as fp:
             with h5py.File(fp, "w") as h5file:
@@ -38,7 +36,6 @@ class Hdf5File(AbstractFile):
             data = fp.read()
         return data
 
-    @override
     def decode(self, data):
         with io.BytesIO(data) as fp:
             with h5py.File(fp, "r") as h5file:
@@ -60,7 +57,6 @@ class Hdf5File(AbstractFile):
                         }
                     )
 
-    @override
     def hash(self) -> str:
         if isinstance(self.data, np.ndarray):
             return sha256(self.data.data).hexdigest()
