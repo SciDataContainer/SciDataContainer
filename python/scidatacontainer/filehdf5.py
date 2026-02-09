@@ -1,4 +1,6 @@
 import io
+from hashlib import sha256
+from typing import override
 
 import h5py
 import numpy as np
@@ -7,6 +9,7 @@ from scidatacontainer import AbstractFile
 
 
 class Hdf5File(AbstractFile):
+    @override
     def encode(self):
         with io.BytesIO() as fp:
             with h5py.File(fp, "w") as h5file:
@@ -18,8 +21,9 @@ class Hdf5File(AbstractFile):
                         compression_opts=9,
                     )
                 elif isinstance(self.data, dict):
-                    for key, value in self.data.items():
+                    for key in sorted(self.data.keys()):
                         assert key != "dataset"
+                        value = self.data[key]
                         if isinstance(value, (np.ndarray, h5py.Dataset)):
                             _ = h5file.create_dataset(
                                 key, data=value, compression="gzip", compression_opts=9
@@ -34,6 +38,7 @@ class Hdf5File(AbstractFile):
             data = fp.read()
         return data
 
+    @override
     def decode(self, data):
         with io.BytesIO(data) as fp:
             with h5py.File(fp, "r") as h5file:
@@ -47,8 +52,38 @@ class Hdf5File(AbstractFile):
                 else:
                     self.data = {name: h5file[name][()] for name in datasets}
                     self.data.update(
-                        {name: h5file.attrs[name] for name in h5file.attrs.keys()}
+                        {
+                            name: getattr(
+                                h5file.attrs[name], "tolist", lambda: h5file.attrs[name]
+                            )()
+                            for name in h5file.attrs.keys()
+                        }
                     )
+
+    @override
+    def hash(self) -> str:
+        if isinstance(self.data, np.ndarray):
+            return sha256(self.data.data).hexdigest()
+
+        return sha256(
+            " ".join(
+                [
+                    " ".join(
+                        [
+                            sha256(key.encode("utf-8")).hexdigest(),
+                            sha256(
+                                getattr(
+                                    self.data[key],
+                                    "data",
+                                    np.array(self.data[key]).data,
+                                )
+                            ).hexdigest(),
+                        ]
+                    )
+                    for key in sorted(self.data.keys())
+                ]
+            ).encode("utf-8")
+        ).hexdigest()
 
 
 register = [("hdf5", Hdf5File, np.ndarray)]
