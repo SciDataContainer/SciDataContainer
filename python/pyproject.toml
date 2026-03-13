@@ -41,7 +41,6 @@ path = "scidatacontainer/__init__.py"
 
 [tool.coverage.report]
 omit = ["scidatacontainer/tests/*"]
-format = "html"
 
 [tool.hatch.envs.hatch-test]
 extra-dependencies = [
