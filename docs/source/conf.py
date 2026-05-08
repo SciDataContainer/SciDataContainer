@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../python'))
 print(os.path.abspath('../../python/scidatacontainer'))
+import scidatacontainer
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -14,8 +15,10 @@ print(os.path.abspath('../../python/scidatacontainer'))
 project = 'SciDataContainer'
 copyright = '2023, Reinhard Caspary, Sven Kleinert'
 author = 'Reinhard Caspary, Sven Kleinert'
-version = '1.0'
-release = '1.0.0'
+release = scidatacontainer.__version__
+version = '.'.join(release.split('.')[:2])
+# version = '1.0'
+# release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
